@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>QTc解析 (スマホ版)</title>
+    <!-- OpenCV.js -->
+    <script async src="https://docs.opencv.org/4.8.0/opencv.js" type="text/javascript"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+            max-width: 95%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0f1724;
+            color: #e0e6ed;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        .container {
+            background: #151f2e;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #2a3a4e;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2196F3;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 1.5em;
+        }
+
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #c0392b;
+        }
+
+        .btn-copy {
+            background: #27ae60;
+            color: white;
+            padding: 7px 18px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            background: #219150;
+        }
+
+        .btn-history {
+            background: #1a2738;
+            color: #e0e6ed;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #3a4f6e;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .btn-history:hover {
+            background: #2a3a4e;
+            border-color: #2196F3;
+        }
+
+        .btn-settings {
+            background: #1a2738;
+            color: #e0e6ed;
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: 1px solid #3a4f6e;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .btn-settings:hover {
+            background: #2a3a4e;
+            border-color: #2196F3;
+        }
+
+        /* Upload */
+        .upload-section {
+            border: 3px dashed #3a4f6e;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: #1a2738;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-section:hover,
+        .upload-section.dragover {
+            border-color: #2196F3;
+            background: #1a3555;
+        }
+
+        .upload-section.paste-highlight {
+            border-color: #27ae60 !important;
+            background: rgba(39, 174, 96, 0.1) !important;
+            animation: pasteFlash 0.6s ease;
+        }
+
+        @keyframes pasteFlash {
+            0% {
+                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 0 20px 4px rgba(39, 174, 96, 0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
+            }
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            color: #a0aec0;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Crop */
+        .crop-section {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .crop-canvas-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            border: 1px solid #2a3a4e;
+            border-radius: 8px;
+            background: #fff;
+            touch-action: none;
+        }
+
+        .crop-canvas-wrapper canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .crop-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn-analyze {
+            background: #2196F3;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .btn-analyze:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn-analyze:disabled {
+            background: #3a4f6e;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-crop {
+            background: #7c4dff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-crop:hover {
+            background: #651fff;
+        }
+
+        .btn-secondary {
+            background: #1a2738;
+            color: #e0e6ed;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid #3a4f6e;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #2a3a4e;
+            border-color: #2196F3;
+        }
+
+        .crop-instruction {
+            font-size: 0.85em;
+            color: #8ab4f8;
+            padding: 8px 12px;
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            border-radius: 6px;
+            margin-bottom: 12px;
+        }
+
+        /* Progress */
+        .progress-container {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #1a2738;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #2196F3 0%, #7c4dff 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        /* Results */
+        .results-section {
+            display: none;
+        }
+
+        .result-card {
+            border: 1px solid #2a3a4e;
+            border-radius: 8px;
+            padding: 15px;
+            background: #1a2738;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a3a4e;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .file-name {
+            font-weight: bold;
+            color: #8ab4f8;
+            font-size: 0.9em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 200px;
+        }
+
+        .instructions {
+            font-size: 0.75em;
+            color: #e0e6ed;
+            background: #3a4f6e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #4a5f7e;
+        }
+
+        /* Calibration */
+        .calibration-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background: #0d1724;
+            border-radius: 6px;
+            border: 1px solid #2a3a4e;
+            flex-wrap: wrap;
+        }
+
+        .calibration-bar label {
+            font-size: 0.85em;
+            color: #8ab4f8;
+            font-weight: bold;
+        }
+
+        .calibration-bar .cal-value {
+            font-size: 0.85em;
+            color: #e0e6ed;
+            background: #1a2738;
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid #3a4f6e;
+        }
+
+        .cal-method {
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .cal-method.auto-scale {
+            background: #00897b;
+            color: #fff;
+        }
+
+        .cal-method.grid-fallback {
+            background: #ff8f00;
+            color: #fff;
+        }
+
+        .cal-method.manual {
+            background: #1565c0;
+            color: #fff;
+        }
+
+        .cal-method.drag {
+            background: #6a1b9a;
+            color: #fff;
+        }
+
+        .cal-method.gemini-cal {
+            background: #00838f;
+            color: #fff;
+        }
+
+        .btn-reanalyze {
+            background: #7c4dff;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: background 0.2s;
+            margin-left: 8px;
+        }
+
+        .btn-reanalyze:hover {
+            background: #651fff;
+        }
+
+        /* Channel bar */
+        .channel-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            padding: 6px 12px;
+            background: #0d1724;
+            border-radius: 6px;
+            border: 1px solid #2a3a4e;
+        }
+
+        .channel-bar.hidden {
+            display: none;
+        }
+
+        .channel-bar .ch-label {
+            font-size: 0.8em;
+            color: #8ab4f8;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .ch-btn {
+            padding: 4px 14px;
+            border-radius: 4px;
+            border: 2px solid #3a4f6e;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: all 0.15s;
+            background: #1a2738;
+            color: #e0e6ed;
+        }
+
+        .ch-btn:hover {
+            border-color: #5a7f9e;
+        }
+
+        .ch-btn.ch-active {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .ch-btn.ch-black {
+            color: #aaa;
+        }
+
+        .ch-btn.ch-black.ch-active {
+            border-color: #fff;
+            background: #444;
+            color: #fff;
+        }
+
+        .ch-btn.ch-green {
+            color: #4caf50;
+        }
+
+        .ch-btn.ch-green.ch-active {
+            border-color: #4caf50;
+            background: #1b3a1b;
+            color: #66ff66;
+        }
+
+        .ch-btn.ch-red {
+            color: #e91e3a;
+        }
+
+        .ch-btn.ch-red.ch-active {
+            border-color: #e91e3a;
+            background: #3a1a1a;
+            color: #ff6666;
+        }
+
+        /* Metrics */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .metric-box {
+            background: #0d1724;
+            padding: 8px 4px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #2a3a4e;
+        }
+
+        .metric-box h3 {
+            margin: 0 0 3px 0;
+            font-size: 0.7em;
+            color: #8ab4f8;
+        }
+
+        .metric-box p {
+            margin: 0;
+            font-size: 1.0em;
+            font-weight: bold;
+            color: #e0e6ed;
+        }
+
+        /* Canvas */
+        .canvas-wrapper {
+            overflow: auto;
+            border: 1px solid #2a3a4e;
+            background: #fff;
+            margin-bottom: 10px;
+            position: relative;
+            /* Allow vertical growth if needed, but horizontal fit is prioritized by canvas css */
+            max-height: 80vh; 
+            touch-action: none;
+        }
+
+        canvas.ecg-canvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.75em;
+            padding: 8px;
+            background: #0d1724;
+            border-radius: 5px;
+            margin-top: 5px;
+            border: 1px solid #2a3a4e;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            opacity: 0.8;
+        }
+
+        .line-legend {
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        /* Preset bar */
+        .cal-preset-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .cal-preset-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: #0d1724;
+            border-radius: 8px;
+            border: 1px solid #2a3a4e;
+            flex-wrap: wrap;
+        }
+
+        .cal-preset-bar .preset-label {
+            font-size: 0.85em;
+            color: #8ab4f8;
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .cal-preset-btn {
+            padding: 7px 18px;
+            border-radius: 6px;
+            border: 2px solid #3a4f6e;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            transition: all 0.2s;
+            background: #1a2738;
+            color: #e0e6ed;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .cal-preset-btn:hover {
+            border-color: #2196F3;
+            background: #1a3555;
+        }
+
+        .cal-preset-btn.active {
+            border-color: #2196F3;
+            background: #1a3555;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+            color: #fff;
+        }
+
+        .btn-cal-settings {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #2a3a4e;
+            cursor: pointer;
+            font-size: 0.72em;
+            background: #1e2d3d;
+            color: #8899aa;
+            transition: all 0.2s;
+        }
+
+        .btn-cal-settings:hover {
+            background: #2a3f5a;
+            color: #ccc;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.8em;
+        }
+
+        th,
+        td {
+            border: 1px solid #2a3a4e;
+            padding: 4px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #0d1724;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #1a2738;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a2738;
+            border: 1px solid #2a3a4e;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a3a4e;
+        }
+
+        .modal-header h2 {
+            color: #8ab4f8;
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .modal-close {
+            color: #a0aec0;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #e74c3c;
+        }
+
+        .modal-section {
+            margin-bottom: 16px;
+        }
+
+        .modal-section label {
+            display: block;
+            color: #a0aec0;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .modal-section input[type="text"],
+        .modal-section select {
+            width: 100%;
+            padding: 10px;
+            background: #0d1724;
+            border: 1px solid #3a4f6e;
+            color: #e0e6ed;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .modal-section input:focus,
+        .modal-section select:focus {
+            outline: none;
+            border-color: #2196F3;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+
+        .modal-note {
+            margin-top: 6px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .modal-note a {
+            color: #8ab4f8;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* History modal */
+        .history-modal-content {
+            background: #1a2738;
+            border: 1px solid #2a3a4e;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .history-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a3a4e;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-modal-header h2 {
+            color: #8ab4f8;
+            font-size: 1.1em;
+            margin: 0;
+        }
+
+        .history-header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-history-copy-all {
+            background: #27ae60;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8em;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-history-copy-all:hover {
+            background: #219150;
+        }
+
+        .btn-history-close {
+            color: #a0aec0;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .btn-history-close:hover {
+            color: #e74c3c;
+        }
+
+        .history-list {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .history-item {
+            background: #0d1724;
+            border: 1px solid #2a3a4e;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .history-item:hover {
+            border-color: #2196F3;
+            background: rgba(33, 150, 243, 0.05);
+        }
+
+        .history-item.pinned {
+            border-left: 3px solid #ff9800;
+            background: rgba(255, 152, 0, 0.08);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+
+        .history-item-date {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #8ab4f8;
+        }
+
+        .history-pin-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 0.9em;
+            opacity: 0.4;
+            transition: all 0.2s;
+            filter: grayscale(100%);
+        }
+
+        .history-pin-btn:hover {
+            opacity: 0.7;
+        }
+
+        .history-pin-btn.active {
+            opacity: 1;
+            filter: grayscale(0%);
+        }
+
+        .history-item-delete {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            transition: all 0.2s;
+        }
+
+        .history-item-delete:hover {
+            background: rgba(231, 76, 60, 0.15);
+        }
+
+        .history-item-delete.disabled {
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .history-item-results {
+            font-size: 0.8em;
+            color: #e0e6ed;
+            line-height: 1.6;
+        }
+
+        .history-item-results .lead-label {
+            display: inline-block;
+            background: #2196F3;
+            color: #fff;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .history-item-comment {
+            margin-top: 6px;
+        }
+
+        .history-comment-input {
+            width: 100%;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            color: #e0e6ed;
+            background: #1a2738;
+            border: 1px solid #2a3a4e;
+            border-radius: 4px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .history-comment-input:focus {
+            border-color: #2196F3;
+        }
+
+        .history-comment-input::placeholder {
+            color: #666;
+        }
+
+        .history-item-copy {
+            background: none;
+            border: 1px solid #3a4f6e;
+            color: #a0aec0;
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            transition: all 0.2s;
+        }
+
+        .history-item-copy:hover {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQDY5X09FF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GQDY5X09FF');
+</script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
+                <h1>📈 QTc解析 (スマホ版) <span style="font-size:0.5em;color:#888;font-weight:normal;">ver 2.0 hybrid</span>
+                </h1>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button class="btn-settings" id="btn-settings" onclick="openSettings()"
+                    style="background:none; border:1px solid #444; color:#fff; border-radius:50%; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="cal set">cal
+                    set</button>
+                <button class="btn-copy" onclick="copyResults()">結果をコピー</button>
+                <button class="btn-history" onclick="openHistory()">履歴</button>
+                <button class="btn-reset" onclick="resetApp()">クリア</button>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div class="modal-overlay" id="historyModal">
+            <div class="history-modal-content">
+                <div class="history-modal-header">
+                    <h2>📋 解析履歴 (過去20回分)</h2>
+                    <div class="history-header-actions">
+                        <button class="btn-history-copy-all" onclick="copyAllHistory()">📋 全履歴コピー</button>
+                        <button class="btn-history-close" onclick="closeHistory()">&times;</button>
+                    </div>
+                </div>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </div>
+
+        <!-- ECG Type Bar (Removed) -->
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div class="upload-icon">📷</div>
+            <p class="upload-text">心電図画像をアップロード</p>
+            <p class="upload-hint">ペースト / ドロップ も可能です</p>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                <button class="btn-select"
+                    style="padding: 12px 20px; font-size: 1.1em; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;"
+                    onclick="document.getElementById('fileInputGallery').click()">📷 写真から選択 / カメラで撮影</button>
+            </div>
+            <!-- カメラ起動用 (capture="environment") -->
+            <input type="file" id="fileInputCamera" accept="image/*" capture="environment" style="display:none;">
+            <!-- ライブラリ選択用 (captureなし) -->
+            <input type="file" id="fileInputGallery" accept="image/*" style="display:none;">
+        </div>
+
+        <!-- Crop Section -->
+        <div class="crop-section" id="cropSection">
+            <div class="crop-instruction">📐 心電図部分をドラッグで選択してください。トリミングなしでそのまま解析も可能です。</div>
+            <div id="cropTargetWidth" style="text-align:center; font-size:0.9em; font-weight:bold; color:#ffeb3b; margin-top:-5px; margin-bottom:5px;">トリミング済の画像幅: - px</div>
+            <div class="crop-canvas-wrapper" id="cropWrapper">
+                <canvas id="cropCanvas"></canvas>
+            </div>
+            <div class="crop-controls">
+                <button class="btn-secondary" onclick="rotateImage90()" title="画像を時計回りに90度回転">🔄 90°回転</button>
+                <button class="btn-crop" id="btnCrop" onclick="applyCrop()" disabled>✂ トリミング</button>
+                <button class="btn-analyze" onclick="startAnalysis()">🔬 解析開始</button>
+                <button class="btn-secondary" onclick="resetCrop()">↻ 選択リセット</button>
+                <button class="btn-secondary" onclick="backToUpload()">← 戻る</button>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">解析中...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="result-card" id="resultCard"></div>
+        </div>
+
+        <!-- Settings Modal (Simplified) -->
+        <div id="settingsModal" class="modal"
+            style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000;">
+            <div
+                style="background:#1a2634;padding:30px;border-radius:12px;width:320px;max-width:90%;border:1px solid #333;">
+                <h2 style="margin-bottom:20px;font-size:1.2em;">⚙️ 基本設定</h2>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;margin-bottom:8px;font-size:0.9em;color:#aaa;">デフォルト キャリブレーション
+                        (px/s):</label>
+                    <input type="number" id="defaultCalInput"
+                        style="width:100%;padding:10px;background:#111;border:1px solid #444;color:#fff;border-radius:4px;">
+                    <p style="font-size:0.75em;color:#777;margin-top:5px;">※ 100%紙送り=500, ホルター例=125など</p>
+                </div>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button onclick="closeSettings()"
+                        style="padding:10px 16px;background:#444;color:#fff;border:none;border-radius:6px;cursor:pointer;">閉じる</button>
+                    <button onclick="saveSettings()"
+                        style="padding:10px 16px;background:#2196F3;color:#fff;border:none;border-radius:6px;cursor:pointer;">保存する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== PART 1: Global State & Settings ==========
+        let currentImage = null;
+        let cropRect = null;
+        let cropStartPos = null;
+        let isCropping = false;
+        let cropDragMode = 'new';
+        let cropDragOrigin = null;
+        const MAX_PROCESS_WIDTH = 250; // Forced to 250px for performance and better signal tracking
+        const paperSpeed = 25;
+
+        // Settings Logic
+        const STORAGE_KEY = 'qtc_cal_px_250';
+        const DEFAULT_CAL_PX = 122;
+
+        function loadSavedCalPx() {
+            try { return parseInt(localStorage.getItem(STORAGE_KEY)) || DEFAULT_CAL_PX; } catch (e) { return DEFAULT_CAL_PX; }
+        }
+        function saveCalPxToStorage(px) { localStorage.setItem(STORAGE_KEY, String(px)); }
+
+        function openSettings() {
+            document.getElementById('defaultCalInput').value = loadSavedCalPx();
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+        function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
+        function saveSettings() {
+            const val = parseInt(document.getElementById('defaultCalInput').value);
+            if (val > 0) saveCalPxToStorage(val);
+            closeSettings();
+        }
+
+        // Canvas registry (single image version)
+        let canvasEntry = null;
+        let finalResult = null;
+        const mean = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+        const median = arr => { if (!arr.length) return 0; const s = [...arr].sort((a, b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 !== 0 ? s[m] : (s[m - 1] + s[m]) / 2; };
+
+        // ========== PART 2: Upload & Crop ==========
+        const uploadSection = document.getElementById('uploadSection');
+        const cropSection = document.getElementById('cropSection');
+        const cropCanvas = document.getElementById('cropCanvas');
+        const cropCtx = cropCanvas.getContext('2d');
+
+        // Note: the click event on uploadSection was removed because it conflicts with the two separate buttons now.
+        uploadSection.addEventListener('dragover', e => { e.preventDefault(); uploadSection.classList.add('dragover'); });
+        uploadSection.addEventListener('dragleave', e => { e.preventDefault(); uploadSection.classList.remove('dragover'); });
+        uploadSection.addEventListener('drop', e => {
+            e.preventDefault(); uploadSection.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) loadImage(e.dataTransfer.files[0]);
+        });
+
+        document.getElementById('fileInputCamera').addEventListener('change', e => { if (e.target.files.length > 0) loadImage(e.target.files[0]); });
+        document.getElementById('fileInputGallery').addEventListener('change', e => { if (e.target.files.length > 0) loadImage(e.target.files[0]); });
+
+        window.addEventListener('paste', e => {
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let item of items) { if (item.kind === 'file' && item.type.startsWith('image/')) { loadImage(item.getAsFile()); break; } }
+        });
+
+        function rotateImage90() {
+            if (!currentImage) return;
+            const w = currentImage.width;
+            const h = currentImage.height;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = h;
+            tempCanvas.height = w;
+            const ctx = tempCanvas.getContext('2d');
+            ctx.translate(h / 2, w / 2);
+            ctx.rotate(Math.PI / 2);
+            ctx.drawImage(currentImage, -w / 2, -h / 2);
+
+            const newImg = new Image();
+            newImg.onload = () => {
+                currentImage = newImg;
+                showCropView();
+            };
+            newImg.src = tempCanvas.toDataURL('image/png');
+        }
+
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = ev => {
+                const img = new Image();
+                img.onload = () => { currentImage = img; showCropView(); };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showCropView() {
+            uploadSection.style.display = 'none';
+            cropSection.style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+            cropRect = null;
+            const maxW = Math.min(currentImage.width, 250);
+            const scale = maxW / currentImage.width;
+            cropCanvas.width = maxW;
+            cropCanvas.height = currentImage.height * scale;
+            cropCanvas._scale = scale;
+            
+            const wLabel = document.getElementById('cropTargetWidth');
+            if (wLabel) {
+                if (currentImage.width === 250) {
+                    wLabel.innerHTML = `トリミング後の画像: <span style="color:#4CAF50">${currentImage.width} x ${currentImage.height} px</span> (横幅 ${currentImage.width}px・解析最適化済)`;
+                } else {
+                    wLabel.innerHTML = `元の画像: ${currentImage.width} x ${currentImage.height} px (横幅 ${currentImage.width}px・解析時は自動で横250pxになります)`;
+                }
+            }
+            
+            drawCropCanvas();
+            setupCropEvents();
+        }
+
+        function drawCropCanvas() {
+            cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+            cropCtx.drawImage(currentImage, 0, 0, cropCanvas.width, cropCanvas.height);
+            if (cropRect) {
+                // 暗いオーバーレイ (evenodd clip)
+                cropCtx.save();
+                cropCtx.beginPath();
+                cropCtx.rect(0, 0, cropCanvas.width, cropCanvas.height);
+                cropCtx.rect(cropRect.x, cropRect.y, cropRect.w, cropRect.h);
+                cropCtx.clip('evenodd');
+                cropCtx.fillStyle = 'rgba(0,0,0,0.4)';
+                cropCtx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+                cropCtx.restore();
+                // 選択枠
+                cropCtx.strokeStyle = '#2196F3';
+                cropCtx.lineWidth = 4;
+                cropCtx.setLineDash([6, 3]);
+                cropCtx.strokeRect(cropRect.x, cropRect.y, cropRect.w, cropRect.h);
+                cropCtx.setLineDash([]);
+                // ハンドル描画
+                const r = cropRect;
+                const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+                const handles = [
+                    // 4コーナー (10×10)
+                    { x: r.x, y: r.y, s: 10 },
+                    { x: r.x + r.w, y: r.y, s: 10 },
+                    { x: r.x, y: r.y + r.h, s: 10 },
+                    { x: r.x + r.w, y: r.y + r.h, s: 10 },
+                    // 4辺の中点 (8×8)
+                    { x: cx, y: r.y, s: 8 },
+                    { x: cx, y: r.y + r.h, s: 8 },
+                    { x: r.x, y: cy, s: 8 },
+                    { x: r.x + r.w, y: cy, s: 8 },
+                ];
+                cropCtx.fillStyle = '#fff';
+                cropCtx.strokeStyle = '#2196F3';
+                cropCtx.lineWidth = 2;
+                for (const h of handles) {
+                    const hs = h.s / 2;
+                    cropCtx.fillRect(h.x - hs, h.y - hs, h.s, h.s);
+                    cropCtx.strokeRect(h.x - hs, h.y - hs, h.s, h.s);
+                }
+            }
+        }
+
+        function setupCropEvents() {
+            const HIT = 30; // ヒット判定閾値 (タッチ対応・スマホ拡大)
+            const MIN_SIZE = 20;
+
+            const getPos = e => {
+                const r = cropCanvas.getBoundingClientRect();
+                const t = e.touches ? e.touches[0] : e;
+                return { x: (t.clientX - r.left) * (cropCanvas.width / r.width), y: (t.clientY - r.top) * (cropCanvas.height / r.height) };
+            };
+
+            // ヒット判定: クリック位置がどのハンドル/領域にあるか
+            function hitTest(px, py) {
+                if (!cropRect) return 'new';
+                const r = cropRect;
+                const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
+                const near = (a, b) => Math.abs(a - b) < HIT;
+                // コーナー判定
+                if (near(px, r.x) && near(py, r.y)) return 'corner-tl';
+                if (near(px, r.x + r.w) && near(py, r.y)) return 'corner-tr';
+                if (near(px, r.x) && near(py, r.y + r.h)) return 'corner-bl';
+                if (near(px, r.x + r.w) && near(py, r.y + r.h)) return 'corner-br';
+                // 辺の中点判定
+                if (near(py, r.y) && px > r.x - HIT && px < r.x + r.w + HIT) return 'edge-top';
+                if (near(py, r.y + r.h) && px > r.x - HIT && px < r.x + r.w + HIT) return 'edge-bottom';
+                if (near(px, r.x) && py > r.y - HIT && py < r.y + r.h + HIT) return 'edge-left';
+                if (near(px, r.x + r.w) && py > r.y - HIT && py < r.y + r.h + HIT) return 'edge-right';
+                // 内部判定
+                if (px >= r.x && px <= r.x + r.w && py >= r.y && py <= r.y + r.h) return 'move';
+                return 'new';
+            }
+
+            // カーソル設定
+            function getCursor(mode) {
+                switch (mode) {
+                    case 'corner-tl': case 'corner-br': return 'nwse-resize';
+                    case 'corner-tr': case 'corner-bl': return 'nesw-resize';
+                    case 'edge-top': case 'edge-bottom': return 'ns-resize';
+                    case 'edge-left': case 'edge-right': return 'ew-resize';
+                    case 'move': return 'move';
+                    default: return 'crosshair';
+                }
+            }
+
+            const onStart = e => {
+                e.preventDefault();
+                const p = getPos(e);
+                cropStartPos = p;
+                cropDragMode = hitTest(p.x, p.y);
+                isCropping = true;
+
+                if (cropDragMode === 'new') {
+                    cropRect = null;
+                    cropDragOrigin = null;
+                } else {
+                    // 既存矩形の操作: 開始時のrectをコピー保存
+                    cropDragOrigin = { ...cropRect };
+                }
+            };
+
+            const onMove = e => {
+                if (!isCropping) {
+                    // 非ドラッグ時: カーソル変更
+                    const p = getPos(e);
+                    const mode = hitTest(p.x, p.y);
+                    cropCanvas.style.cursor = getCursor(mode);
+                    return;
+                }
+                if (!cropStartPos) return;
+                e.preventDefault();
+                const p = getPos(e);
+                const dx = p.x - cropStartPos.x;
+                const dy = p.y - cropStartPos.y;
+                const cw = cropCanvas.width;
+                const ch = cropCanvas.height;
+
+                if (cropDragMode === 'new') {
+                    // 新規矩形描画
+                    cropRect = {
+                        x: Math.min(cropStartPos.x, p.x),
+                        y: Math.min(cropStartPos.y, p.y),
+                        w: Math.abs(p.x - cropStartPos.x),
+                        h: Math.abs(p.y - cropStartPos.y)
+                    };
+                } else if (cropDragMode === 'move') {
+                    // 全体移動 (キャンバス範囲内にクランプ)
+                    let nx = cropDragOrigin.x + dx;
+                    let ny = cropDragOrigin.y + dy;
+                    nx = Math.max(0, Math.min(cw - cropDragOrigin.w, nx));
+                    ny = Math.max(0, Math.min(ch - cropDragOrigin.h, ny));
+                    cropRect = { x: nx, y: ny, w: cropDragOrigin.w, h: cropDragOrigin.h };
+                } else if (cropDragMode.startsWith('corner-')) {
+                    // コーナーリサイズ: 対角が固定
+                    const o = cropDragOrigin;
+                    let x0, y0, x1, y1;
+                    switch (cropDragMode) {
+                        case 'corner-tl': x0 = o.x + dx; y0 = o.y + dy; x1 = o.x + o.w; y1 = o.y + o.h; break;
+                        case 'corner-tr': x0 = o.x; y0 = o.y + dy; x1 = o.x + o.w + dx; y1 = o.y + o.h; break;
+                        case 'corner-bl': x0 = o.x + dx; y0 = o.y; x1 = o.x + o.w; y1 = o.y + o.h + dy; break;
+                        case 'corner-br': x0 = o.x; y0 = o.y; x1 = o.x + o.w + dx; y1 = o.y + o.h + dy; break;
+                    }
+                    // 最小サイズ確保 & 反転防止
+                    if (x1 - x0 < MIN_SIZE) { if (cropDragMode.includes('l')) x0 = x1 - MIN_SIZE; else x1 = x0 + MIN_SIZE; }
+                    if (y1 - y0 < MIN_SIZE) { if (cropDragMode.includes('t')) y0 = y1 - MIN_SIZE; else y1 = y0 + MIN_SIZE; }
+                    // キャンバス範囲にクランプ
+                    x0 = Math.max(0, x0); y0 = Math.max(0, y0);
+                    x1 = Math.min(cw, x1); y1 = Math.min(ch, y1);
+                    cropRect = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+                } else if (cropDragMode.startsWith('edge-')) {
+                    // 辺リサイズ
+                    const o = cropDragOrigin;
+                    let x0 = o.x, y0 = o.y, x1 = o.x + o.w, y1 = o.y + o.h;
+                    switch (cropDragMode) {
+                        case 'edge-top': y0 = Math.max(0, Math.min(y1 - MIN_SIZE, o.y + dy)); break;
+                        case 'edge-bottom': y1 = Math.min(ch, Math.max(y0 + MIN_SIZE, o.y + o.h + dy)); break;
+                        case 'edge-left': x0 = Math.max(0, Math.min(x1 - MIN_SIZE, o.x + dx)); break;
+                        case 'edge-right': x1 = Math.min(cw, Math.max(x0 + MIN_SIZE, o.x + o.w + dx)); break;
+                    }
+                    cropRect = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+                }
+
+                document.getElementById('btnCrop').disabled = (!cropRect || cropRect.w < MIN_SIZE || cropRect.h < MIN_SIZE);
+                drawCropCanvas();
+            };
+
+            const onEnd = () => {
+                isCropping = false;
+                cropDragOrigin = null;
+            };
+
+            // マウスイベント
+            cropCanvas.addEventListener('mousedown', onStart);
+            cropCanvas.addEventListener('mousemove', onMove);
+            cropCanvas.addEventListener('mouseup', onEnd);
+            cropCanvas.addEventListener('mouseleave', onEnd);
+            // タッチイベント
+            cropCanvas.addEventListener('touchstart', onStart, { passive: false });
+            cropCanvas.addEventListener('touchmove', onMove, { passive: false });
+            cropCanvas.addEventListener('touchend', onEnd);
+        }
+
+        function applyCrop() {
+            if (!cropRect || cropRect.w < 20 || cropRect.h < 20) return;
+            const s = 1 / cropCanvas._scale;
+            let cw = cropRect.w * s;
+            let ch = cropRect.h * s;
+            
+            const targetW = 250;
+            const scaleTo250 = targetW / cw;
+            const finalH = Math.floor(ch * scaleTo250);
+
+            const cvs = document.createElement('canvas');
+            cvs.width = targetW;
+            cvs.height = finalH;
+            const cx = cvs.getContext('2d');
+            // Crop and resize to 250px in one drawImage step
+            cx.drawImage(currentImage, cropRect.x * s, cropRect.y * s, cropRect.w * s, cropRect.h * s, 0, 0, cvs.width, cvs.height);
+            
+            const croppedImg = new Image();
+            croppedImg.onload = () => { currentImage = croppedImg; cropRect = null; showCropView(); };
+            croppedImg.src = cvs.toDataURL('image/jpeg', 0.95);
+        }
+
+        function resetCrop() { cropRect = null; document.getElementById('btnCrop').disabled = true; drawCropCanvas(); }
+        function backToUpload() { cropSection.style.display = 'none'; uploadSection.style.display = 'block'; currentImage = null; }
+
+        // ========== PART 3: Hybrid Analysis Orchestrator ==========
+        async function startAnalysis() {
+            if (!currentImage) return;
+            cropSection.style.display = 'none';
+            const prog = document.getElementById('progressOverlay');
+            if (prog) prog.style.display = 'flex';
+            setProgress(10, '画像リサイズ中...');
+
+            // Force exactly 250px width for analysis target if not already
+            let img = currentImage;
+            let w = img.width, h = img.height;
+            const targetW = 250;
+            const scale = targetW / w;
+
+            if (Math.abs(scale - 1.0) > 0.001) {
+                w = targetW;
+                h = Math.floor(h * scale);
+                const cvs = document.createElement('canvas');
+                cvs.width = w; cvs.height = h;
+                cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+                const resized = new Image();
+                await new Promise(resolve => { resized.onload = resolve; resized.src = cvs.toDataURL('image/jpeg', 0.95); });
+                img = resized;
+            }
+            
+            const wLabel = document.getElementById('cropTargetWidth');
+            if (wLabel) { wLabel.style.display = 'block'; wLabel.innerHTML = `解析用画像サイズ: <span style="color:#4CAF50">${w} x ${h} px</span> (横幅 ${w}px)`; }
+
+            setProgress(30, '画像解析中...');
+            
+            // Get image data
+            const tmpCanvas = document.createElement('canvas');
+            tmpCanvas.width = w; tmpCanvas.height = h;
+            const tmpCtx = tmpCanvas.getContext('2d');
+            tmpCtx.drawImage(img, 0, 0);
+            const imgDataObj = tmpCtx.getImageData(0, 0, w, h);
+            const imgData = imgDataObj.data;
+
+            let pxPerSec = loadSavedCalPx();
+            let calMethod = 'default';
+
+            // Build result UI
+            const container = document.getElementById('resultCard');
+            container.innerHTML = buildResultCardHTML();
+            document.getElementById('resultsSection').style.display = 'block';
+
+            const canvas = document.createElement('canvas');
+            canvas.className = 'ecg-canvas';
+            canvas.width = w; canvas.height = h;
+            canvas.style.width = '100%'; 
+            container.querySelector('.canvas-wrapper').appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+
+            const appState = {
+                img, imgData, width: w, height: h, pxPerSec,
+                calMethod,
+                rPeaks: [], manualTEnds: {}, manualQOnsets: {}, manualTPeaks: {}, manualBaselines: {}, beats: [],
+                calX: 20, calY: 30, calH: 30
+            };
+            canvas.appState = appState;
+            canvasEntry = { canvas, container };
+
+            updateCalDisplay(pxPerSec, calMethod);
+            
+            // Interaction
+            setupInteraction(canvas, container);
+
+            // Signal Extraction (with its internal timeouts)
+            setProgress(40, '波形抽出開始...');
+            setTimeout(() => { performSignalExtraction(appState); }, 50);
+        }
+
+        function buildResultCardHTML() {
+            return `
+        <div class="result-header">
+            <span class="file-name">📄 ECG解析結果</span>
+        </div>
+        <div class="calibration-bar" id="calBar">
+            <label>📏 キャリブレーション (px/s):</label>
+            <input type="number" id="calInput" value="125" step="1" style="width:80px; padding:4px; font-size:1em; text-align:center; border:1px solid #555; border-radius:4px; background:#222; color:#fff;">
+            <button class="cal-preset-btn" style="padding:4px 8px; font-size:0.9em; cursor:pointer;" onclick="applyManualCal()">適用する</button>
+            <button class="btn-cal-settings" style="padding:4px 8px; font-size:0.9em; cursor:pointer;" onclick="saveAsPreset()">再設定する</button>
+            <span class="cal-method" id="calMethodBadge"></span>
+            <button class="btn-reanalyze" onclick="reanalyzeQT()">🔄 QT再解析</button>
+            <button class="btn-reanalyze" style="background:#b8860b" onclick="toggleSignalOverlay()" id="btnOverlay">📈 信号表示</button>
+        </div>
+        <div class="summary-grid">
+            <div class="metric-box"><h3>HR</h3><p class="val-hr">-</p></div>
+            <div class="metric-box"><h3>QT</h3><p class="val-qt">-</p></div>
+            <div class="metric-box"><h3>QTcB</h3><p class="val-qtcb">-</p></div>
+            <div class="metric-box"><h3>QTcF</h3><p class="val-qtcf">-</p></div>
+        </div>
+        <div class="canvas-wrapper"></div>
+        <div class="legend">
+            <div class="legend-item"><span class="dot" style="background:blue;"></span> R-peak</div>
+            <div class="legend-item"><span class="dot" style="background:green;"></span> Q-onset</div>
+            <div class="legend-item"><span class="dot" style="background:gold;border:1px solid #333;"></span> T-peak</div>
+            <div class="legend-item"><span class="line-legend" style="color:red;">―</span> Tangent</div>
+            <div class="legend-item"><span class="dot" style="background:red;"></span> T-end</div>
+            <div class="legend-item"><span class="line-legend" style="color:blue;">―</span> Baseline</div>
+            <div class="legend-item"><span class="line-legend" style="color:#ff6600;">H</span> キャリブレーション</div>
+        </div>
+        <table>
+            <thead><tr><th>Beat</th><th>RR(pre)</th><th>HR</th><th>QT</th><th>QTcB</th><th>QTcF</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    `;
+        }
+
+        function setProgress(pct, text) {
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        // ========== PART 5: Signal Extraction (from qtc.html) ==========
+        function performSignalExtraction(state) {
+            console.time('Signal Extraction');
+            const { imgData, width, height } = state;
+            
+            // Only use the Holter Black Grid algorithm based on original stable functionality
+            const signal = extractSignalHolterBlackGrid(imgData, width, height);
+            
+            console.timeEnd('Signal Extraction');
+
+            const smooth = new Float32Array(width);
+            smooth[0] = signal[0]; smooth[width - 1] = signal[width - 1];
+            for (let i = 1; i < width - 1; i++) smooth[i] = (signal[i - 1] + signal[i] + signal[i + 1]) / 3;
+            state.smooth = smooth;
+
+            setProgress(60, 'ピーク検出中...');
+            setTimeout(() => {
+                detectRPeaks(state);
+                analyzeBeats(state);
+                
+                setProgress(80, '描画中...');
+                setTimeout(() => {
+                    renderCanvas(canvasEntry.canvas, state);
+                    updateTable(canvasEntry.container, state);
+                    setProgress(100, '完了');
+                    setTimeout(() => { document.getElementById('progressOverlay').style.display = 'none'; }, 500);
+                }, 10);
+            }, 10);
+        }
+
+        function extractSignalHolter(imgData, width, height, channel) {
+            const signal = new Float32Array(width).fill(NaN);
+            const yMargin = Math.max(2, Math.floor(height * 0.02));
+            const yStart = yMargin, yEnd = height - yMargin;
+            for (let x = 0; x < width; x++) {
+                let sumY = 0, count = 0;
+                if (channel === 'black') {
+                    let minLum = 255;
+                    for (let y = yStart; y < yEnd; y++) { const i = (y * width + x) * 4; const lum = 0.299 * imgData[i] + 0.587 * imgData[i + 1] + 0.114 * imgData[i + 2]; if (lum < minLum) minLum = lum; }
+                    const threshold = Math.min(minLum + 50, 200);
+                    for (let y = yStart; y < yEnd; y++) { const i = (y * width + x) * 4; const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2]; const lum = 0.299 * r + 0.587 * g + 0.114 * b; const sat = Math.max(r, g, b) - Math.min(r, g, b); if (lum <= threshold && sat < 40) { const w2 = (threshold - lum + 1); sumY += y * w2; count += w2; } }
+                } else if (channel === 'green') {
+                    for (let y = yStart; y < yEnd; y++) { const i = (y * width + x) * 4; const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2]; if (g > 40 && g > r + 15 && g > b + 15) { const gn = g - Math.max(r, b); const w2 = Math.max(1, gn); sumY += y * w2; count += w2; } }
+                } else if (channel === 'red') {
+                    for (let y = yStart; y < yEnd; y++) { const i = (y * width + x) * 4; const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2]; if (r > 40 && r > g + 15) { const rn = r - g; const w2 = Math.max(1, rn); sumY += y * w2; count += w2; } }
+                }
+                if (count > 0) signal[x] = height - (sumY / count);
+            }
+            for (let i = 0; i < width; i++) { if (isNaN(signal[i])) { let l = i - 1, r = i + 1; while (l >= 0 && isNaN(signal[l])) l--; while (r < width && isNaN(signal[r])) r++; if (l >= 0 && r < width) signal[i] = signal[l] + (signal[r] - signal[l]) * (i - l) / (r - l); else if (l >= 0) signal[i] = signal[l]; else if (r < width) signal[i] = signal[r]; else signal[i] = height / 2; } }
+            return signal;
+        }
+
+        function detectBestChannel(imgData, width, height) {
+            let bS = 0, gS = 0, rS = 0; const step = Math.max(1, Math.floor(width / 200));
+            for (let x = 0; x < width; x += step) { for (let y = 0; y < height; y++) { const i = (y * width + x) * 4; const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2]; const lum = 0.299 * r + 0.587 * g + 0.114 * b; const sat = Math.max(r, g, b) - Math.min(r, g, b); if (lum < 80 && sat < 40) bS++; if (g > 40 && g > r + 15 && g > b + 15) gS++; if (r > 40 && r > g + 15) rS++; } }
+            const ct = bS * 0.3;
+            if (gS > rS && gS > ct && gS > bS * 0.5) return 'green';
+            if (rS > gS && rS > ct && rS > bS * 0.5) return 'red';
+            return 'black';
+        }
+
+        // Calibration detection functions removed as requested
+
+        function extractSignalHolterBlackGrid(imgData, width, height) {
+            // 暗さ加重重心方式 + 連続性フィルタ
+            // 孤立した暗ドット(グリッド)を除外し、連続した暗線(ECG)のみを追跡
+            const signal = new Float32Array(width).fill(NaN);
+            const yStart = 1;
+            const yEnd = height - 1;
+            const MIN_RUN = 3; // 連続ピクセル最小長（これ未満はドットとして除外）
+
+            for (let x = 0; x < width; x++) {
+                // Pass 1: 列内の最小輝度を求める（赤グリッド除外）
+                let darkestLum = 255;
+                for (let y = yStart; y < yEnd; y++) {
+                    const i = (y * width + x) * 4;
+                    const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+                    if (r > 100 && r > g + 30 && r > b + 30) continue;
+                    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    if (lum < darkestLum) darkestLum = lum;
+                }
+
+                if (darkestLum >= 250) continue;
+                const lumThresh = darkestLum + 30;
+
+                // Pass 2: 暗ピクセルを集め、連続性でフィルタリング
+                // まず各yの暗さフラグを記録
+                const darkPixels = []; // {y, w} の配列
+                for (let y = yStart; y < yEnd; y++) {
+                    const i = (y * width + x) * 4;
+                    const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+                    if (r > 100 && r > g + 30 && r > b + 30) continue;
+                    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    if (lum <= lumThresh) {
+                        darkPixels.push({ y, w: lumThresh - lum + 1 });
+                    }
+                }
+
+                if (darkPixels.length === 0) continue;
+
+                // 連続するランに分割（y座標が隣接していればグループ化、1px gap許容）
+                const runs = [];
+                let runStart = 0;
+                for (let j = 1; j <= darkPixels.length; j++) {
+                    // ランの切れ目: 次のピクセルとの間隔が2以上
+                    if (j === darkPixels.length || darkPixels[j].y - darkPixels[j - 1].y > 2) {
+                        runs.push({ from: runStart, to: j - 1 });
+                        runStart = j;
+                    }
+                }
+
+                // 連続性フィルタ: MIN_RUN以上の長さのランのみ使用
+                let sumY = 0, sumW = 0;
+                for (const run of runs) {
+                    const runLen = darkPixels[run.to].y - darkPixels[run.from].y + 1;
+                    if (runLen >= MIN_RUN) {
+                        // ECGトレースの一部 → 加重重心に含める
+                        for (let j = run.from; j <= run.to; j++) {
+                            sumY += darkPixels[j].y * darkPixels[j].w;
+                            sumW += darkPixels[j].w;
+                        }
+                    }
+                    // runLen < MIN_RUN → グリッドドットとして無視
+                }
+
+                if (sumW > 0) {
+                    signal[x] = height - (sumY / sumW);
+                }
+            }
+
+            // Interpolation
+            for (let i = 0; i < width; i++) { if (isNaN(signal[i])) { let l = i - 1, r = i + 1; while (l >= 0 && isNaN(signal[l])) l--; while (r < width && isNaN(signal[r])) r++; if (l >= 0 && r < width) signal[i] = signal[l] + (signal[r] - signal[l]) * (i - l) / (r - l); else if (l >= 0) signal[i] = signal[l]; else if (r < width) signal[i] = signal[r]; else signal[i] = height / 2; } }
+
+            return signal;
+        }
+
+        // ========== PART 6: R-Peak Detection (from qtc.html) ==========
+        function detectRPeaks(state) {
+            const { smooth, pxPerSec, width } = state;
+            const edgeMargin = 15;
+            const slope = new Float32Array(width).fill(0);
+            for (let i = 2; i < width - 2; i++) slope[i] = Math.abs(smooth[i + 1] - smooth[i - 1]);
+            const interiorSmooth = [];
+            for (let i = edgeMargin; i < width - edgeMargin; i++) interiorSmooth.push(smooth[i]);
+            interiorSmooth.sort((a, b) => a - b);
+            const signalMedian = interiorSmooth[Math.floor(interiorSmooth.length / 2)];
+            const scoreSignal = new Float32Array(width);
+            let maxAbsDev = 0;
+            for (let i = edgeMargin; i < width - edgeMargin; i++) { const dev = Math.abs(smooth[i] - signalMedian); if (dev > maxAbsDev) maxAbsDev = dev; }
+            let slopeMax = 0;
+            for (let i = edgeMargin; i < width - edgeMargin; i++) { if (slope[i] > slopeMax) slopeMax = slope[i]; }
+            for (let i = 0; i < width; i++) { const normDev = maxAbsDev > 0 ? Math.abs(smooth[i] - signalMedian) / maxAbsDev : 0; const normSlope = slope[i] / (slopeMax || 1); scoreSignal[i] = normDev + (normSlope * 3.0); }
+            let interiorMaxScore = 0;
+            for (let i = edgeMargin; i < width - edgeMargin; i++) { if (scoreSignal[i] > interiorMaxScore) interiorMaxScore = scoreSignal[i]; }
+            const globalThreshold = interiorMaxScore * 0.3; // Default stable threshold
+            const minRDist = pxPerSec * 0.25;
+            let rPeaks = [];
+            for (let i = edgeMargin; i < width - edgeMargin; i++) {
+                if (scoreSignal[i] > scoreSignal[i - 1] && scoreSignal[i] > scoreSignal[i + 1] && scoreSignal[i] > globalThreshold) {
+                    if (rPeaks.length === 0 || i - rPeaks[rPeaks.length - 1] > minRDist) { rPeaks.push(i); }
+                    else { const lastIdx = rPeaks.length - 1; if (scoreSignal[i] > scoreSignal[rPeaks[lastIdx]]) rPeaks[lastIdx] = i; }
+                }
+            }
+            // Pass 1.5: local adaptive
+            if (rPeaks.length >= 2) {
+                const rrInts = []; for (let j = 1; j < rPeaks.length; j++)rrInts.push(rPeaks[j] - rPeaks[j - 1]);
+                rrInts.sort((a, b) => a - b); const estRR = rrInts[Math.floor(rrInts.length / 2)]; const localWin = Math.floor(estRR * 2);
+                for (let wStart = edgeMargin; wStart < width - edgeMargin; wStart += Math.floor(localWin / 2)) {
+                    const wEnd = Math.min(width - edgeMargin, wStart + localWin); let localMax = 0;
+                    for (let i = wStart; i < wEnd; i++) { if (scoreSignal[i] > localMax) localMax = scoreSignal[i]; }
+                    const localThresh = localMax * 0.35; if (localThresh <= globalThreshold) continue;
+                    for (let i = wStart; i < wEnd; i++) {
+                        if (scoreSignal[i] > scoreSignal[i - 1] && scoreSignal[i] > scoreSignal[i + 1] && scoreSignal[i] > localThresh) {
+                            let tooClose = false; for (const rp of rPeaks) { if (Math.abs(i - rp) < minRDist) { tooClose = true; break; } }
+                            if (!tooClose) rPeaks.push(i);
+                        }
+                    }
+                }
+                rPeaks.sort((a, b) => a - b);
+            }
+            // Pass 2: template matching
+            if (rPeaks.length >= 2) {
+                const rrIntervals = []; for (let i = 1; i < rPeaks.length; i++)rrIntervals.push(rPeaks[i] - rPeaks[i - 1]);
+                rrIntervals.sort((a, b) => a - b); const medianRR = rrIntervals[Math.floor(rrIntervals.length / 2)]; const gapThresholdRR = medianRR * 1.5;
+                const halfW = Math.max(5, Math.floor(pxPerSec * 0.04)); const templateLen = halfW * 2 + 1;
+                const template = new Float32Array(templateLen).fill(0); let validCount = 0;
+                for (const rp of rPeaks) { if (rp - halfW >= 0 && rp + halfW < width) { for (let j = 0; j < templateLen; j++)template[j] += smooth[rp - halfW + j]; validCount++; } }
+                if (validCount > 0) { for (let j = 0; j < templateLen; j++)template[j] /= validCount; }
+                let tMean = 0; for (let j = 0; j < templateLen; j++)tMean += template[j]; tMean /= templateLen;
+                let tVar = 0; for (let j = 0; j < templateLen; j++)tVar += (template[j] - tMean) * (template[j] - tMean); const tStd = Math.sqrt(tVar);
+                if (validCount > 0 && tStd > 0.01) {
+                    let insertions = [];
+                    for (let i = 1; i < rPeaks.length; i++) {
+                        const gap = rPeaks[i] - rPeaks[i - 1];
+                        if (gap > gapThresholdRR) {
+                            const gapStart = rPeaks[i - 1] + Math.floor(minRDist); const gapEnd = rPeaks[i] - Math.floor(minRDist);
+                            let bestNCC = 0.35, bestPos = -1;
+                            for (let pos = Math.max(halfW, gapStart); pos < Math.min(width - halfW, gapEnd); pos++) {
+                                let sMean = 0; for (let j = 0; j < templateLen; j++)sMean += smooth[pos - halfW + j]; sMean /= templateLen;
+                                let sVar = 0, crossCorr = 0;
+                                for (let j = 0; j < templateLen; j++) { const sd = smooth[pos - halfW + j] - sMean; const td = template[j] - tMean; sVar += sd * sd; crossCorr += sd * td; }
+                                const sStd = Math.sqrt(sVar);
+                                if (sStd > 0.01) { const ncc = crossCorr / (sStd * tStd); if (ncc > bestNCC) { bestNCC = ncc; bestPos = pos; } }
+                            }
+                            if (bestPos > 0) insertions.push(bestPos);
+                        }
+                    }
+                    if (insertions.length > 0) { rPeaks = rPeaks.concat(insertions); rPeaks.sort((a, b) => a - b); }
+                }
+            }
+            // Polarity
+            let aboveCount = 0, belowCount = 0;
+            rPeaks.forEach(r => { if (smooth[r] >= signalMedian) aboveCount++; else belowCount++; });
+            state.isInvertedQRS = belowCount > aboveCount;
+            // Snap to local extremum
+            rPeaks = rPeaks.map(r => { let localBest = r; const range = state.isInvertedQRS ? 20 : 10; for (let k = r - range; k <= r + range; k++) { if (k >= 0 && k < width) { if (state.isInvertedQRS) { if (smooth[k] < smooth[localBest]) localBest = k; } else { if (smooth[k] > smooth[localBest]) localBest = k; } } } return localBest; });
+            // RR consistency filter
+            if (rPeaks.length >= 3) {
+                let filtered = true;
+                while (filtered) {
+                    filtered = false; if (rPeaks.length < 3) break;
+                    const intervals = []; for (let i = 1; i < rPeaks.length; i++)intervals.push(rPeaks[i] - rPeaks[i - 1]);
+                    const sortedInt = [...intervals].sort((a, b) => a - b); const medRR = sortedInt[Math.floor(sortedInt.length / 2)]; const minRR = medRR * 0.50;
+                    for (let i = 0; i < intervals.length; i++) { if (intervals[i] < minRR) { const idx1 = i, idx2 = i + 1; if (scoreSignal[rPeaks[idx1]] <= scoreSignal[rPeaks[idx2]]) rPeaks.splice(idx1, 1); else rPeaks.splice(idx2, 1); filtered = true; break; } }
+                }
+            }
+            state.rPeaks = rPeaks;
+        }
+
+        // ========== PART 7: Beat Analysis (from qtc.html) ==========
+        function analyzeBeats(state) {
+            const { smooth, rPeaks, pxPerSec, width, manualTEnds, manualQOnsets } = state;
+            if (!state.manualTPeaks) state.manualTPeaks = {};
+            if (!state.manualBaselines) state.manualBaselines = {};
+            const manualTPeaks = state.manualTPeaks, manualBaselines = state.manualBaselines;
+            const beats = [];
+            for (let i = 1; i < rPeaks.length; i++) {
+                const rLoc = rPeaks[i], prevR = rPeaks[i - 1];
+                const rrSec = (rLoc - prevR) / pxPerSec; const hr = 60 / rrSec; const beatId = i;
+                // Phase 1: rough Q-onset
+                let roughQ = rLoc;
+                if (!(manualQOnsets && manualQOnsets[beatId] !== undefined)) {
+                    const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.08 * pxPerSec));
+                    if (state.isInvertedQRS) { let maxVal = smooth[rLoc]; for (let k = rLoc - 1; k >= qLimit; k--) { if (smooth[k] >= maxVal) { maxVal = smooth[k]; roughQ = k; } else if (smooth[k] < maxVal - 3) break; } }
+                    else { roughQ = rLoc; for (let k = rLoc - 1; k >= qLimit; k--) { if (smooth[k] <= smooth[roughQ]) roughQ = k; else if (smooth[k] > smooth[roughQ] + 3) break; } }
+                }
+                // Phase 2: baseline
+                let baseline;
+                if (manualBaselines[beatId] !== undefined) { baseline = manualBaselines[beatId]; }
+                else if (state.isInvertedQRS) {
+                    const preQLen = 30; const preQStart = Math.max(prevR + 10, roughQ - preQLen); const preQEnd = roughQ;
+                    if (preQEnd > preQStart) { const preQVals = []; for (let k = preQStart; k < preQEnd; k++)preQVals.push(smooth[k]); preQVals.sort((a, b) => a - b); baseline = preQVals[Math.floor(preQVals.length * 0.5)]; }
+                    else baseline = smooth[roughQ];
+                } else {
+                    const baseStart = Math.max(0, Math.floor(rLoc - 0.2 * pxPerSec)); const baseEnd = Math.max(0, Math.floor(rLoc - 0.06 * pxPerSec));
+                    baseline = smooth[rLoc]; if (baseEnd > baseStart) baseline = median(Array.from(smooth.slice(baseStart, baseEnd)));
+                }
+                // Phase 3: precise Q-onset
+                let qTrough;
+                if (manualQOnsets && manualQOnsets[beatId] !== undefined) { qTrough = manualQOnsets[beatId]; }
+                else {
+                    qTrough = rLoc;
+                    if (state.isInvertedQRS) {
+                        const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.08 * pxPerSec)); const baseThreshold = baseline * 0.95;
+                        for (let k = rLoc - 1; k >= qLimit; k--) { if (smooth[k] >= baseThreshold) { qTrough = k; break; } }
+                        if (qTrough === rLoc) { let maxRise = smooth[rLoc]; for (let k = rLoc - 1; k >= qLimit; k--) { if (smooth[k] >= maxRise) { maxRise = smooth[k]; qTrough = k; } else if (smooth[k] < maxRise - 3) break; } }
+                    } else {
+                        const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.04 * pxPerSec)); let qMinVal = smooth[rLoc];
+                        for (let k = rLoc - 1; k >= qLimit; k--) { if (smooth[k] <= qMinVal) { qMinVal = smooth[k]; qTrough = k; } else if (smooth[k] > qMinVal + 3) break; }
+                    }
+                }
+                // Manual tangent contact override
+                if (manualTEnds[beatId] !== undefined) {
+                    const contactX = Math.floor(manualTEnds[beatId]);
+                    const tStartM = Math.floor(rLoc + Math.max(0.12 * pxPerSec, 20)); const nextRM = (i < rPeaks.length - 1) ? rPeaks[i + 1] : width;
+                    const tLimitM = Math.min(nextRM - Math.max(0.15 * pxPerSec, 20), rLoc + Math.max(0.8 * pxPerSec, (nextRM - rLoc) * 0.75));
+                    let isNegativeT = false;
+                    if (tLimitM > tStartM) { let tMaxM = -Infinity, tMinM = Infinity; for (let k = tStartM; k < tLimitM; k++) { if (smooth[k] > tMaxM) tMaxM = smooth[k]; if (smooth[k] < tMinM) tMinM = smooth[k]; } isNegativeT = Math.abs(tMinM - baseline) > Math.abs(tMaxM - baseline); }
+                    const cx = Math.max(1, Math.min(width - 2, contactX)); const cSlope = (smooth[cx + 1] - smooth[cx - 1]) / 2; const cy = smooth[cx];
+                    const tEnd = (cSlope !== 0) ? (baseline - cy) / cSlope + cx : cx + 20; const tPeak = manualTPeaks[beatId] || cx - 10;
+                    const qtMs = (tEnd - qTrough) / pxPerSec * 1000;
+                    beats.push({ id: beatId, rr: rrSec * 1000, hr, qt: qtMs, qtcB: qtMs / Math.sqrt(rrSec), qtcF: qtMs / Math.cbrt(rrSec), qOnset: qTrough, tPeak, tEnd, x1: cx, minSlope: cSlope, y1: cy, baseline, rLoc, prevR, isManual: true, isNegativeT });
+                    continue;
+                }
+                const tStart = Math.floor(rLoc + Math.max(0.12 * pxPerSec, 20)); const nextR = (i < rPeaks.length - 1) ? rPeaks[i + 1] : width; const rrLen = nextR - rLoc;
+                const tLimit = Math.min(nextR - Math.max(0.15 * pxPerSec, 20), rLoc + Math.max(0.8 * pxPerSec, rrLen * 0.75));
+                if (tLimit <= tStart) continue;
+                let tMaxVal = -Infinity, tMinVal = Infinity;
+                for (let k = tStart; k < tLimit; k++) { if (smooth[k] > tMaxVal) tMaxVal = smooth[k]; if (smooth[k] < tMinVal) tMinVal = smooth[k]; }
+                const isNegativeT = Math.abs(tMinVal - baseline) > Math.abs(tMaxVal - baseline);
+                let tPeak;
+                if (manualTPeaks[beatId] !== undefined) { tPeak = manualTPeaks[beatId]; }
+                else {
+                    if (isNegativeT) { let tMin = Infinity; tPeak = -1; for (let k = tStart; k < tLimit; k++) { if (smooth[k] < tMin) { tMin = smooth[k]; tPeak = k; } } }
+                    else { let tMax = -Infinity; tPeak = -1; for (let k = tStart; k < tLimit; k++) { if (smooth[k] > tMax) { tMax = smooth[k]; tPeak = k; } } }
+                    if (tPeak === -1) continue;
+                    const tAmp = Math.abs(smooth[tPeak] - baseline); if (tAmp < 3) continue;
+                }
+                const slopeEnd = Math.min(tLimit, width - 1); let bestSlope = 0, slopeIdx = -1;
+                if (isNegativeT) { for (let k = tPeak; k < slopeEnd - 1; k++) { const s = smooth[k + 1] - smooth[k]; if (s > bestSlope) { bestSlope = s; slopeIdx = k; } } }
+                else { for (let k = tPeak; k < slopeEnd - 1; k++) { const s = smooth[k + 1] - smooth[k]; if (s < bestSlope) { bestSlope = s; slopeIdx = k; } } }
+                const slopeValid = isNegativeT ? (slopeIdx >= 0 && bestSlope > 0) : (slopeIdx >= 0 && bestSlope < 0);
+                let tEnd;
+                if (slopeValid) { tEnd = (baseline - smooth[slopeIdx]) / bestSlope + slopeIdx; }
+                else {
+                    tEnd = -1; for (let k = tPeak + 2; k < slopeEnd; k++) { if (Math.abs(smooth[k] - baseline) < 2) { tEnd = k; break; } }
+                    if (tEnd < 0) { let minDist = Infinity; for (let k = tPeak + 2; k < slopeEnd; k++) { const d = Math.abs(smooth[k] - baseline); if (d < minDist) { minDist = d; tEnd = k; } } }
+                    if (tEnd < 0) continue;
+                    slopeIdx = Math.max(tPeak, tEnd - 5); bestSlope = (smooth[Math.min(slopeIdx + 1, width - 1)] - smooth[slopeIdx]) || -0.1;
+                }
+                const qtMs = (tEnd - qTrough) / pxPerSec * 1000;
+                if (qtMs < 200 || qtMs > 700) continue;
+                beats.push({ id: beatId, rr: rrSec * 1000, hr, qt: qtMs, qtcB: qtMs / Math.sqrt(rrSec), qtcF: qtMs / Math.cbrt(rrSec), qOnset: qTrough, tPeak, tEnd, x1: slopeIdx, minSlope: bestSlope, y1: smooth[slopeIdx], baseline, rLoc, prevR, isManual: !!(manualTPeaks[beatId] !== undefined), isNegativeT });
+            }
+            state.beats = beats;
+        }
+
+        function recalcSingleQT(state, beatIndex) {
+            const b = state.beats[beatIndex]; if (!b) return;
+            const qtMs = (b.tEnd - b.qOnset) / state.pxPerSec * 1000; const rrSec = b.rr / 1000;
+            b.qt = qtMs; b.qtcB = qtMs / Math.sqrt(rrSec); b.qtcF = qtMs / Math.cbrt(rrSec); b.isManual = true;
+        }
+
+        // ========== PART 8: Rendering (from qtc.html) ==========
+        function renderCanvas(canvas, state) {
+            const ctx = canvas.getContext('2d');
+            const { img, width, height, smooth, beats, pxPerSec, rPeaks, calX, calY, calH } = state;
+            ctx.clearRect(0, 0, width, height); ctx.drawImage(img, 0, 0, width, height);
+            
+            // Proportional sizes based on width (forced ~250px)
+            const r1 = Math.max(8, width / 80); // Marker radius
+            const r2 = Math.max(10, width / 80); // Handle radius
+            const lw1 = Math.max(1, width / 400); // Thin line
+            const lw2 = Math.max(2, width / 200); // Thick line
+            const fs1 = Math.max(8, width / 30); // Small font
+            const fs2 = Math.max(12, width / 20); // Large font
+
+            if (state.showSignalOverlay) {
+                ctx.save();
+                if (beats.length > 0) { ctx.globalAlpha = 0.15; ctx.fillStyle = "#00ff00"; for (const b of beats) { const qStart = Math.floor(b.qOnset); const tEndX = Math.floor(b.tEnd); if (tEndX > qStart) ctx.fillRect(qStart, 0, tEndX - qStart, height); } }
+                ctx.globalAlpha = 0.85; ctx.strokeStyle = "#cc0000"; ctx.lineWidth = lw1 * 1.5; ctx.beginPath(); let started = false;
+                for (let x = 0; x < width; x++) { const y = height - smooth[x]; if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y); } ctx.stroke(); ctx.restore();
+            }
+            ctx.globalAlpha = 0.6;
+            beats.forEach(b => {
+                ctx.strokeStyle = "blue"; ctx.lineWidth = lw2; ctx.beginPath();
+                const baseS = Math.max(0, Math.floor(b.rLoc - 0.2 * pxPerSec));
+                ctx.moveTo(baseS, height - b.baseline); ctx.lineTo(b.tEnd + 20, height - b.baseline); ctx.stroke();
+                ctx.fillStyle = "green"; ctx.beginPath(); ctx.arc(b.qOnset, height - smooth[Math.floor(b.qOnset)], r1, 0, Math.PI * 2); ctx.fill();
+                if (!b.isManual) { ctx.fillStyle = b.isNegativeT ? "cyan" : "gold"; ctx.strokeStyle = "black"; ctx.lineWidth = lw1; ctx.beginPath(); ctx.arc(b.tPeak, height - smooth[b.tPeak], r1, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
+                if (b.minSlope !== 0) { ctx.strokeStyle = "red"; ctx.lineWidth = lw2; const tx1 = b.x1 - 15, tx2 = b.tEnd + 15; const ty1 = b.minSlope * (tx1 - b.x1) + b.y1, ty2 = b.minSlope * (tx2 - b.x1) + b.y1; ctx.beginPath(); ctx.moveTo(tx1, height - ty1); ctx.lineTo(tx2, height - ty2); ctx.stroke(); }
+                ctx.fillStyle = "red"; ctx.beginPath(); ctx.arc(b.x1, height - b.y1, r1, 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+            const calRightX = calX + pxPerSec;
+            ctx.strokeStyle = "#ff6600"; ctx.lineWidth = lw2 * 1.5; ctx.beginPath();
+            ctx.moveTo(calX + 0.5, calY - calH / 2); ctx.lineTo(calX + 0.5, calY + calH / 2);
+            ctx.moveTo(calX, calY + 0.5); ctx.lineTo(calRightX, calY + 0.5);
+            ctx.moveTo(calRightX + 0.5, calY - calH / 2); ctx.lineTo(calRightX + 0.5, calY + calH / 2); ctx.stroke();
+            ctx.fillStyle = "#ff6600"; ctx.beginPath(); ctx.arc(calX, calY, r2, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "#fff"; ctx.lineWidth = lw1; ctx.beginPath(); ctx.arc(calX, calY, r2, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = "#ff6600"; ctx.beginPath(); ctx.arc(calRightX, calY, r2, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "#fff"; ctx.lineWidth = lw1; ctx.beginPath(); ctx.arc(calRightX, calY, r2, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = "#ff6600"; ctx.font = `bold ${fs1}px Arial`; ctx.textAlign = "left"; ctx.fillText(`25mm (1s) = ${pxPerSec}px`, calX, calY + calH / 2 + fs1 + 5);
+            ctx.strokeStyle = "rgba(255,102,0,0.5)"; ctx.lineWidth = lw2 * 1.5; const mmPx = pxPerSec / 5;
+            for (let m = 1; m < 5; m++) { const mx = calX + mmPx * m; ctx.beginPath(); ctx.moveTo(mx, calY - calH / 2 + 2); ctx.lineTo(mx, calY + calH / 2 - 2); ctx.stroke(); }
+            ctx.textAlign = "center"; ctx.font = `bold ${fs2}px Arial`; const bottomY = height - 10;
+            rPeaks.forEach(r => { ctx.fillStyle = "blue"; ctx.beginPath(); ctx.arc(r, height - (smooth[r]||(height/2)), r2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "white"; ctx.font = `bold ${fs1}px Arial`; ctx.fillText("×", r, height - (smooth[r]||(height/2)) + (fs1/3)); });
+            beats.forEach(b => { ctx.font = `bold ${fs2}px Arial`; ctx.fillStyle = "blue"; ctx.fillText(b.rr.toFixed(0), (b.prevR + b.rLoc) / 2, bottomY); ctx.fillStyle = "red"; ctx.fillText(b.qt.toFixed(0), (b.qOnset + b.tEnd) / 2, bottomY); });
+        }
+
+        function updateCalDisplay(pxPerSec, method) {
+            const calInput = document.getElementById('calInput'); const calMethodEl = document.getElementById('calMethodBadge');
+            if (calInput) calInput.value = pxPerSec;
+            if (!calMethodEl) return;
+            calMethodEl.className = 'cal-method';
+            if (method === 'auto-scale' || method === 'auto-detected' || method === 'auto-blackgrid') { calMethodEl.textContent = '自動検出'; calMethodEl.classList.add('auto-scale'); }
+            else if (method === 'grid-fallback') { calMethodEl.textContent = 'デフォルト'; calMethodEl.classList.add('grid-fallback'); }
+            else if (method === 'drag') { calMethodEl.textContent = 'ドラッグ補正'; calMethodEl.classList.add('drag'); }
+            else if (method === 'manual-input') { calMethodEl.textContent = '手動設定'; calMethodEl.classList.add('manual'); }
+            else if (method && method.startsWith('type-')) { const pn = method.replace('type-', ''); const nm = { 'redgrid': '赤グリッド', 'blackgrid': '黒グリッド' }; calMethodEl.textContent = 'タイプ: ' + (nm[pn] || pn); calMethodEl.classList.add('manual'); }
+        }
+
+        function applyManualCal() {
+            if (!canvasEntry || !canvasEntry.canvas.appState) return;
+            const val = parseInt(document.getElementById('calInput').value);
+            if (val > 0) {
+                const state = canvasEntry.canvas.appState;
+                state.pxPerSec = val;
+                state.calMethod = 'manual-input';
+                updateCalDisplay(val, 'manual-input');
+                document.getElementById('calMethodBadge').textContent = '手動設定';
+                performSignalExtraction(state);
+            }
+        }
+
+        function saveAsPreset() {
+            const val = parseInt(document.getElementById('calInput').value);
+            if (val > 0) {
+                saveCalPxToStorage(val);
+                alert(`キャリブレーションを ${val} px/s で再設定(保存)しました。`);
+            }
+        }
+
+        function updateTable(card, state) {
+            const { beats } = state; const tbody = card.querySelector('tbody'); tbody.innerHTML = '';
+            if (beats.length > 0) {
+                const hr = mean(beats.map(b => b.hr)).toFixed(0); const qt = mean(beats.map(b => b.qt)).toFixed(0);
+                const qtcb = mean(beats.map(b => b.qtcB)).toFixed(0); const qtcf = mean(beats.map(b => b.qtcF)).toFixed(0);
+                card.querySelector('.val-hr').innerText = hr + " bpm"; card.querySelector('.val-qt').innerText = qt + " ms";
+                card.querySelector('.val-qtcb').innerText = qtcb + " ms"; card.querySelector('.val-qtcf').innerText = qtcf + " ms";
+                finalResult = { hr, qt, qtcb, qtcf, nBeats: beats.length };
+                beats.forEach(b => {
+                    const tr = document.createElement('tr'); const tLabel = b.isNegativeT ? '(-)' : ''; const qrsLabel = state.isInvertedQRS ? ' QS' : '';
+                    tr.innerHTML = `<td>${b.id}${tLabel}${qrsLabel}</td><td>${b.rr.toFixed(0)}</td><td>${b.hr.toFixed(0)}</td><td>${b.qt.toFixed(0)}</td><td>${b.qtcB.toFixed(0)}</td><td>${b.qtcF.toFixed(0)}</td>`; tbody.appendChild(tr);
+                });
+            } else { card.querySelector('.val-hr').innerText = "-"; finalResult = null; }
+        }
+
+        // ========== PART 9: Interaction (from qtc.html + touch support) ==========
+        function setupInteraction(canvas, container) {
+            let dragTarget = null, isDragging = false, mouseDownPos = { x: 0, y: 0 };
+            const hitRadius = Math.max(15, canvas.width / 20);
+
+            function getCanvasPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const t = e.touches ? e.touches[0] : e;
+                if (!t) return null;
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                return { x: (t.clientX - rect.left) * scaleX, y: (t.clientY - rect.top) * scaleY };
+            }
+
+            function findTarget(mx, my) {
+                const appState = canvas.appState; const height = appState.height; let found = null;
+                const calRightX = appState.calX + appState.pxPerSec; const calCenterY = appState.calY;
+                if (Math.abs(mx - calRightX) < hitRadius && Math.abs(my - calCenterY) < appState.calH + 8) found = { type: 'CAL_RIGHT' };
+                else if (Math.abs(mx - appState.calX) < hitRadius && Math.abs(my - calCenterY) < appState.calH + 8) found = { type: 'CAL_LEFT' };
+                if (!found) appState.beats.forEach((b, idx) => { if (Math.abs(mx - b.x1) < hitRadius && Math.abs(my - (height - b.y1)) < hitRadius) found = { type: 'T_END', index: idx }; });
+                if (!found) appState.beats.forEach((b, idx) => { if (b.tPeak >= 0 && Math.abs(mx - b.tPeak) < hitRadius && Math.abs(my - (height - appState.smooth[Math.floor(b.tPeak)])) < hitRadius) found = { type: 'T_PEAK', index: idx }; });
+                if (!found) appState.rPeaks.forEach((r, idx) => { 
+                    const ry = height - (appState.smooth[r] || (height / 2));
+                    if (Math.abs(mx - r) < hitRadius && Math.abs(my - ry) < Math.max(80, hitRadius * 2)) found = { type: 'R', index: idx }; 
+                });
+                if (!found) appState.beats.forEach((b, idx) => { if (Math.abs(mx - b.qOnset) < hitRadius && Math.abs(my - (height - appState.smooth[Math.floor(b.qOnset)])) < hitRadius) found = { type: 'Q', index: idx }; });
+                if (!found) appState.beats.forEach((b, idx) => { const baseS = Math.max(0, Math.floor(b.rLoc - 0.2 * appState.pxPerSec)); const baseE = b.tEnd + 20; const baseY = height - b.baseline; if (mx >= baseS - 5 && mx <= baseE + 5 && Math.abs(my - baseY) < 12) found = { type: 'BASELINE', index: idx }; });
+                return found;
+            }
+
+            function handleDragMove(mx, my) {
+                const appState = canvas.appState;
+                if (dragTarget.type === 'CAL_RIGHT') {
+                    const newPxPerSec = Math.max(20, Math.round(mx - appState.calX)); appState.pxPerSec = newPxPerSec; appState.calMethod = 'drag';
+                    updateCalDisplay(newPxPerSec, 'drag'); appState.manualTEnds = {}; appState.manualQOnsets = {};
+                    analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState);
+                } else if (dragTarget.type === 'CAL_LEFT') {
+                    appState.calX = Math.max(0, Math.min(appState.calX + appState.pxPerSec - 30, Math.round(mx))); renderCanvas(canvas, appState);
+                } else if (dragTarget.type === 'R') {
+                    appState.rPeaks[dragTarget.index] = Math.round(mx); analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState);
+                } else if (dragTarget.type === 'T_END') {
+                    const b = appState.beats[dragTarget.index]; if (b) {
+                        const cx = Math.max(1, Math.min(appState.width - 2, Math.round(mx))); const cSlope = (appState.smooth[cx + 1] - appState.smooth[cx - 1]) / 2; const cy = appState.smooth[cx];
+                        b.x1 = cx; b.minSlope = cSlope; b.y1 = cy; b.tEnd = (cSlope !== 0) ? (b.baseline - cy) / cSlope + cx : cx + 20; b.isManual = true; appState.manualTEnds[b.id] = cx;
+                        recalcSingleQT(appState, dragTarget.index); renderCanvas(canvas, appState); updateTable(container, appState);
+                    }
+                } else if (dragTarget.type === 'T_PEAK') {
+                    const b = appState.beats[dragTarget.index]; if (b) {
+                        b.tPeak = Math.round(mx); b.isManual = true; const slopeEnd = Math.min(b.tEnd + 30, appState.width - 1); const negT = b.isNegativeT;
+                        let bestSl = 0, slIdx = -1;
+                        for (let k = b.tPeak; k < slopeEnd - 1; k++) { const s = appState.smooth[k + 1] - appState.smooth[k]; if (negT) { if (s > bestSl) { bestSl = s; slIdx = k; } } else { if (s < bestSl) { bestSl = s; slIdx = k; } } }
+                        const sv = negT ? (slIdx >= 0 && bestSl > 0) : (slIdx >= 0 && bestSl < 0);
+                        if (sv) { b.x1 = slIdx; b.minSlope = bestSl; b.y1 = appState.smooth[slIdx]; b.tEnd = (b.baseline - appState.smooth[slIdx]) / bestSl + slIdx; appState.manualTEnds[b.id] = undefined; }
+                        recalcSingleQT(appState, dragTarget.index); renderCanvas(canvas, appState); updateTable(container, appState);
+                    }
+                } else if (dragTarget.type === 'Q') {
+                    const b = appState.beats[dragTarget.index]; if (b) { appState.manualQOnsets[b.id] = Math.round(mx); analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); }
+                } else if (dragTarget.type === 'BASELINE') {
+                    const b = appState.beats[dragTarget.index]; if (b) { appState.manualBaselines[b.id] = appState.height - my; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); }
+                }
+            }
+
+            function handleClick(mx, my) {
+                const appState = canvas.appState;
+                if (dragTarget.type === 'R') { appState.rPeaks.splice(dragTarget.index, 1); appState.manualTEnds = {}; appState.manualQOnsets = {}; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); }
+                else if (dragTarget.type === 'T_END') { const b = appState.beats[dragTarget.index]; if (b) { delete appState.manualTEnds[b.id]; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); } }
+                else if (dragTarget.type === 'Q') { const b = appState.beats[dragTarget.index]; if (b) { delete appState.manualQOnsets[b.id]; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); } }
+                else if (dragTarget.type === 'BASELINE') { const b = appState.beats[dragTarget.index]; if (b) { delete appState.manualBaselines[b.id]; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); } }
+            }
+
+            // Shift+click: add R-peak
+            canvas.addEventListener('click', e => {
+                if (e.shiftKey) { const appState = canvas.appState; const pos = getCanvasPos(e); if (!pos) return; appState.rPeaks.push(Math.round(pos.x)); appState.rPeaks.sort((a, b) => a - b); appState.manualTEnds = {}; appState.manualQOnsets = {}; analyzeBeats(appState); renderCanvas(canvas, appState); updateTable(container, appState); }
+            });
+
+            // Mouse events
+            canvas.addEventListener('mousedown', e => {
+                if (e.shiftKey) return; const pos = getCanvasPos(e); if (!pos) return; mouseDownPos = pos; isDragging = false;
+                const found = findTarget(pos.x, pos.y); if (found) { dragTarget = found; isDragging = true; }
+            });
+            canvas.addEventListener('mousemove', e => {
+                const appState = canvas.appState; const pos = getCanvasPos(e); if (!pos) return;
+                const mx = Math.max(0, Math.min(appState.width - 1, pos.x)); const my = pos.y;
+                if (!isDragging) {
+                    const calRightX = appState.calX + appState.pxPerSec;
+                    if ((Math.abs(mx - calRightX) < 12 || Math.abs(mx - appState.calX) < 12) && Math.abs(my - appState.calY) < appState.calH + 5) canvas.style.cursor = 'ew-resize';
+                    else { let onBL = false; for (const b of appState.beats) { const bs = Math.max(0, Math.floor(b.rLoc - 0.2 * appState.pxPerSec)); if (mx >= bs - 5 && mx <= b.tEnd + 25 && Math.abs(my - (appState.height - b.baseline)) < 10) { onBL = true; break; } } canvas.style.cursor = onBL ? 'ns-resize' : 'crosshair'; }
+                }
+                if (!isDragging || !dragTarget) return;
+                handleDragMove(mx, my);
+            });
+            canvas.addEventListener('mouseup', e => {
+                if (!dragTarget) { isDragging = false; return; }
+                const pos = getCanvasPos(e); if (!pos) { isDragging = false; dragTarget = null; return; }
+                const moved = Math.abs(pos.x - mouseDownPos.x) > 3 || Math.abs(pos.y - mouseDownPos.y) > 3;
+                if (!moved) handleClick(pos.x, pos.y);
+                isDragging = false; dragTarget = null; canvas.style.cursor = 'crosshair';
+            });
+
+            // Touch events
+            canvas.addEventListener('touchstart', e => {
+                e.preventDefault(); const pos = getCanvasPos(e); if (!pos) return; mouseDownPos = pos; isDragging = false;
+                const found = findTarget(pos.x, pos.y); if (found) { dragTarget = found; isDragging = true; }
+            }, { passive: false });
+            canvas.addEventListener('touchmove', e => {
+                e.preventDefault(); if (!isDragging || !dragTarget) return;
+                const pos = getCanvasPos(e); if (!pos) return;
+                const appState = canvas.appState;
+                const mx = Math.max(0, Math.min(appState.width - 1, pos.x)); const my = pos.y;
+                handleDragMove(mx, my);
+            }, { passive: false });
+            canvas.addEventListener('touchend', e => {
+                if (!dragTarget) { isDragging = false; return; }
+                const moved = Math.abs((e.changedTouches[0]?.clientX || 0) - canvas.getBoundingClientRect().left - mouseDownPos.x) > 5;
+                if (!moved) handleClick(mouseDownPos.x, mouseDownPos.y);
+                isDragging = false; dragTarget = null;
+            });
+        }
+
+        // ========== PART 10: Utility Functions ==========
+        function toggleSignalOverlay() {
+            if (!canvasEntry) return; const appState = canvasEntry.canvas.appState; if (!appState) return;
+            appState.showSignalOverlay = !appState.showSignalOverlay;
+            const btn = document.getElementById('btnOverlay'); if (btn) btn.style.background = appState.showSignalOverlay ? '#228B22' : '#b8860b';
+            renderCanvas(canvasEntry.canvas, appState);
+        }
+        function reanalyzeQT() {
+            if (!canvasEntry) return; const appState = canvasEntry.canvas.appState; if (!appState) return;
+            appState.manualTEnds = {}; appState.manualQOnsets = {}; appState.manualBaselines = {}; if (appState.manualTPeaks) appState.manualTPeaks = {};
+            performSignalExtraction(appState);
+        }
+
+        // ========== PART 11: History & Copy ==========
+        const HISTORY_STORAGE_KEY = 'qtc_api_analysis_history';
+        const HISTORY_MAX = 20;
+
+        function resetApp() {
+            if (finalResult) saveToHistory();
+            document.getElementById('fileInputCamera').value = '';
+            document.getElementById('fileInputGallery').value = '';
+            document.getElementById('resultCard').innerHTML = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('cropSection').style.display = 'none';
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('calPresetBar').style.display = 'none';
+            document.querySelectorAll('.cal-preset-btn').forEach(b => b.classList.remove('active'));
+            finalResult = null; canvasEntry = null; currentImage = null;
+        }
+
+        function copyResults() {
+            if (!finalResult) { alert('解析結果がありません'); return; }
+            const r = finalResult;
+            const text = `HR ${r.hr}, QT ${r.qt}, QTcB ${r.qtcb}, QTcF ${r.qtcf} (${r.nBeats}beats)`;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.btn-copy'); const orig = btn.innerText; btn.innerText = "✅ コピーしました!"; setTimeout(() => { btn.innerText = orig; }, 2000);
+            }).catch(err => alert("コピー失敗: " + err));
+            saveToHistory();
+        }
+
+        function saveToHistory() {
+            try {
+                const history = getQtcHistory(); const r = finalResult; if (!r) return;
+                const item = { id: Date.now(), date: new Date().toISOString(), result1: { hr: r.hr, qt: r.qt, qtcb: r.qtcb, qtcf: r.qtcf } };
+                history.unshift(item);
+                const pinned = history.filter(h => h.pinned); const unpinned = history.filter(h => !h.pinned);
+                while (unpinned.length > HISTORY_MAX - pinned.length && unpinned.length > 0) unpinned.pop();
+                const merged = [...pinned, ...unpinned].sort((a, b) => b.id - a.id);
+                localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(merged));
+            } catch (e) { console.error('Failed to save history:', e); }
+        }
+
+        function getQtcHistory() { try { const d = localStorage.getItem(HISTORY_STORAGE_KEY); return d ? JSON.parse(d) : []; } catch (e) { return []; } }
+        function openHistory() { displayHistory(); document.getElementById('historyModal').classList.add('visible'); }
+        function closeHistory() { document.getElementById('historyModal').classList.remove('visible'); }
+
+        function formatHistoryItemText(item) { const r = item.result1; if (!r) return ''; return `HR ${r.hr}bpm, QT ${r.qt}ms, QTcB ${r.qtcb}ms, QTcF ${r.qtcf}ms`; }
+
+        function displayHistory() {
+            const history = getQtcHistory(); const hl = document.getElementById('historyList');
+            if (history.length === 0) { hl.innerHTML = '<div class="history-empty">解析履歴がありません</div>'; return; }
+            const sorted = [...history].sort((a, b) => b.id - a.id);
+            hl.innerHTML = sorted.map(item => {
+                const date = new Date(item.date); const dateStr = date.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                const isPinned = item.pinned || false; const comment = item.comment || ''; const r = item.result1;
+                let resultsHtml = ''; if (r) resultsHtml = `<div>HR ${r.hr} | QT ${r.qt} | QTcB ${r.qtcb} | QTcF ${r.qtcf}</div>`;
+                return `<div class="history-item ${isPinned ? 'pinned' : ''}">
+            <div class="history-item-header">
+                <button class="history-pin-btn ${isPinned ? 'active' : ''}" onclick="toggleHistoryPin(${item.id})" title="${isPinned ? 'ピン留め解除' : 'ピン留め'}">📌</button>
+                <span class="history-item-date">${dateStr}</span>
+                <button class="history-item-copy" onclick="copyHistoryItem(${item.id})">📋 コピー</button>
+                <button class="history-item-delete ${isPinned ? 'disabled' : ''}" onclick="deleteHistoryItem(${item.id})" ${isPinned ? 'disabled' : ''}>削除</button>
+            </div>
+            <div class="history-item-results">${resultsHtml}</div>
+            <div class="history-item-comment">
+                <input type="text" class="history-comment-input" placeholder="コメントを入力..." maxlength="30" value="${comment.replace(/"/g, '&quot;')}" onclick="event.stopPropagation();" onchange="updateHistoryComment(${item.id},this.value)" onkeydown="if(event.key==='Enter')this.blur();">
+            </div></div>`;
+            }).join('');
+        }
+
+        function toggleHistoryPin(id) { let h = getQtcHistory(); const item = h.find(x => x.id === id); if (item) { item.pinned = !item.pinned; localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(h)); displayHistory(); } }
+        function deleteHistoryItem(id) { let h = getQtcHistory(); const item = h.find(x => x.id === id); if (item && item.pinned) { alert('ピン留めされた履歴は削除できません。'); return; } if (!confirm('この履歴を削除してもよろしいですか？')) return; h = h.filter(x => x.id !== id); localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(h)); displayHistory(); }
+        function updateHistoryComment(id, comment) { let h = getQtcHistory(); const item = h.find(x => x.id === id); if (item) { item.comment = comment.substring(0, 30); localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(h)); } }
+        function copyHistoryItem(id) { const h = getQtcHistory(); const item = h.find(x => x.id === id); if (!item) return; const date = new Date(item.date); const dateStr = date.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); const cp = item.comment ? ` (${item.comment})` : ''; const text = `[${dateStr}]${cp} ${formatHistoryItemText(item)}`; navigator.clipboard.writeText(text); }
+        function copyAllHistory() { const h = getQtcHistory(); if (h.length === 0) { alert('履歴がありません'); return; } const sorted = [...h].sort((a, b) => b.id - a.id); const lines = sorted.map(item => { const date = new Date(item.date); const dateStr = date.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); const pin = item.pinned ? '📌 ' : ''; const cp = item.comment ? ` (${item.comment})` : ''; return `${pin}[${dateStr}]${cp} ${formatHistoryItemText(item)}`; }); navigator.clipboard.writeText(lines.join('\n')).then(() => { const btn = document.querySelector('.btn-history-copy-all'); const orig = btn.innerText; btn.innerText = '✅ コピー完了'; setTimeout(() => { btn.innerText = orig; }, 2000); }).catch(err => alert('コピー失敗: ' + err)); }
+
+        // Modal click-to-close
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('historyModal').addEventListener('click', function (e) { if (e.target === this) closeHistory(); });
+            document.getElementById('settingsModal').addEventListener('click', function (e) { if (e.target === this) closeSettings(); });
+        });
+    </script>
+</body>
+
+</html>
