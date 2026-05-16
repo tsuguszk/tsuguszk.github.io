@@ -1,2 +1,0 @@
-document.write('<style type="text/css" title="HomePageNavigationStyle" media="screen">#HomePageNavigationBar_20 #D_20{text-decoration:none;font-weight:bold;}</style>');
-document.write('<A id="D_20" href="http://homepage.mac.com/tsugutoshi/ablation/PhotoAlbum20.html">鈴木嗣敏のHomePage</A>');

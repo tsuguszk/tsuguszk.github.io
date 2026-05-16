@@ -1,2 +1,0 @@
-document.write('<style type="text/css" title="HomePageNavigationStyle" media="screen">#HomePageNavigationBar_35 #D_35,#HomePageNavigationBar_36 #D_36{text-decoration:none;font-weight:bold;}</style>');
-document.write('<A id="D_35" href="http://homepage.mac.com/tsugutoshi/private/album/album.html">アルバム</A>\n&nbsp;<A href="#" style="text-decoration:none">|</A>&nbsp;\n<A id="D_36" href="http://homepage.mac.com/tsugutoshi/private/koto/koto.html">長女琴子誕生</A>');
