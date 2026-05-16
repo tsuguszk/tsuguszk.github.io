@@ -1,0 +1,2 @@
+document.write('<style type="text/css" title="HomePageNavigationStyle" media="screen">#HomePageNavigationBar_42 #D_42,#HomePageNavigationBar_45 #D_45{text-decoration:none;font-weight:bold;}</style>');
+document.write('<A id="D_42" href="http://homepage.mac.com/tsugutoshi/page/med/XP.html">CARTOXP_CARTOMARGE</A>\n&nbsp;<A href="#" style="text-decoration:none">|</A>&nbsp;\n<A id="D_45" href="http://homepage.mac.com/tsugutoshi/page/FileSharing45.html">不整脈動画ファイル</A>');

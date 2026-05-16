@@ -1,0 +1,42 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Dreamweaver作業ファイル
+_notes/
+
+# 過去版・バックアップHTML（リポジトリには含めない）
+index_backup.html
+index_251218.html
+index_road.html
+index_fvp.html
+index_kato_paper.html
+index_kato_paper_bk.html
+*_bk.html
+*_backup.html
+*.bak
+
+# 重複ファイル
+"PVC_figure-1 2.png"
+
+# テストファイル
+.test.*
+
+# CGI（GitHub Pagesでは動作しないため除外）
+cgi-bin/
+counter_data/
+
+# その他
+*.swp
+*.tmp
+
+# UTF-8変換時のバックアップ（リポジトリには上げない）
+_backup_pre_utf8_*/
+
+# 移行用スクリプト・ドキュメント
+insert_ga4_tag.py
+移行プラン_GitHubPages_GA4.md
+次のステップ.md
+
+# 100MB超でGitHubに置けない大容量ファイル（別のクラウドストレージで配布する想定）
+medical_DL/配布用FVP.zip

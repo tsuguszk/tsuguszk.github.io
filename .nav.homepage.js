@@ -1,0 +1,2 @@
+document.write('<style type="text/css" title="HomePageNavigationStyle" media="screen">#HomePageNavigationBar_26 #D_26{text-decoration:none;font-weight:bold;}</style>');
+document.write('<A id="D_26" href="http://homepage.mac.com/tsugutoshi/index.html">つぐとし</A>');

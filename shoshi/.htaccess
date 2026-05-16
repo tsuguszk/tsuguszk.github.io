@@ -1,0 +1,5 @@
+AuthUserFile /service/home/private.coocan.jp/ts/tsugu.private.coocan.jp/homepage/shoshi/.htpasswd
+AuthGroupFile /dev/null
+AuthName "ユーザー名とパスワードを入力して下さい"
+AuthType Basic
+require valid-user
