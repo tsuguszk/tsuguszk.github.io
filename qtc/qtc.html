@@ -799,12 +799,12 @@
     </style>
 
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TV8RRX6SHK"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GQDY5X09FF"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-TV8RRX6SHK');
+  gtag('config', 'G-GQDY5X09FF');
 </script>
 
 
@@ -815,7 +815,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 1.7 : 2026/4/9
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 1.8 : 2026/5/22
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -2003,38 +2003,63 @@
                     }
                 }
 
-                // === Phase 2: Baseline算出（粗Q-onset直前の等電位区間） ===
+                // === Phase 2: Baseline算出（TP/PR等電位区間を自動検出） ===
+                // 戦略:
+                //   1) 前R波後〜roughQ直前の拡張区間を「スライディング窓×最小分散」で走査
+                //   2) 最も平坦な区間（TPセグメント優先、なければPRセグメント）を等電位と判定
+                //   3) そのウィンドウの中央値を基線として採用
+                // → Q波の谷に引きずられて基線が下方にズレる問題（旧 min(prMedian, Q+3) クランプ）を排除
                 let baseline;
                 if (manualBaselines[beatId] !== undefined) {
                     baseline = manualBaselines[beatId];
-                } else if (state.isInvertedQRS) {
-                    // 粗Q-onset直前の30px区間（PR segment）から基線を推定
-                    const preQLen = 30;
-                    const preQStart = Math.max(prevR + 10, roughQ - preQLen);
-                    const preQEnd = roughQ;
-                    if (preQEnd > preQStart) {
-                        const preQVals = [];
-                        for (let k = preQStart; k < preQEnd; k++) preQVals.push(smooth[k]);
-                        preQVals.sort((a, b) => a - b);
-                        // 中央値を使用（等電位区間はフラットなので中央値が適切）
-                        baseline = preQVals[Math.floor(preQVals.length * 0.5)];
-                    } else {
-                        baseline = smooth[roughQ];
-                    }
                 } else {
-                    // 陽性QRS: roughQ直前のPR segment区間から基線を推定（ハイブリッド方式）
-                    const preQLen = 30;
-                    const preQStart = Math.max(prevR + 10, roughQ - preQLen);
-                    const preQEnd = roughQ;
-                    let prMedian = smooth[roughQ]; // フォールバック
-                    if (preQEnd > preQStart) {
-                        const preQVals = [];
-                        for (let k = preQStart; k < preQEnd; k++) preQVals.push(smooth[k]);
-                        preQVals.sort((a, b) => a - b);
-                        prMedian = preQVals[Math.floor(preQVals.length * 0.5)];
+                    const rrLenPx = rLoc - prevR;
+                    // 探索区間: 前R + RR×0.35（T波の上り部分を除外）〜 roughQ - 5（QRS開始直前のマージン）
+                    // ※ RR×0.35以降にはT波後半・TPセグメント・P波・PRセグメントが含まれる
+                    const searchStart = Math.max(prevR + Math.floor(rrLenPx * 0.35), prevR + 10);
+                    const searchEnd = Math.max(roughQ - 5, searchStart + 1);
+                    // ウィンドウ長: 約80ms相当、最小10px・最大40px
+                    const winLen = Math.max(10, Math.min(40, Math.floor(0.08 * pxPerSec)));
+
+                    let bestBaseline = null;
+                    let bestVar = Infinity;
+                    if (searchEnd - searchStart >= winLen) {
+                        // スライディング窓: ステップ2pxで分散最小の区間を探索
+                        for (let s = searchStart; s + winLen <= searchEnd; s += 2) {
+                            let sum = 0, sum2 = 0;
+                            for (let k = s; k < s + winLen; k++) {
+                                const v = smooth[k];
+                                sum += v;
+                                sum2 += v * v;
+                            }
+                            const mean = sum / winLen;
+                            const variance = sum2 / winLen - mean * mean;
+                            if (variance < bestVar) {
+                                bestVar = variance;
+                                // 平坦区間の中央値を基線として採用
+                                const winVals = new Array(winLen);
+                                for (let k = 0; k < winLen; k++) winVals[k] = smooth[s + k];
+                                winVals.sort((a, b) => a - b);
+                                bestBaseline = winVals[Math.floor(winLen * 0.5)];
+                            }
+                        }
                     }
-                    // roughQ値とPR medianの近い方を採用（基線が上に乖離しすぎない）
-                    baseline = Math.min(prMedian, smooth[roughQ] + 3);
+
+                    if (bestBaseline !== null) {
+                        baseline = bestBaseline;
+                    } else {
+                        // フォールバック: 探索区間が短すぎる場合、roughQ直前20pxの中央値
+                        const fbStart = Math.max(prevR + 5, roughQ - 20);
+                        const fbEnd = roughQ;
+                        if (fbEnd > fbStart) {
+                            const vals = [];
+                            for (let k = fbStart; k < fbEnd; k++) vals.push(smooth[k]);
+                            vals.sort((a, b) => a - b);
+                            baseline = vals[Math.floor(vals.length * 0.5)];
+                        } else {
+                            baseline = smooth[roughQ];
+                        }
+                    }
                 }
 
                 // === Phase 3: 精密Q-onset検出（基線を使用） ===
