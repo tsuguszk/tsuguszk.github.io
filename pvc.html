@@ -1203,14 +1203,18 @@
             }
         }
     </style>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TV8RRX6SHK"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-TV8RRX6SHK');
-</script>
+
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQDY5X09FF"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-GQDY5X09FF');
+    </script>
+
+
 </head>
 
 <body>
@@ -1218,7 +1222,7 @@
         <header>
             <h1>📊 ホルター心電図 PVCトレンド解析</h1>
             <p class="subtitle subtitle-update"
-                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">最終update : 2026/4/30</p>
+                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">最終update : 2026/6/6</p>
             <p class="subtitle subtitle-model"
                 style="font-weight: 600; color: var(--accent-cyan); margin-bottom: 0.25rem;">
                 PVCが心房ペーシングで誘発できるかの予測モデル : Daytime Suppression Index</p>
@@ -2405,12 +2409,22 @@
                         mergedData = result;
                     }
 
-                    // Mark rows with validTime != 60 as excluded (but keep in data)
+                    // Mark first/last rows as excluded only if validTime != 60 (keep in data)
                     progressFill.style.width = '90%';
                     progressText.textContent = 'データ確認中...';
                     mergedData.forEach(d => {
-                        d.excluded = (d.validTime !== 60);
+                        d.excluded = false;
                     });
+                    // 最初・最後の行のみ、有効計測時間が60分でない場合に除外
+                    if (mergedData.length > 0) {
+                        if (mergedData[0].validTime !== 60) {
+                            mergedData[0].excluded = true;
+                        }
+                        const lastIdx = mergedData.length - 1;
+                        if (mergedData[lastIdx].validTime !== 60) {
+                            mergedData[lastIdx].excluded = true;
+                        }
+                    }
                     excludedByValidTime = mergedData.filter(d => d.excluded);
 
                     progressFill.style.width = '100%';
@@ -2976,8 +2990,8 @@
                         const validTime = parseInt(parts[1]);
                         total = parseInt(parts[2].replace(/,/g, ''));
                         vpc = parseInt(parts[3].replace(/,/g, ''));
-                        // Check for 除外 mark or validTime != 60
-                        excluded = parts.some(p => p === '除外') || validTime !== 60;
+                        // 手動の「除外」マークのみ反映（60分チェックは最初・最後の行のみ後で適用）
+                        excluded = parts.some(p => p === '除外');
 
                         if (!isNaN(total) && !isNaN(vpc)) {
                             rawData.push({
@@ -2986,7 +3000,7 @@
                                 total: total,
                                 vpc: vpc,
                                 excluded: excluded,
-                                reason: excluded ? (validTime !== 60 ? '有効計測時間不足' : '手動除外') : ''
+                                reason: excluded ? '手動除外' : ''
                             });
                         }
                     } else if (parts.length >= 3) {
@@ -3014,12 +3028,24 @@
                     return;
                 }
 
-                // For Fukuda format, mark first and last as excluded
+                // Mark first and last rows as excluded
                 if (!isNKFormat) {
+                    // Fukuda format: validTime情報がないため無条件で最初・最後を除外
                     rawData[0].excluded = true;
                     rawData[0].reason = '最初の行';
                     rawData[rawData.length - 1].excluded = true;
                     rawData[rawData.length - 1].reason = '最後の行';
+                } else {
+                    // Nihon Kohden format: 最初・最後の行が60分でない場合のみ除外
+                    if (rawData[0].validTime !== 60) {
+                        rawData[0].excluded = true;
+                        rawData[0].reason = '最初の行（有効計測時間不足）';
+                    }
+                    const lastIdx = rawData.length - 1;
+                    if (rawData[lastIdx].validTime !== 60) {
+                        rawData[lastIdx].excluded = true;
+                        rawData[lastIdx].reason = '最後の行（有効計測時間不足）';
+                    }
                 }
 
                 // Filter used data
