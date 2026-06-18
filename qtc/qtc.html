@@ -815,7 +815,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 1.8 : 2026/5/22
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.0 : 2026/6/18
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -2173,14 +2173,26 @@
                 // 勾配探索 (陽性: 最急下り勾配, 陰性: 最急上り勾配)
                 // tLimitまで探索（200ms制限を撤廃）
                 const slopeEnd = Math.min(tLimit, width - 1);
+                // 勾配探索の上限を「T波下行脚が基線へ戻る点」に制限する。
+                // これによりT波の後に出現する心房ペーシングスパイク/P波の
+                // 急峻な立ち上がり・立ち下がりを最急勾配として誤検出するのを防ぐ。
+                let descEnd = slopeEnd;
+                for (let k = tPeak + 1; k < slopeEnd; k++) {
+                    // 陽性T: 山から下行して基線以下に到達したら終了
+                    // 陰性T: 谷から上行して基線以上に到達したら終了
+                    if (isNegativeT ? (smooth[k] >= baseline) : (smooth[k] <= baseline)) {
+                        descEnd = k;
+                        break;
+                    }
+                }
                 let bestSlope = 0, slopeIdx = -1;
                 if (isNegativeT) {
-                    for (let k = tPeak; k < slopeEnd - 1; k++) {
+                    for (let k = tPeak; k < descEnd - 1; k++) {
                         const s = smooth[k + 1] - smooth[k];
                         if (s > bestSlope) { bestSlope = s; slopeIdx = k; }
                     }
                 } else {
-                    for (let k = tPeak; k < slopeEnd - 1; k++) {
+                    for (let k = tPeak; k < descEnd - 1; k++) {
                         const s = smooth[k + 1] - smooth[k];
                         if (s < bestSlope) { bestSlope = s; slopeIdx = k; }
                     }
