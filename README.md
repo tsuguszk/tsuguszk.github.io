@@ -4,7 +4,7 @@
 
 - 公開URL: https://tsuguszk.github.io/
 - ホスティング: GitHub Pages
-- アクセス解析: Google Analytics 4（プロパティ: GitHub, 測定ID: G-GQDY5X09FF）
+- アクセス解析: Google Analytics 4（プロパティ: GitHub, 測定ID: G-TV8RRX6SHK）
 
 ## 旧サイト
 
