@@ -1220,12 +1220,12 @@
 
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQDY5X09FF"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-        gtag('config', 'G-R0BG9XQGE4');
+        gtag('config', 'G-GQDY5X09FF');
     </script>
 
 
@@ -1239,7 +1239,7 @@
                 style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">最終update : 2026/6/6</p>
             <p class="subtitle subtitle-model"
                 style="font-weight: 600; color: var(--accent-cyan); margin-bottom: 0.25rem;">
-                PVCが心房ペーシングで誘発できるかの予測モデル : Daytime Suppression Index</p>
+                PVCが心房ペーシングで誘発できるかの予測モデル : AOP Response Index : ARI</p>
             <div class="header-buttons">
                 <button class="settings-button" onclick="openSettings()">⚙️ 設定</button>
                 <button class="history-button" onclick="openHistory()">📋 履歴(過去10回分)</button>
@@ -1669,11 +1669,11 @@
                 </div>
             </div>
 
-            <!-- Step 6: Daytime Suppression Index -->
+            <!-- Step 6: AOP Response Index : ARI -->
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon pink">🎯</div>
-                    <h2 class="card-title">Daytime Suppression Index（8時〜18時）</h2>
+                    <h2 class="card-title">AOP Response Index : ARI（8時〜18時）</h2>
                     <span class="step-badge">STEP 6</span>
                 </div>
 
@@ -1693,7 +1693,7 @@
 
                 <div class="ratio-calculation">
                     <div class="ratio-formula">
-                        Daytime Suppression Index = (8-18時のPVC数最小値) / (全データのPVC数平均値)
+                        AOP Response Index : ARI = (8-18時のPVC数最小値) / (全データのPVC数平均値)
                     </div>
                     <div class="stats-grid" style="margin-bottom: 1rem;">
                         <div class="stat-item">
@@ -1731,11 +1731,9 @@
                         <li><strong>相関関係なし:</strong> p ≥ 0.05</li>
                     </ul>
 
-                    <h4 style="color: var(--accent-pink); margin-top: 1rem; margin-bottom: 0.5rem;">2. Daytime
-                        Suppression Index
+                    <h4 style="color: var(--accent-pink); margin-top: 1rem; margin-bottom: 0.5rem;">2. AOP Response Index : ARI
                     </h4>
-                    <p style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--text-secondary);">Daytime
-                        Suppression Index = (日中最小PVC数) /
+                    <p style="font-size: 0.8rem; margin-bottom: 0.5rem; color: var(--text-secondary);">AOP Response Index : ARI = (日中最小PVC数) /
                         (全体平均PVC数)</p>
                     <ul style="margin-left: 1.5rem; font-size: 0.85rem;">
                         <li><strong>極めて高い:</strong> Index ≥ 0.80</li>
@@ -3699,17 +3697,17 @@
 
                 // Display pacing-PVC likelihood based on ratio
                 if (ratio >= 0.80) {
-                    ratioBadge.textContent = '◎ pacingでPVCが誘発される可能性が極めて高い (Daytime Suppression Index ≥ 0.80)';
+                    ratioBadge.textContent = '◎ pacingでPVCが誘発される可能性が極めて高い (AOP Response Index : ARI ≥ 0.80)';
                     ratioBadge.className = 'significance-badge significant';
                 } else if (ratio >= 0.75) {
-                    ratioBadge.textContent = '○ pacingでPVCが誘発される可能性が高い (Daytime Suppression Index ≥ 0.75)';
+                    ratioBadge.textContent = '○ pacingでPVCが誘発される可能性が高い (AOP Response Index : ARI ≥ 0.75)';
                     ratioBadge.className = 'significance-badge significant';
                 } else if (ratio >= 0.50) {
-                    ratioBadge.textContent = '△ pacingでPVCが誘発される可能性はボーダーライン (Daytime Suppression Index: 0.50-0.75)';
+                    ratioBadge.textContent = '△ pacingでPVCが誘発される可能性はボーダーライン (AOP Response Index : ARI: 0.50-0.75)';
                     ratioBadge.className = 'significance-badge';
                     ratioBadge.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
                 } else {
-                    ratioBadge.textContent = '✗ pacingでPVCが誘発される可能性は低い (Daytime Suppression Index < 0.50)';
+                    ratioBadge.textContent = '✗ pacingでPVCが誘発される可能性は低い (AOP Response Index : ARI < 0.50)';
                     ratioBadge.className = 'significance-badge not-significant';
                 }
 
@@ -3751,11 +3749,11 @@
 【回帰式】
   y = ${regression.slope.toFixed(4)}x + ${regression.intercept.toFixed(2)}
 
-【Daytime Suppression Index】
+【AOP Response Index : ARI】
   対象時間帯: 8:00〜18:00
   8-18時のPVC数最小値: ${ratioData.minDaytimeVpc !== null ? ratioData.minDaytimeVpc : 'N/A'} (${ratioData.minDaytimeTime || 'N/A'})
   全データのPVC数平均: ${ratioData.meanAll.toFixed(1)}
-  Daytime Suppression Index = ${ratioData.ratio !== null ? `${ratioData.minDaytimeVpc} / ${ratioData.meanAll.toFixed(1)} = ${ratioData.ratio.toFixed(3)}` : 'N/A'}
+  AOP Response Index : ARI = ${ratioData.ratio !== null ? `${ratioData.minDaytimeVpc} / ${ratioData.meanAll.toFixed(1)} = ${ratioData.ratio.toFixed(3)}` : 'N/A'}
   有意性: ${ratioData.ratio !== null ? (
                         ratioData.ratio >= 0.80 ? '極めて高い (Index ≥ 0.80)' :
                             ratioData.ratio >= 0.75 ? '高い (Index ≥ 0.75)' :
