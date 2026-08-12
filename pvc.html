@@ -61,7 +61,8 @@
             top: -50%;
             left: 50%;
             transform: translateX(-50%);
-            width: 600px;
+            /* 狭い画面で横スクロールが出ないよう画面幅を超えないようにする */
+            width: min(600px, 100%);
             height: 600px;
             background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
             pointer-events: none;
@@ -1218,7 +1219,6 @@
         }
     </style>
 
-
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GQDY5X09FF"></script>
     <script>
@@ -1227,7 +1227,6 @@
         gtag('js', new Date());
         gtag('config', 'G-GQDY5X09FF');
     </script>
-
 
 </head>
 
@@ -1409,7 +1408,6 @@
             </div>
             <div class="progress-text" id="progressText">画像を読み込んでいます...</div>
         </div>
-
 
         <!-- Manual/OCR Data Entry -->
         <div class="card" id="dataEntryCard" style="display: none;">
@@ -2871,7 +2869,7 @@
 
                 // ========================================================
                 // TIME-ANCHORED SEGMENTATION APPROACH
-                // 
+                //
                 // 1. Find ALL times in the text first (these are row anchors)
                 // 2. Segment text by time positions
                 // 3. Extract data from each segment
@@ -2979,7 +2977,6 @@
                         '数値をうまく読み取れませんでした。\n画像の解像度や明るさを確認してください。\n\n手動入力形式: 時刻, 総心拍数, PVC数';
                 }
             }
-
 
             function parseAndAnalyze() {
                 const textData = document.getElementById('dataTextarea').value.trim();
@@ -3745,7 +3742,7 @@
   決定係数 (R²): ${correlation.r2.toFixed(4)}
   p値: ${correlation.p < 0.0001 ? '< 0.0001' : correlation.p.toFixed(4)}
   有意性: ${correlation.p < 0.05 ? '有意 (p < 0.05)' : '有意でない (p ≥ 0.05)'}
-  
+
 【回帰式】
   y = ${regression.slope.toFixed(4)}x + ${regression.intercept.toFixed(2)}
 
@@ -4313,6 +4310,7 @@
                 }
             });
         </script>
+    </div>
 </body>
 
 </html>
