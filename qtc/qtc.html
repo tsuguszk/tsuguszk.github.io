@@ -796,6 +796,27 @@
             color: #666;
             font-size: 0.9em;
         }
+
+        /* 狭い画面でヘッダーが横にはみ出さないように */
+        @media screen and (max-width: 820px) {
+            .top-bar {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .top-bar > div,
+            .top-bar > div > div {
+                white-space: normal !important;
+            }
+
+            .top-bar > div:last-child {
+                width: 100%;
+            }
+
+            .top-bar button {
+                flex: 1 1 auto;
+            }
+        }
     </style>
 
 <!-- Google tag (gtag.js) -->
@@ -806,7 +827,6 @@
   gtag('js', new Date());
   gtag('config', 'G-GQDY5X09FF');
 </script>
-
 
 </head>
 
@@ -896,7 +916,6 @@
             <div id="resultCard1" class="result-card"></div>
             <div id="resultCard2" class="result-card"></div>
         </div>
-
 
     </div>
 
@@ -1484,7 +1503,7 @@
 
             // Reset manuals if algorithm changed significantly?
             // User might want to keep markers if just tweaking cal, but here we change the waveform itself.
-            // Ideally keep markers but snap them to new waveform if possible. 
+            // Ideally keep markers but snap them to new waveform if possible.
             // For safety/simplicity in this hybrid, we keep markers but they might drift vertically.
 
             analyzeBeats(state);
@@ -1964,7 +1983,7 @@
             otherState.manualTEnds = {};
             otherState.manualQOnsets = {};
 
-            // Re-detect R-peaks if scale changed drastically? 
+            // Re-detect R-peaks if scale changed drastically?
             // Usually R-detection is robust to scale, but Qt calc depends on it.
             // For drag-cal, we re-analyze beats, but not re-extract signal usually.
             analyzeBeats(otherState);

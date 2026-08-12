@@ -1,0 +1,53 @@
+@charset "UTF-8";
+/* 所思雑感セクション共通のスタイル（旧フレーム構成の置き換え） */
+
+body {
+  background-image: url("../for_top_page/gif/back.gif");
+}
+
+.shoshi-head {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.shoshi-head p {
+  margin: 8px 0 0;
+}
+
+.shoshi-nav {
+  margin: 8px 0;
+  line-height: 2.2;
+}
+
+.shoshi-nav a {
+  margin: 0 0.6em;
+  color: #006600;
+  white-space: nowrap;
+}
+
+.shoshi-rule {
+  display: block;
+  width: 640px;
+  max-width: 100%;
+  margin: 8px auto 0;
+}
+
+.shoshi-body {
+  max-width: 46em;
+  margin: 0 auto;
+}
+
+.shoshi-body a,
+.shoshi-body a:visited {
+  color: #009900;
+}
+
+/* リンク先が消滅した URL（リンクは外し、記録として文字だけ残す） */
+.dead-link {
+  color: #777;
+  word-break: break-all;
+}
+
+.dead-link span {
+  font-size: 0.85em;
+}

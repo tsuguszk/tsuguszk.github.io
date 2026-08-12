@@ -540,7 +540,7 @@
             margin-bottom: 10px;
             position: relative;
             /* Allow vertical growth if needed, but horizontal fit is prioritized by canvas css */
-            max-height: 80vh; 
+            max-height: 80vh;
             touch-action: none;
         }
 
@@ -1203,7 +1203,7 @@
             cropCanvas.width = maxW;
             cropCanvas.height = currentImage.height * scale;
             cropCanvas._scale = scale;
-            
+
             const wLabel = document.getElementById('cropTargetWidth');
             if (wLabel) {
                 if (currentImage.width === 250) {
@@ -1212,7 +1212,7 @@
                     wLabel.innerHTML = `元の画像: ${currentImage.width} x ${currentImage.height} px (横幅 ${currentImage.width}px・解析時は自動で横250pxになります)`;
                 }
             }
-            
+
             drawCropCanvas();
             setupCropEvents();
         }
@@ -1407,7 +1407,7 @@
             const s = 1 / cropCanvas._scale;
             let cw = cropRect.w * s;
             let ch = cropRect.h * s;
-            
+
             const targetW = 250;
             const scaleTo250 = targetW / cw;
             const finalH = Math.floor(ch * scaleTo250);
@@ -1418,7 +1418,7 @@
             const cx = cvs.getContext('2d');
             // Crop and resize to 250px in one drawImage step
             cx.drawImage(currentImage, cropRect.x * s, cropRect.y * s, cropRect.w * s, cropRect.h * s, 0, 0, cvs.width, cvs.height);
-            
+
             const croppedImg = new Image();
             croppedImg.onload = () => { currentImage = croppedImg; cropRect = null; showCropView(); };
             croppedImg.src = cvs.toDataURL('image/jpeg', 0.95);
@@ -1451,12 +1451,12 @@
                 await new Promise(resolve => { resized.onload = resolve; resized.src = cvs.toDataURL('image/jpeg', 0.95); });
                 img = resized;
             }
-            
+
             const wLabel = document.getElementById('cropTargetWidth');
             if (wLabel) { wLabel.style.display = 'block'; wLabel.innerHTML = `解析用画像サイズ: <span style="color:#4CAF50">${w} x ${h} px</span> (横幅 ${w}px)`; }
 
             setProgress(30, '画像解析中...');
-            
+
             // Get image data
             const tmpCanvas = document.createElement('canvas');
             tmpCanvas.width = w; tmpCanvas.height = h;
@@ -1476,7 +1476,7 @@
             const canvas = document.createElement('canvas');
             canvas.className = 'ecg-canvas';
             canvas.width = w; canvas.height = h;
-            canvas.style.width = '100%'; 
+            canvas.style.width = '100%';
             container.querySelector('.canvas-wrapper').appendChild(canvas);
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0);
@@ -1491,7 +1491,7 @@
             canvasEntry = { canvas, container };
 
             updateCalDisplay(pxPerSec, calMethod);
-            
+
             // Interaction
             setupInteraction(canvas, container);
 
@@ -1546,10 +1546,10 @@
         function performSignalExtraction(state) {
             console.time('Signal Extraction');
             const { imgData, width, height } = state;
-            
+
             // Only use the Holter Black Grid algorithm based on original stable functionality
             const signal = extractSignalHolterBlackGrid(imgData, width, height);
-            
+
             console.timeEnd('Signal Extraction');
 
             const smooth = new Float32Array(width);
@@ -1561,7 +1561,7 @@
             setTimeout(() => {
                 detectRPeaks(state);
                 analyzeBeats(state);
-                
+
                 setProgress(80, '描画中...');
                 setTimeout(() => {
                     renderCanvas(canvasEntry.canvas, state);
@@ -1870,7 +1870,7 @@
             const ctx = canvas.getContext('2d');
             const { img, width, height, smooth, beats, pxPerSec, rPeaks, calX, calY, calH } = state;
             ctx.clearRect(0, 0, width, height); ctx.drawImage(img, 0, 0, width, height);
-            
+
             // Proportional sizes based on width (forced ~250px)
             const r1 = Math.max(8, width / 80); // Marker radius
             const r2 = Math.max(10, width / 80); // Handle radius
@@ -1982,9 +1982,9 @@
                 else if (Math.abs(mx - appState.calX) < hitRadius && Math.abs(my - calCenterY) < appState.calH + 8) found = { type: 'CAL_LEFT' };
                 if (!found) appState.beats.forEach((b, idx) => { if (Math.abs(mx - b.x1) < hitRadius && Math.abs(my - (height - b.y1)) < hitRadius) found = { type: 'T_END', index: idx }; });
                 if (!found) appState.beats.forEach((b, idx) => { if (b.tPeak >= 0 && Math.abs(mx - b.tPeak) < hitRadius && Math.abs(my - (height - appState.smooth[Math.floor(b.tPeak)])) < hitRadius) found = { type: 'T_PEAK', index: idx }; });
-                if (!found) appState.rPeaks.forEach((r, idx) => { 
+                if (!found) appState.rPeaks.forEach((r, idx) => {
                     const ry = height - (appState.smooth[r] || (height / 2));
-                    if (Math.abs(mx - r) < hitRadius && Math.abs(my - ry) < Math.max(80, hitRadius * 2)) found = { type: 'R', index: idx }; 
+                    if (Math.abs(mx - r) < hitRadius && Math.abs(my - ry) < Math.max(80, hitRadius * 2)) found = { type: 'R', index: idx };
                 });
                 if (!found) appState.beats.forEach((b, idx) => { if (Math.abs(mx - b.qOnset) < hitRadius && Math.abs(my - (height - appState.smooth[Math.floor(b.qOnset)])) < hitRadius) found = { type: 'Q', index: idx }; });
                 if (!found) appState.beats.forEach((b, idx) => { const baseS = Math.max(0, Math.floor(b.rLoc - 0.2 * appState.pxPerSec)); const baseE = b.tEnd + 20; const baseY = height - b.baseline; if (mx >= baseS - 5 && mx <= baseE + 5 && Math.abs(my - baseY) < 12) found = { type: 'BASELINE', index: idx }; });

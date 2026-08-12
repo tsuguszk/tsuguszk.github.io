@@ -1,278 +1,188 @@
-<HTML lang="ja">
+<!DOCTYPE html>
+<html lang="ja">
 
-<HEAD>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <META NAME="keywords" CONTENT="つぐとし,鈴木嗣敏,小児不整脈,こどもの不整脈，wpw,小児のアブレーション,">
+  <meta name="keywords" content="つぐとし,鈴木嗣敏,小児不整脈,こどもの不整脈,wpw,小児のアブレーション">
+  <meta name="description" content="小児不整脈を専門とする鈴木嗣敏のホームページ。アブレーション・電気生理検査の資料、QTc解析／PVC解析アプリ、不整脈のアニメーションなど。">
   <title>つぐとしのweb site</title>
-  <style type="text/css">
-    <!--
-    a:active {
-      color: #006600;
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+    body {
+      background-image: url("for_top_page/gif/back.gif");
+      text-align: center;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
+
+    .title-image {
+      display: block;
+      margin: 0 auto;
+      max-width: 273px;
+    }
+
+    .updated {
+      color: #990000;
+      font-weight: bold;
+      margin: 10px 0 0;
+    }
+
+    .since {
+      color: #999900;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin: 2px 0 16px;
+    }
+
+    .rule {
+      display: block;
+      width: 640px;
+      max-width: 100%;
+      margin: 24px auto;
+    }
+
+    /* --- 検索フォーム --- */
+    .searchbox {
+      margin: 12px 0;
+    }
+
+    .searchbox input[type="text"],
+    .searchbox input[type="search"] {
+      max-width: 100%;
+      width: 22em;
+    }
+
+    .pubmed-hint {
+      color: #666666;
+      font-size: 0.8em;
+      line-height: 1.6;
+      max-width: 60em;
+      margin: 4px auto 20px;
+    }
+
+    .dim {
+      color: #999999;
+    }
+
+    /* --- リンク行 --- */
+    .linkrow {
+      margin: 8px 0;
+      line-height: 2.2;
+    }
+
+    .linkrow a {
+      margin: 0 0.5em;
+      white-space: nowrap;
+    }
+
+    .note {
+      color: #ff0000;
+      font-size: 0.75em;
+      white-space: nowrap;
+    }
+
+    .for-dr {
+      color: #ff0000;
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+
+    /* --- 3列の検索パネル --- */
+    .search-panels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
       text-align: left;
     }
 
-
-    a:hover {
-      color: #FF0000;
+    .search-panels section {
+      border: 1px solid #99ffcc;
+      padding: 8px 10px;
+      font-size: 0.85em;
     }
 
-    .style1 {
+    .search-panels form {
+      margin: 6px 0 0;
+    }
+
+    /* --- 主要コンテンツへのリンク --- */
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 20px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+
+    .menu li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    .menu li.wide {
+      grid-column: 1 / -1;
+    }
+
+    .menu img {
+      flex: none;
+      margin-top: 2px;
+    }
+
+    /* --- 記事ブロック --- */
+    .block {
+      margin: 32px auto;
+      max-width: 46em;
+    }
+
+    .block p {
+      margin: 6px 0;
+    }
+
+    .highlight {
       color: #990000;
       font-weight: bold;
-      font-size: 16px;
     }
 
-    .style4 {
-      color: #0000FF
-    }
-
-    .style5 {
-      color: #FF0000
-    }
-
-    .style6 {
-      font-size: 16px
-    }
-
-    .style7 {
-      color: #990000;
-      font-size: 12px;
-      text-align: center;
-    }
-
-    .style2 {
-      font-size: 10px
-    }
-
-    .style16 {
-      color: #990000
-    }
-
-    .style18 {
-      color: #000000;
-      font-size: 12px;
-    }
-
-    .style20 {
-      font-size: 16px;
-      color: #990202;
-    }
-
-    .style22 {
-      font-size: 18px
-    }
-
-    .style23 {
-      font-size: 14px
-    }
-
-    .style24 {
-      color: #999999;
-      font-size: -1;
-    }
-
-    .style25 {
-      font-size: 16px;
-      color: #990202;
-      font-weight: bold;
-      text-align: center;
-    }
-
-    .style29 {
+    .caption {
       color: #993300;
-      font-size: large;
-      font-weight: bold;
+      font-size: 0.85em;
     }
 
-    .style32 {
-      color: #999999;
-      font-size: 18px;
+    .caption-small {
+      font-size: 0.75em;
     }
 
-    .style8 {
-      color: #993300
+    .address {
+      color: #663300;
+      margin: 32px 0 8px;
     }
 
-    .style10 {
-      color: #993300;
-      font-size: 12px;
+    .address .label {
+      color: #996633;
     }
 
-    .style12 {
-      font-size: 12px
-    }
-
-    /* レスポンシブデザイン（モバイル対応） */
     @media screen and (max-width: 768px) {
-      body {
-        padding: 10px;
-        line-height: 1.5;
+      .search-panels,
+      .menu {
+        grid-template-columns: 1fr;
       }
 
-      table {
-        width: 100% !important;
-        display: block;
-        overflow-x: auto;
-        height: auto !important;
-        margin-bottom: 10px;
-      }
-
-      table tr {
-        display: block;
-        margin-bottom: 10px;
-        height: auto !important;
-      }
-
-      table td {
-        display: block;
-        width: 100% !important;
-        height: auto !important;
-        padding: 10px 8px !important;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #ddd;
-      }
-
-      img {
-        max-width: 100%;
-        height: auto !important;
-        width: auto !important;
-        margin: 6px 0;
-      }
-
-      input[type="text"],
-      input[name="term"],
-      input[name="q"],
-      input[name="k"] {
-        width: 55% !important;
-        max-width: 180px !important;
-        font-size: 14px;
-      }
-
-      input[type="submit"] {
-        font-size: 14px;
-        padding: 4px 8px;
-      }
-
-      form {
-        margin: 6px 0;
-      }
-
-      /* PubMed検索フォームを1行に */
-      form[action*="ncbi.nlm.nih.gov"] div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: nowrap;
-        gap: 4px;
-      }
-
-      form[action*="ncbi.nlm.nih.gov"] input[name="term"] {
-        width: 120px !important;
-        max-width: 120px !important;
-        flex-shrink: 1;
-      }
-
-      /* Google、Amazon、楽天の検索窓のサイズ統一（モバイル） */
-      form[action*="google.com"] input[name="q"],
-      form[action*="amazon.co.jp"] input[name="k"],
-      input[id="rakuten_keyword"] {
-        width: 180px !important;
-        max-width: 180px !important;
-      }
-
-      h2,
-      h3,
-      h4 {
-        font-size: 1.2em;
-        line-height: 1.4;
-        margin: 6px 0;
-      }
-
-      p {
-        line-height: 1.5;
-        margin: 4px 0;
-        display: block;
-        clear: both;
-      }
-
-      /* &nbsp;だけの空白段落を非表示 */
-      p:empty,
-      p.style29:empty,
-      p.style1:empty {
-        display: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        height: 0 !important;
-        line-height: 0 !important;
-      }
-
-      /* テーブル内の空白セルも非表示 */
-      table td p:empty,
-      table td p.style29:empty,
-      table td p.style1:empty {
-        display: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      .style7,
-      .style18,
-      .style20,
-      .style25,
-      .style29 {
-        font-size: 14px !important;
-        line-height: 1.5 !important;
-        margin: 4px 0 !important;
-        display: block;
-      }
-
-      .style32 {
-        font-size: 14px !important;
-        line-height: 1.5 !important;
-        display: block;
-        margin: 4px 0;
-      }
-
-      .style6 {
-        line-height: 1.5 !important;
-        margin: 4px 0 !important;
-      }
-
-      .style1 {
-        margin: 4px 0 !important;
-      }
-
-      center,
-      CENTER {
-        text-align: center;
-        padding: 0 10px;
-      }
-
-      br {
-        display: block;
-        margin: 2px 0;
-        content: " ";
-      }
-
-      strong {
-        line-height: 1.4;
-      }
-
-      span {
-        display: inline;
-      }
-
-      /* 検索フォームの不要な余白削減 */
-      div[align="center"] {
-        margin: 4px 0;
-      }
-
-      hr {
-        margin: 10px 0;
+      .searchbox input[type="text"],
+      .searchbox input[type="search"] {
+        width: 100%;
+        max-width: 260px;
       }
     }
-    -->
   </style>
 
   <!-- Google tag (gtag.js) -->
@@ -283,297 +193,209 @@
     gtag('js', new Date());
     gtag('config', 'G-R0BG9XQGE4');
   </script>
-</HEAD>
+</head>
 
-<BODY BACKGROUND="for_top_page/gif/back.gif" LINK="#006600" VLINK="#336600" ALINK="#CCFF00">
-  <FORM style="">
-    <P>
-      <CENTER>
-        <p style="margin-bottom: 0"><IMG SRC="for_top_page/gif/title.gif" WIDTH="273" HEIGHT="84" ALIGN="BOTTOM"
-            BORDER="0" NATURALSIZEFLAG="3"></p>
-      </CENTER>
-      <CENTER>
-        <p align="center"><B>
-            <font color="#990000">2026/8/11 更新</font>
-          </B></p>
+<body>
+  <div class="wrap">
 
-        <p align="center"><b>
-            <font color="#999900" size="-1">1997.1.1開設</font>
-          </b></p>
-        <p align="center">
+    <header>
+      <img src="for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site" class="title-image">
+      <p class="updated">2026/8/11 更新</p>
+      <p class="since">1997.1.1開設</p>
+    </header>
 
+    <!-- PubMed 検索 -->
+    <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank" class="searchbox">
+      <label>
+        Search <a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed">PubMed</a>:
+        <input name="db" type="hidden" value="PubMed">
+        <input name="term" type="search" value="">
+      </label>
+      <input type="submit" value="Go">
+    </form>
 
-          <noscript></noscript>
-        </p>
-  </FORM>
-
-  <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank">
-    <div align="center">Search <a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed">PubMed</a>:
-      &nbsp;&nbsp;
-      <input name="db" type="hidden" value="PubMed" />
-      <input name="term" size="100" type="text" value="" />
-      <input type="submit" value="Go" />
-    </div>
-  </form>
-
-
-  </TABLE>
-  <p align="center">
-    <font color="#666666" size="-1">keyword[tw] or [ot]，Mesh[mh]，著者[au]，フルネーム [fau], 1st author [1au], 施設[ad],
-      タイトル[ti]，言語
-      : eng[la] or jpn[la]，出版年 : 2002:2004[dp]，雑誌名 : circulation[ta] </font><br>
-    <span class="style24">[tw] (jacc[ta] or J Cardiovasc Electrophysiol [ta] or Heart Rhythm [ta])</span>　
-  </p>
-  <p align="center"><a href="denden/index.html" target="_blank">denden</a>　<a href="https://self.pubfun.jp/users/mypage/"
-      target="_blank">出版</a>　<a href="https://qr.quel.jp">QRcode</a>　<a href="https://jspec.jp">小児心電学会</a>　<a
-      href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>　<a href="pvc.html">PVC解析</a>　</p>
-  <p align="center"><a href="qtc/index_qtc.html"><span
-        style="text-align: center; font-weight: bold;">QTc解析アプリ</span></a>　 <a
-      href="qtc/qtc_mobile.html">スマホ用(test中)</a>　<font color="#ff0000" size="-2">2026/6/18更新</font> 　<span
-      class="style5">Dr向け</span></p>
-  <p align="center"><span style="text-align: center"><B id="FVP2">　<a
-          href="index_fvp.html">FVPとWPWの鑑別資料</a></B></span><B id="FVP2">　</B>
-    <font color="#ff0000" size="-2">2023/7/12更新</font> 　<span class="style5">Dr向け</span></p>
-  <p align="center">&nbsp;</p>
-  <div align="center">
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-  </div>
-  <div align="center">
-    <p>
-      <FONT SIZE="-1"><BR>
-        <a
-          href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>
-      </FONT>
-      <FONT COLOR="#009900" SIZE="-1">/</FONT>
-      <FONT SIZE="-1"><a href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急</a>　<a
-          href="https://ekitan.com/">駅探</a></FONT>
-      <FONT COLOR="#009900" SIZE="-1">/</FONT>
-      <font size="-1"><A HREF="https://www.jorudan.co.jp/index.html">電車乗換</A>　<a
-          href="https://travel.rakuten.co.jp">楽天トラベル</a></font>
-      <FONT COLOR="#009900" SIZE="-1">/</FONT>
-      <font size="-1"><A
-          HREF="https://www.jal.co.jp/5971/">JAL</A></font>
-      <FONT COLOR="#009900" SIZE="-1">/</FONT>
-    <font size="-1"><A HREF="https://ana.co.jp/">ANA</A></font>　<a
-        href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a></p>
-    <p>　<a
-        href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini API管理) </a>　<a 
-		href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing (API費用管理)</a>　 <a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a>　<a
-        href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a></p>
-    <p><a
-        href="https://fast.com/ja/">インターネット速度計測</a>　<a
-        href="https://github.com/tsuguszk/tsuguszk.github.io">GitHub</a>　<a
-        href="12kokki.html">十二国記</a>　<a
-        href="https://www.yodobashi.com">ヨドバシ</a>
+    <p class="pubmed-hint">
+      keyword[tw] or [ot]，Mesh[mh]，著者[au]，フルネーム [fau], 1st author [1au], 施設[ad], タイトル[ti]，言語
+      : eng[la] or jpn[la]，出版年 : 2002:2004[dp]，雑誌名 : circulation[ta]<br>
+      <span class="dim">[tw] (jacc[ta] or J Cardiovasc Electrophysiol [ta] or Heart Rhythm [ta])</span>
     </p>
+
+    <!-- よく使うリンク -->
+    <nav>
+      <p class="linkrow">
+        <a href="denden/index.html" target="_blank">denden</a>
+        <a href="https://self.pubfun.jp/users/mypage/" target="_blank">出版</a>
+        <a href="https://qr.quel.jp">QRcode</a>
+        <a href="https://jspec.jp">小児心電学会</a>
+        <a href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>
+        <a href="pvc.html">PVC解析</a>
+      </p>
+      <p class="linkrow">
+        <a href="qtc/index_qtc.html"><strong>QTc解析アプリ</strong></a>
+        <a href="qtc/qtc_mobile.html">スマホ用(test中)</a>
+        <span class="note">2026/6/18更新</span>
+        <span class="for-dr">Dr向け</span>
+      </p>
+      <p class="linkrow" id="FVP2">
+        <a href="index_fvp.html"><strong>FVPとWPWの鑑別資料</strong></a>
+        <span class="note">2023/7/12更新</span>
+        <span class="for-dr">Dr向け</span>
+      </p>
+
+      <p class="linkrow">
+        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/
+        <a href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急</a>
+        <a href="https://ekitan.com/">駅探</a>/
+        <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
+        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/
+        <a href="https://www.jal.co.jp/5971/">JAL</a>/
+        <a href="https://ana.co.jp/">ANA</a>
+        <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini API管理)</a>
+        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing (API費用管理)</a>
+        <a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a>
+        <a href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://fast.com/ja/">インターネット速度計測</a>
+        <a href="https://github.com/tsuguszk/tsuguszk.github.io">GitHub</a>
+        <a href="12kokki.html">十二国記</a>
+        <a href="https://www.yodobashi.com">ヨドバシ</a>
+      </p>
+    </nav>
+
+    <!-- Google / Amazon / 楽天 -->
+    <div class="search-panels">
+      <section>
+        <a target="_blank" href="https://www.google.com/">Google</a>
+        <span class="dim">(UTF-8)</span>
+        <a href="https://images.google.com/imghp?hl=ja&amp;tab=ni&amp;ned=jp&amp;q=">image</a>
+        <a href="https://maps.google.co.jp/">map</a>
+        <a href="https://mail.google.com/mail/">G-Mail</a>
+        <a href="https://calendar.google.com/calendar/u/0/r">カレンダー</a>
+        <form action="https://www.google.com/search" method="get">
+          <input type="search" name="q" maxlength="255" placeholder="検索">
+          <input type="hidden" name="hl" value="ja">
+          <input type="submit" name="btnG" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.amazon.co.jp/">Amazon</a>
+        <a href="https://pointupmall.com/shop/768/">pt+0〜4%</a>
+        <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
+        <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
+        <a href="https://www.amazon.co.jp/gp/video/collection/IncludedwithPrime">video</a>
+        <form method="get" action="https://www.amazon.co.jp/s">
+          <input type="hidden" name="tag" value="tsugutoshi-22">
+          <input type="search" name="k" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.rakuten.co.jp/">楽天市場</a>
+        <a href="https://pointupmall.com/search/power?q=楽天">pt+0.5%</a>
+        <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
+          <input type="search" id="rakuten_keyword" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+    </div>
+
+    <img src="for_top_page/gif/line1.gif" width="640" height="9" alt="" class="rule">
+
+    <!-- 主要コンテンツ -->
+    <ul class="menu" id="anchor78285">
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page_rfca/rfca_manual.html">カテーテルアブレーション・電気生理検査(pdf)</a>
+          <span class="note">2021/1/6更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page/flash/flash.html">不整脈のアニメーション動画ファイル</a>
+          <span class="note">2015/1/18更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page/ECG.pdf">心電図電極の張り方</a></span>
+      </li>
+      <li id="FVP">
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="index_fvp.html">FVPとWPWの鑑別資料</a>
+          <span class="note">2023/7/7更新</span> <span class="for-dr">Dr向け</span></span>
+      </li>
+      <li class="wide">
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page_rfca/rfca_admission.html">大阪市立総合医療センター入院案内・ペアレンツハウス大阪案内</a>
+          <span class="note">2021/1/6更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=tsugutoshi+suzuki+[fau]">論文リスト</a>
+          <a href="https://scholar.google.com/citations?hl=en&amp;user=wbILea0AAAAJ">引用</a></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="pvc.html">A paceでPVCが誘発されるか判定アプリ</a></span>
+      </li>
+    </ul>
+
+    <img src="for_top_page/gif/line2.gif" width="640" height="27" alt="" class="rule">
+
+    <!-- 単語帳 -->
+    <div class="block">
+      <p class="highlight">娘のために開発した，単語帳(ファイルメーカープロ ver12で作成(win・mac版) を公開しています．<br>
+        荒削りですが，役には立つと思います．改変して頂くのは自由です．</p>
+      <p class="highlight">2013.10.4 : 英語から日本語へのテストや，英単語を一文字ずつ表示するモードなどを追加しました．</p>
+      <p class="highlight"><a href="page_rfca/tango_chou.html">単語帳ダウンロード画面へ</a></p>
+    </div>
+
+    <div class="block">
+      <p><img src="for_top_page/jpg/110-1098_IMG.JPG" width="283" height="208" alt="県立尼崎病院・心臓センター外来"></p>
+      <p class="caption">県立尼崎病院・心臓センター外来にて (2001.10)</p>
+    </div>
+
+    <div class="block">
+      <p><img src="poem.png" width="496" height="321" alt="娘が書いた詩"></p>
+      <p class="caption">2008.12.28. 小学校二年生の娘が学校で初めて詩を書いてきました．</p>
+      <p class="caption">う〜ん　　何度読んでも，すばらしい詩です．母親譲りの才能だそうです
+        <span class="caption-small">(おやばか．．．)</span>
+      </p>
+    </div>
+
+    <div class="block">
+      <p><img src="for_top_page/jpg/IMG_8841.png" width="283" height="340" alt="娘が幼稚園で自作した旗"></p>
+      <p class="caption">2004.5.</p>
+      <p class="caption">娘が4歳の誕生日に幼稚園で自作した旗です．</p>
+    </div>
+
+    <footer>
+      <p class="address">
+        <span class="label">web adress : </span>
+        <a href="https://tsugutoshi.com">tsugutoshi.com</a>
+      </p>
+      <p><a href="https://tsuguszk.github.io">tsuguszk.github.io</a></p>
+      <p><a href="index_road.html"><img src="for_top_page/shougatsu/HITU_382.gif" width="170" height="142"
+            alt="自転車・ロードバイクのページへ"></a></p>
+      <p><img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac"></p>
+    </footer>
+
   </div>
-  <p>&nbsp;</p>
-  <TABLE width="1130" border=1 bordercolor="#99FFCC">
-    <TBODY>
-      <TR>
-        <TD width="383" height="53">
-          <form action="https://www.google.com/search" method="get">
-            <a target="_blank" href="https://www.google.com/">
-              <font size="-1">Google</font>
-            </a>
-            <font size="-2">　<font color="#999999">(UTF-8)</font>
-            </font>　<a href="https://images.google.com/imghp?hl=ja&tab=ni&ned=jp&q=">
-              <font size="-1">image</font>
-            </a>　<a href="https://maps.google.co.jp/">
-              <font size="-1">map</font>
-            </a>　<font size="-1"><a href="https://mail.google.com/mail/">G-Mail</a></font>　<font size="-1"><a
-                href="https://calendar.google.com/calendar/u/0/r">カレンダー</a></font><BR>
-            <input maxlength=255 size=25 name=q placeholder="検索">
-            <INPUT type=hidden value=ja name=hl>
-            <INPUT type=submit value=GO name=btnG>
-          </form>
-        </TD>
-        <TD width="355">
-          <a href="https://www.amazon.co.jp/">
-            <font size="-1">Amazon</font>
-          </a>
-          <font size="-1">　<a href="http://pointupmall.com/shop/768/">pt+0〜4%</a>　<a
-              href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>　<a
-              href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&nodeId=201910090">追跡</a>
-            <font size="-1">　<a href="https://www.amazon.co.jp/gp/video/collection/IncludedwithPrime">video</a></font>
-            <BR>
-            <form method="GET" action="https://www.amazon.co.jp/s">
-              <input type="hidden" name="tag" value="tsugutoshi-22" />
-              <input type="text" name="k" size="25" placeholder="検索" required />
-              <input type="submit" value="GO" />
-            </form>
-        </TD>
 
+  <script>
+    // 楽天の検索は /search/mall/<キーワード>/ という形式なので送信時に組み立てる
+    document.getElementById('rakutenForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var keyword = document.getElementById('rakuten_keyword').value.trim();
+      if (keyword) {
+        window.open('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/', '_blank');
+      }
+    });
+  </script>
+</body>
 
-        <TD width="292">
-          <a href="https://www.rakuten.co.jp/">
-            <font size="-1">楽天市場</font>
-          </a>
-          <font size="-1">　<a href="https://pointupmall.com/search/power?q=楽天">pt+0.5%</a></font><BR>
-          <form onsubmit="return searchRakuten(event)">
-            <input type="text" id="rakuten_keyword" size="25" placeholder="検索" required />
-            <input type="submit" value="GO" />
-          </form>
-          <script>
-            function searchRakuten(e) {
-              e.preventDefault();
-              var keyword = document.getElementById('rakuten_keyword').value;
-              if (keyword) {
-                window.open('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/', '_blank');
-              }
-              return false;
-            }
-          </script>
-        </TD>
-
-      </TR>
-    </TBODY>
-  </TABLE>
-  <p>&nbsp;</p>
-
-
-  <p><IMG SRC="for_top_page/gif/line1.gif" WIDTH="640" HEIGHT="9" ALIGN="BOTTOM" BORDER="0" NATURALSIZEFLAG="3"><BR>
-    <BR>
-    <A NAME="anchor78285"></A>
-  </p>
-
-  <H2>
-    <CENTER>
-      <TABLE WIDTH="1082" BORDER="0" CELLSPACING="0" CELLPADDING="0" HEIGHT="200">
-        <TR>
-          <TD width="45%" HEIGHT="40"><b><img src="for_top_page/gif/pin02.gif"
-                  width="25" height="25" align="MIDDLE" border="0" naturalsizeflag="3"><a
-                href="iw/rfca_manual.html">カテーテルアブレ</a><a
-                href="iw/rfca_manual.html">ーション・電気生理検査(pdf)</a>　</b> <font color="#ff0000" size="-2">2021/1/6更新</font></TD>
-          <TD width="55%" height="40"><B><img src="for_top_page/gif/pin02.gif"
-                  width="25" height="25" align="MIDDLE" border="0" naturalsizeflag="3">　<a
-                  href="page/flash/flash.html">不整脈のアニメーション動画ファイル</a>　</B> <font color="#ff0000" size="-2">2015/1/18更新</font></TD>
-        </TR>
-        <TR>
-          <TD HEIGHT="40"><B><img src="for_top_page/gif/pin02.gif" alt="" width="25"
-                  height="25" border="0" align="MIDDLE" naturalsizeflag="3">　<a
-                href="page/ECG.pdf">心電図電極の張り方</a></B></TD>
-          <TD height="40"><B id="FVP"><img src="for_top_page/gif/pin02.gif" alt="" width="25"
-                    height="25" border="0" align="MIDDLE" naturalsizeflag="3">　<a
-                  href="index_fvp.html">FVPとWPWの鑑別資料</a>　</B> <font color="#ff0000" size="-2">2023/7/7更新</font> 　<span class="style5">Dr向け</span></TD>
-        </TR>
-        <TR>
-          <TD HEIGHT="40" colspan="2"><p><B><img src="for_top_page/gif/pin02.gif" alt="" width="25" height="25"
-                    border="0" align="MIDDLE" naturalsizeflag="3">　<a
-                  href="iw/rfca_admission.html">大阪市立総合医療センター入院案内・ペアレンツハウス大阪案内</a>　</B>
-            <font color="#ff0000" size="-2">2021/1/6更新</font>            </p>
-          </TD>
-        </TR>
-        <TR>
-          <TD height="40"><B><img src="for_top_page/gif/pin02.gif" alt="" width="25"
-                  height="25" border="0" align="MIDDLE" naturalsizeflag="3">　<a
-                href="https://www.ncbi.nlm.nih.gov/pubmed/?term=tsugutoshi+suzuki+[fau]">論文リスト</a>　<a
-                href="https://scholar.google.com/citations?hl=en&user=wbILea0AAAAJ">引用</a><a
-                href="https://www.ncbi.nlm.nih.gov/pubmed/?term=tsugutoshi+suzuki+[fau]"></a>　<a
-                href="http://usagereports.elsevier.com/asp/Main.aspx?Server=MI02QAP01027&Project=Elsevier+Author+Alert&port=0&evt=2048001&src=Main.aspx.2048001&documentID=B0652B4C4F6396AED258B5B32105FD5D&uid=Author&pwd=X&elementsPromptAnswers=8D65C0734270828F9D65559C052AC751;8D65C0734270828F9D65559C052AC751:A22E7361E63D680B7A6800A91FA2675F&hiddensections=header,path,dockTop,dockLeft,footer">解析</a></B>
-          </TD>
-          <TD height="40"><B><img src="for_top_page/gif/pin02.gif" alt="" width="25"
-                  height="25" border="0" align="MIDDLE" naturalsizeflag="3">　<a href="pvc.html">A
-                paceでPVCが誘発されるか判定アプリ</a></B></TD>
-        </TR>
-        <TR>
-
-        </TR>
-      </TABLE>
-    </CENTER>
-  </H2>
-  <H3>
-    <H4>
-      <CENTER>
-        <p><span style="margin-bottom: 0"><IMG SRC="for_top_page/gif/line2.gif" alt="" WIDTH="640" HEIGHT="27"
-              ALIGN="BOTTOM" NATURALSIZEFLAG="3"></span></p>
-        <p>&nbsp;</p>
-        <p class="style1">娘のために開発した，単語帳(ファイルメーカープロ ver12で作成(win・mac版)
-
-          を公開しています．<br>
-          荒削りですが，役には立つと思います．改変して頂くのは自由です．</p>
-        <p class="style1">2013.10.4 : 英語から日本語へのテストや，英単語を一文字ずつ表示するモードなどを追加しました．</p>
-        <p class="style1"><a href="iw/tango_chou.html">単語帳ダウンロード画面へ</a></p>
-        <p>&nbsp;</p>
-        <p>
-          <font size="-1"><img src="for_top_page/jpg/110-1098_IMG.JPG" alt="" width="283" height="208"></font>
-        </p>
-        <p style="margin-bottom: 0;">
-          <font size="-1">県立尼崎病院・心臓センター外来にて (2001.10) </font>
-        </p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <CENTER>
-          <p>
-            <FONT COLOR="#CC3300"><B>
-                <font size="-1"><BR>
-                </font>
-              </B></FONT>
-          </p>
-        </CENTER>
-        <CENTER>
-          <h4><img src="poem.png" alt="top" width="496" height="321"></h4>
-          <p class="style10">2008.12.28. 小学校二年生の娘が学校で初めて詩を書いてきました．</p>
-          <p class="style8"><span class="style12">う〜ん　　何度読んでも，すばらしい詩です．母親譲りの才能だそうです</span>　<span class="style2">
-              (おやばか．．．)</span></p>
-          <p>&nbsp;</p>
-          <p align="center"><img src="for_top_page/jpg/IMG_8841.png" alt="top" width="283" height="340"></P>
-          <H3>
-            <CENTER>
-              <p>
-                <font color="#993300" size="2">2004.5.</font>
-              </p>
-              <p>
-                <font color="#993300" size="2">娘が4歳の誕生日に幼稚園で自作した旗です．</font>
-              </p>
-            </CENTER>
-          </h3>
-        </CENTER>
-        <p>&nbsp;</p>
-      </CENTER>
-    </H4>
-
-    <H4>
-      <CENTER>
-        <h4>
-          <FONT COLOR="#996633">web adress : </FONT>
-          <FONT COLOR="#663300"><a href="http://tsugutoshi.com">tsugutoshi.com</a></FONT>
-        </h4>
-        <p><a href="https://tsuguszk.github.io">tsuguszk.github.io</a></p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
-      </CENTER>
-    </H4>
-
-    <P>
-      <CENTER>
-        <p style="margin-bottom: 0;"><a href="index_road.html"><img src="for_top_page/shougatsu/HITU_382.gif"
-              width="170" height="142"></a></p>
-      </CENTER>
-    <H4>
-      <CENTER>
-        <FONT COLOR="#996633"><img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" align="middle">
-        </FONT>
-      </CENTER>
-    </H4>
-    <PRE style="margin-bottom: 0;"><CENTER></CENTER></PRE>
-    <CENTER>
-    </CENTER>
-    <BLOCKQUOTE style="margin-bottom: 0;">
-      <BLOCKQUOTE style="margin-bottom: 0;">
-        <BLOCKQUOTE style="margin-bottom: 0">
-          <BLOCKQUOTE style="margin-bottom: 0">
-            <CENTER>
-              <p style="margin-bottom: 0">
-              </p>
-            </CENTER>
-            <p style="margin-bottom: 0;"></p>
-          </BLOCKQUOTE>
-        </BLOCKQUOTE>
-      </BLOCKQUOTE>
-    </BLOCKQUOTE>
-  </h3>
-</BODY>
-
-</HTML>
+</html>

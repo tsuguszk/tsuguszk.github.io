@@ -1,0 +1,252 @@
+@charset "UTF-8";
+/* ============================================================
+   tsuguszk.github.io 共通スタイル
+   各ページに重複コピーされていたレスポンシブ用 CSS を集約したもの。
+   PageMill / Dreamweaver 時代の古いレイアウト（レイアウト用テーブル、
+   固定幅、font 要素）をそのまま活かしつつ、スマートフォンでも
+   読めるようにするのが目的。
+   ============================================================ */
+
+/* ---------- 基本 ---------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", Meiryo, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* 画像は必ず画面幅に収める（width/height 属性が付いていても） */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 幅指定の残ったレイアウト用テーブルが画面をはみ出さないように */
+table {
+  max-width: 100%;
+}
+
+iframe,
+video,
+embed,
+object {
+  max-width: 100%;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #cfcfcf;
+  margin: 16px 0;
+}
+
+/* ---------- リンク ---------- */
+a {
+  color: #006600;
+}
+
+a:visited {
+  color: #336600;
+}
+
+a:hover {
+  color: #cc0000;
+}
+
+/* ---------- フォーム ---------- */
+/* iOS で入力時に自動ズームしないよう 16px を確保する */
+input,
+select,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 16px;
+  max-width: 100%;
+}
+
+input[type="submit"],
+button {
+  min-height: 32px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+/* ---------- 配置・文字サイズ用のユーティリティ ----------
+   <center> や align 属性、<font size> を置き換えたもの。 */
+.center { text-align: center; }
+.left   { text-align: left; }
+.right  { text-align: right; }
+
+/* インラインの文脈で中央寄せしたいとき（<p> の中など） */
+.center-block {
+  display: block;
+  text-align: center;
+}
+
+/* ブロック要素を含んでいたため <div> に置き換えた段落
+   （<p> の既定の余白を保つ） */
+.para {
+  margin: 1em 0;
+}
+
+/* <center> や align 属性は、文字だけでなくブロック要素（幅を持つテーブル等）も
+   寄せる（ブラウザ内部の text-align: -webkit-center / -webkit-right 相当）。
+   text-align だけでは再現できないので margin auto を併用する。 */
+.center table,
+.center-block table,
+.center > blockquote,
+.center > figure,
+.center > pre {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 旧ブラウザではテーブルの中身は外側の寄せを受け継がなかった。
+   セル単位の指定（class="center" 等）だけを効かせる。 */
+.center table,
+.center-block table,
+.right table,
+.left table {
+  text-align: start;
+}
+
+.right table {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.left table {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.v-mid { vertical-align: middle; }
+.v-top { vertical-align: top; }
+
+.f-left {
+  float: left;
+  margin: 0 0.8em 0.4em 0;
+}
+
+.f-right {
+  float: right;
+  margin: 0 0 0.4em 0.8em;
+}
+
+.clear { clear: both; }
+
+/* <font size> の置き換え */
+.fs-xs  { font-size: 0.7em; }
+.fs-sm  { font-size: 0.85em; }
+.fs-lg  { font-size: 1.2em; }
+.fs-xl  { font-size: 1.5em; }
+.fs-xxl { font-size: 2em; }
+
+/* ---------- スマートフォン ---------- */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+    line-height: 1.6;
+  }
+
+  /* レイアウト用テーブルは縦積みにする */
+  table {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+    overflow-x: auto;
+    margin-bottom: 10px;
+  }
+
+  table tr {
+    display: block;
+    height: auto !important;
+    margin-bottom: 10px;
+  }
+
+  table td,
+  table th {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    padding: 8px 4px !important;
+    text-align: left;
+  }
+
+  img {
+    width: auto !important;
+    height: auto !important;
+    margin: 6px 0;
+  }
+
+  iframe {
+    width: 100% !important;
+    height: auto;
+    min-height: 300px;
+    margin: 12px 0;
+  }
+
+  h1 { font-size: 1.35em; }
+  h2 { font-size: 1.2em; }
+  h3, h4, h5, h6 { font-size: 1.1em; }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.45;
+    margin: 8px 0;
+  }
+
+  p {
+    margin: 8px 0;
+    line-height: 1.7;
+  }
+
+  /* &nbsp; だけの空段落で余白が増えるのを抑える */
+  p:empty {
+    display: none;
+  }
+
+  blockquote {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  form {
+    margin: 8px 0;
+  }
+
+  /* size 属性で長すぎる入力欄を画面内に収める */
+  input[type="text"],
+  input[type="search"] {
+    width: 100%;
+    max-width: 220px;
+  }
+}
+
+/* ---------- 印刷 ---------- */
+@media print {
+  body {
+    background: none !important;
+    color: #000;
+    padding: 0;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+}

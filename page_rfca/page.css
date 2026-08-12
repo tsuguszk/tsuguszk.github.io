@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/* 旧 iWeb 出力（700px 固定・絶対配置）を置き換えた記事ページ用のスタイル。
+   内容はそのままに、上から下へ流れる可変幅の1カラムにする。 */
+
+body {
+  background: #ffffff url("page-back.gif") repeat top left;
+}
+
+.doc-page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 16px 14px 48px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.doc-page h1 {
+  font-size: 1.6em;
+  line-height: 1.4;
+  margin: 0 0 24px;
+}
+
+.doc-block {
+  margin: 0 0 24px;
+}
+
+.doc-block p {
+  margin: 0 0 0.6em;
+}
+
+.doc-block p:last-child {
+  margin-bottom: 0;
+}
+
+.doc-figure {
+  margin: 0 0 24px;
+  text-align: center;
+}
+
+.doc-figure img {
+  max-width: 100%;
+  height: auto;
+}
+
+.doc-figure figcaption {
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #555;
+  text-align: left;
+}
+
+.doc-inline-icon {
+  vertical-align: -4px;
+  margin-right: 4px;
+}
+
+.doc-foot {
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid #ccc;
+  text-align: center;
+}
+
