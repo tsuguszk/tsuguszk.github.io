@@ -92,6 +92,63 @@
       white-space: nowrap;
     }
 
+    .desc {
+      color: #999999;
+      font-weight: normal;
+    }
+
+    /* --- お知らせ（左：経過／右：案内） --- */
+    .news {
+      display: grid;
+      grid-template-columns: 56fr 42fr;
+      gap: 0 2%;
+      margin: 16px 0 24px;
+      text-align: center;
+    }
+
+    .news-main p,
+    .news-side p {
+      margin: 14px 0;
+    }
+
+    .news-main p {
+      color: #990202;
+      font-weight: bold;
+    }
+
+    .news-main img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .news-side .star {
+      color: #ff0000;
+    }
+
+    .news-side .upd {
+      color: #0000ff;
+    }
+
+    .news-side .side-link {
+      color: #990000;
+      font-weight: bold;
+    }
+
+    .news-side .side-date {
+      font-size: 0.65em;
+    }
+
+    .news-side .pin {
+      color: #993300;
+      font-size: 1.15em;
+      font-weight: bold;
+    }
+
+    .news-side .pin img {
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
     /* --- 3列の検索パネル --- */
     .search-panels {
       display: grid;
@@ -173,7 +230,8 @@
 
     @media screen and (max-width: 768px) {
       .search-panels,
-      .menu {
+      .menu,
+      .news {
         grid-template-columns: 1fr;
       }
 
@@ -241,7 +299,99 @@
         <span class="note">2023/7/12更新</span>
         <span class="for-dr">Dr向け</span>
       </p>
+    </nav>
 
+    <hr>
+
+    <!-- 左：これまでの経過 ／ 右：施設案内など -->
+    <div class="news">
+      <div class="news-main">
+        <p>2025/4/1 : 日本小児心電学会の代表幹事に就任しました。
+          <a href="https://jspec.jp/about/greeting">web site</a>
+        </p>
+
+        <p>2022/11/11, 12に大阪市中央公会堂で<br>
+          第26回日本小児心電学会学術集会を会長として開催しました<br>
+          →<a href="https://e-stepinc.com/shinden26/index.html">学術集会website</a>　<a
+            href="https://youtu.be/ShHFJinMWUU">動画</a>
+        </p>
+
+        <p>2020/12/25の読売新聞(関西・中国・四国)に記事が掲載されました →
+          <a href="for_top_page/20201225yomiuri-1.jpeg">読売新聞</a>
+          <a href="for_top_page/20201225yomiuri-2.pdf">記事拡大</a>
+        </p>
+
+        <p>2020/1月 : 大阪市立総合医療センターに2006年に転勤してから12年で小児不整脈科の<br>
+          アブレーション件数が1000件を越えたのを記念して，シニアレジデントの加藤有子先生に<br>
+          まとめてもらった論文が ，<a href="index_kato_paper.html">Heart Rhythm (アメリカ不整脈学会雑誌)に掲載されました</a>．
+        </p>
+
+        <p><a href="index_kato_paper.html"><img src="kato_paper/kato_paper.jpg" width="500" height="146"
+              alt="Heart Rhythm 掲載論文"></a></p>
+
+        <p>2019年4月，リズミア(Rhythmia)というアブレーション治療用の新しい機械が導入されました．最新の3D
+          mappingシステムで，AI技術が組み込まれており，さらに高精度での治療が可能になりました．</p>
+
+        <p>2015年10月，西日本で初となるCARTO UNIVUシステムが導入されました．
+          このシステムを使用することにより，こどもの不整脈カテーテル治療の被曝量が劇的に軽減されました．<br>
+          概要へのリンクです．→　<a href="pdf_download/univu.pdf">UNIVUシステム導入による被曝量の軽減について</a>
+        </p>
+
+        <p>2016/5/15の読売新聞(関西・中国・四国)に記事が掲載されました．<br>
+          記事のpdfへのリンクです．→　<a href="pdf_download/yomiuri_20160515.pdf">読売新聞　記事</a>
+        </p>
+
+        <p>2014年4月，読売新聞で「大阪市立総合医療センター・小児不整脈科」を採りあげて頂きました．
+          記事のpdfへのリンクです．→　<a href="https://bit.ly/2rQkxM2">読売新聞　記事</a><br>
+          web版です．　→　<a href="http://www.yomidr.yomiuri.co.jp/page.jsp?id=96912">読売新聞　記事「深化する医療」</a>
+        </p>
+
+        <p>2010年12月18日 : 「乳児の先天性接合部頻拍」に対する<br>
+          アブレーション治療について記者会見を開き各社で報道されました．<br>
+          ニュースがここから視聴できます．<a href="movie/JET_TV_news.m4v" target="_blank">TV</a> ,
+          <a href="movie/JET_mobile.m4v" target="_blank">TV(NHK_mobile)</a><br>
+          記事のpdfへのリンクです．→　<a href="pdf_download/NEWS101218JET.pdf">記事</a>
+        </p>
+
+        <p>2012年4月，大阪市立総合医療センターに，アブレーション治療のために設計された新しいカテーテル検査室が完成しました．
+          不整脈アブレーション治療には最高の環境です．</p>
+
+        <p><a href="page_rfca/rfca_room_5.html">「カテ室五番」の紹介</a>　,　<a
+            href="page_rfca/rfca_room_5_2.html">「カテ室五番」ができるまで</a></p>
+
+        <p>2009年7月:日赤和歌山医療センターから中村好秀先生をお迎えし，<br>
+          日本初の「小児不整脈科」 が設立されました．<br>
+          子供の不整脈，そして先天性心疾患術後の成人の不整脈治療をさらに充実した体制で行っています．</p>
+
+        <p>2006年4月: 東京女子医科大学から，大阪市立総合医療センター に転勤しました．</p>
+      </div>
+
+      <div class="news-side">
+        <p><a href="https://www.osakacity-hp.or.jp/ocgh/"><img src="for_top_page/OCGH_pict.jpg" width="506"
+              height="333" alt="大阪市立総合医療センター"></a></p>
+
+        <p><a href="https://www.osakacity-hp.or.jp/ocgh/dep/child/jj_n/index.html">病院の小児循環器・不整脈内科紹介ページへ</a></p>
+
+        <p class="upd"><span class="star">★</span>大阪市立総合医療センター入院案内，ペアレンツハウス大阪案内をupしました．</p>
+        <p class="side-link"><a href="page_rfca/rfca_admission.html">入院，宿泊施設案内</a>
+          <span class="side-date">2021/1/6 update</span>
+        </p>
+
+        <p class="upd"><span class="star">★</span>不整脈のアニメーション動画を追加しました．</p>
+        <p class="side-link"><a href="page/flash/flash.html">不整脈の動画</a>
+          <span class="side-date">2009/1/28 update</span>
+        </p>
+
+        <p class="pin"><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+          <a href="index_road.html">サイクリングのページへ</a>
+        </p>
+        <p class="pin"><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+          <a href="https://www.youtube.com/@tsugu_szk/videos">サイクリングmovie (YouTube)</a>
+        </p>
+      </div>
+    </div>
+
+    <nav>
       <p class="linkrow">
         <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/
         <a href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急</a>
@@ -326,7 +476,8 @@
       <li id="FVP">
         <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
         <span><a href="index_fvp.html">FVPとWPWの鑑別資料</a>
-          <span class="note">2023/7/7更新</span> <span class="for-dr">Dr向け</span></span>
+          <span class="note">2023/7/7更新</span> <span class="for-dr">Dr向け</span><br>
+          <span class="desc">WPW/FVPの鑑別診断のための資料です。スライド等も同梱しています。</span></span>
       </li>
       <li class="wide">
         <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
