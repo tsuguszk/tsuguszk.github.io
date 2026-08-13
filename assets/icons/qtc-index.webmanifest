@@ -1,0 +1,1 @@
+{"name": "QTc計測アプリ", "short_name": "QTc計測", "start_url": "/qtc/index_qtc.html", "display": "standalone", "background_color": "#ffffff", "theme_color": "#0f1724", "icons": [{"src": "qtc-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "qtc-512.png", "sizes": "512x512", "type": "image/png"}]}
