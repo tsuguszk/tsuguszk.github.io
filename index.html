@@ -7,16 +7,16 @@
   <meta name="keywords" content="つぐとし,鈴木嗣敏,小児不整脈,こどもの不整脈,wpw,小児のアブレーション">
   <meta name="description" content="小児不整脈を専門とする鈴木嗣敏のホームページ。アブレーション・電気生理検査の資料、QTc解析／PVC解析アプリ、不整脈のアニメーションなど。">
   <title>つぐとしのweb site</title>
-    <link rel="shortcut icon" href="assets/icons/profile.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/profile-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/profile-16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/profile-180.png">
-    <link rel="manifest" href="assets/icons/profile-index.webmanifest">
-    <meta name="theme-color" content="#222222">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="つぐとしHP">
+  <link rel="shortcut icon" href="assets/icons/profile.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/profile-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/profile-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/profile-180.png">
+  <link rel="manifest" href="assets/icons/profile-index.webmanifest">
+  <meta name="theme-color" content="#222222">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="つぐとしHP">
   <link rel="stylesheet" href="assets/site.css">
   <style>
     body {
@@ -172,10 +172,26 @@
       border: 1px solid #99ffcc;
       padding: 8px 10px;
       font-size: 0.85em;
+      box-sizing: border-box;
     }
 
     .search-panels form {
+      display: flex;
+      gap: 4px;
       margin: 6px 0 0;
+    }
+
+    .search-panels form input[type="search"],
+    .search-panels form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      box-sizing: border-box;
+    }
+
+    .search-panels form input[type="submit"] {
+      flex: none;
+      padding: 2px 8px;
     }
 
     /* --- 主要コンテンツへのリンク --- */
@@ -239,7 +255,7 @@
     }
 
     @media screen and (max-width: 768px) {
-      .search-panels,
+
       .menu,
       .news {
         grid-template-columns: 1fr;
@@ -297,12 +313,10 @@
         <a href="https://jspec.jp">小児心電学会</a>
         <a href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>
         <a href="pvc.html">PVC解析</a>
-      </p>
-      <p class="linkrow">
-        <a href="qtc/index_qtc.html"><strong>QTc解析アプリ</strong></a>
+        <a href="qtc/index_qtc.html">QTc解析アプリ</a>
       </p>
       <p class="linkrow" id="FVP2">
-        <a href="index_fvp.html"><strong>FVPとWPWの鑑別資料</strong></a>
+        <a href="index_fvp.html">FVPとWPWの鑑別資料</a>
         <span class="note">2023/7/12更新</span>
         <span class="for-dr">Dr向け</span>
       </p>
@@ -353,6 +367,11 @@
           web版です．　→　<a href="http://www.yomidr.yomiuri.co.jp/page.jsp?id=96912">読売新聞　記事「深化する医療」</a>
         </p>
 
+        <p>2012年4月、アブレーション治療専用のカテーテル検査室が完成しました。</p>
+
+        <p><a href="page_rfca/rfca_room_5.html">「カテ室五番」の紹介</a>　,　<a
+            href="page_rfca/rfca_room_5_2.html">「カテ室五番」ができるまで</a></p>
+
         <p>2010年12月18日 : 「乳児の先天性接合部頻拍」に対する<br>
           アブレーション治療について記者会見を開き各社で報道されました．<br>
           ニュースがここから視聴できます．<a href="movie/JET_TV_news.m4v" target="_blank">TV</a> ,
@@ -360,22 +379,14 @@
           記事のpdfへのリンクです．→　<a href="pdf_download/NEWS101218JET.pdf">記事</a>
         </p>
 
-        <p>2012年4月，大阪市立総合医療センターに，アブレーション治療のために設計された新しいカテーテル検査室が完成しました．
-          不整脈アブレーション治療には最高の環境です．</p>
-
-        <p><a href="page_rfca/rfca_room_5.html">「カテ室五番」の紹介</a>　,　<a
-            href="page_rfca/rfca_room_5_2.html">「カテ室五番」ができるまで</a></p>
-
-        <p>2009年7月:日赤和歌山医療センターから中村好秀先生をお迎えし，<br>
-          日本初の「小児不整脈科」 が設立されました．<br>
-          子供の不整脈，そして先天性心疾患術後の成人の不整脈治療をさらに充実した体制で行っています．</p>
+        <p>2009年7月:日赤和歌山医療センターから中村好秀先生をお迎えし，日本初の「小児不整脈科」 が設立されました．</p>
 
         <p>2006年4月: 東京女子医科大学から，大阪市立総合医療センター に転勤しました．</p>
       </div>
 
       <div class="news-side">
-        <p><a href="https://www.osakacity-hp.or.jp/ocgh/"><img src="for_top_page/OCGH_pict.jpg" width="506"
-              height="333" alt="大阪市立総合医療センター"></a></p>
+        <p><a href="https://www.osakacity-hp.or.jp/ocgh/"><img src="for_top_page/OCGH_pict.jpg" width="506" height="333"
+              alt="大阪市立総合医療センター"></a></p>
 
         <p><a href="https://www.osakacity-hp.or.jp/ocgh/dep/child/jj_n/index.html">病院の小児循環器・不整脈内科紹介ページへ</a></p>
 
@@ -400,18 +411,19 @@
 
     <nav>
       <p class="linkrow">
-        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/
-        <a href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急</a>
+        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
+          href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急</a>
         <a href="https://ekitan.com/">駅探</a>/
         <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
-        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/
-        <a href="https://www.jal.co.jp/5971/">JAL</a>/
-        <a href="https://ana.co.jp/">ANA</a>
+        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/<a href="https://www.jal.co.jp/5971/">JAL</a>/<a
+          href="https://ana.co.jp/">ANA</a>
         <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
       </p>
       <p class="linkrow">
-        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini API管理)</a>
-        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing (API費用管理)</a>
+        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini
+          API管理)</a>
+        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing
+          (API費用管理)</a>
         <a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a>
         <a href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a>
       </p>
@@ -427,11 +439,10 @@
     <div class="search-panels">
       <section>
         <a target="_blank" href="https://www.google.com/">Google</a>
-        <span class="dim">(UTF-8)</span>
         <a href="https://images.google.com/imghp?hl=ja&amp;tab=ni&amp;ned=jp&amp;q=">image</a>
         <a href="https://maps.google.co.jp/">map</a>
         <a href="https://mail.google.com/mail/">G-Mail</a>
-        <a href="https://calendar.google.com/calendar/u/0/r">カレンダー</a>
+        <a href="https://calendar.google.com/calendar/u/0/r">calender</a>
         <form action="https://www.google.com/search" method="get">
           <input type="search" name="q" maxlength="255" placeholder="検索">
           <input type="hidden" name="hl" value="ja">
@@ -441,10 +452,8 @@
 
       <section>
         <a href="https://www.amazon.co.jp/">Amazon</a>
-        <a href="https://pointupmall.com/shop/768/">pt+0〜4%</a>
         <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
         <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
-        <a href="https://www.amazon.co.jp/gp/video/collection/IncludedwithPrime">video</a>
         <form method="get" action="https://www.amazon.co.jp/s">
           <input type="hidden" name="tag" value="tsugutoshi-22">
           <input type="search" name="k" placeholder="検索" required>
@@ -454,7 +463,6 @@
 
       <section>
         <a href="https://www.rakuten.co.jp/">楽天市場</a>
-        <a href="https://pointupmall.com/search/power?q=楽天">pt+0.5%</a>
         <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
           <input type="search" id="rakuten_keyword" placeholder="検索" required>
           <input type="submit" value="GO">
