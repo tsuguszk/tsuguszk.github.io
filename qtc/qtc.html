@@ -848,7 +848,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.2 : 2026/8/17
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.4 : 2026/9/3
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -1112,7 +1112,8 @@
                         cx.drawImage(tempImg, 0, 0, w, h);
                         const resizedImg = new Image();
                         resizedImg.onload = () => runAnalysis(resizedImg, file.name, index);
-                        resizedImg.src = cvs.toDataURL('image/jpeg', 0.85);
+                        // JPEG再圧縮は細い格子線（1〜2px）を壊し自動計測を失敗させるため PNG を使う
+                        resizedImg.src = cvs.toDataURL('image/png');
                     } else {
                         runAnalysis(tempImg, file.name, index);
                     }
@@ -1432,9 +1433,8 @@
                     // グリッドから実測した px 値をそのまま採用（プリセットへ丸めない）
                     pxPerSec = calResult.pxPerSec;
                     calMethod = 'auto-grid';
-                    // 波形抽出モード(standard/holter)のみ最近傍プリセットのモードを流用
-                    const nearest = findClosestPreset(pxPerSec);
-                    extractionMode = (nearest === 'holter') ? 'holter' : 'standard';
+                    // 抽出モードは px/sec ではなく波形の色種別で決める（ver 2.3）
+                    extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
                     document.querySelectorAll('.cal-preset-btn').forEach(b => b.classList.remove('active'));
                     if (detectedLabel) detectedLabel.textContent = `自動計測: 25mm(1s) = ${pxPerSec}px（グリッド実測）`;
                 } else {
@@ -1443,7 +1443,7 @@
                     const matchedPreset = findClosestPreset(94); // デフォルト100%
                     pxPerSec = calPresets[matchedPreset];
                     highlightPresetButton(matchedPreset);
-                    extractionMode = (matchedPreset === 'holter') ? 'holter' : 'standard';
+                    extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
                     if (detectedLabel) detectedLabel.textContent = `検出失敗 → ${matchedPreset === 'holter' ? 'ホルター' : matchedPreset + '%'}を適用（手動で調整して下さい）`;
                 }
             }
@@ -1875,74 +1875,179 @@
         // Existing Visualization & Math Functions (Merged & Cleaned)
         // ---------------------------------------------------------
 
-        function detectCalibration(imgData, width, height) {
-            // ============================================================
-            // オレンジ/赤系グリッドの正確な自動計測（自己相関コム法）
-            //   1) 赤〜オレンジ〜ピンクの格子画素マスクを作成
-            //   2) 列方向に投影して垂直グリッド線(時間軸目盛)のプロファイルを得る
-            //   3) 自己相関の「コム(等間隔ピーク列)」から基本周期=1mm間隔(px)を推定
-            //   4) 25mm(=1秒) = 1mm周期 × 25 として px/sec を算出
-            //   モード最頻値法より遥かに頑健で、実測値をプリセットに丸めず表示できる。
-            // ============================================================
+        // ---------------------------------------------------------
+        // 波形の色種別判定（standard / holter の切り替え用）  ver 2.3
+        // ---------------------------------------------------------
+        // 従来は「pxPerSec に最も近いプリセットが holter か」で抽出モードを決めていた。
+        // しかし紙送り換算値(px/sec)と「ホルター記録かどうか」は本来無関係である。
+        // 実際、赤方眼紙の標準心電図でも 1mm≒5.7px（=143px/sec）で取り込むと
+        // ホルタープリセット(125px/sec)が最近傍になり holter 抽出へ誤って切り替わる。
+        // holter 抽出は赤方眼を除外しないため方眼を波形として拾い、R波検出が破綻して
+        // QT が1拍も算出されなくなっていた。
+        //
+        // ここでは「暗いピクセル＝波形本体」だけを見て無彩色か有彩色かを判定する。
+        // 薄い赤方眼は輝度が高いので lum 閾値で自然に除外され、
+        // detectBestChannel のように方眼へ引きずられない。
+        function detectTraceKind(imgData, width, height) {
+            const step = Math.max(1, Math.floor(width / 300)); // 約300列をサンプリング
+            let dark = 0, green = 0, red = 0;
+            for (let x = 0; x < width; x += step) {
+                for (let y = 0; y < height; y++) {
+                    const i = (y * width + x) * 4;
+                    const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+                    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                    if (lum >= 120) continue;                  // 薄い方眼・背景を除外
+                    dark++;
+                    const sat = Math.max(r, g, b) - Math.min(r, g, b);
+                    if (sat < 40) continue;                    // 無彩色（黒波形）
+                    if (g > r + 15 && g > b + 15) green++;
+                    else if (r > g + 15 && r > b + 15) red++;
+                }
+            }
+            if (dark < 50) return 'black';                     // 判定材料不足は安全側
+            if (green / dark > 0.25) return 'green';
+            if (red / dark > 0.25) return 'red';
+            return 'black';
+        }
+
+        // ============================================================
+        // キャリブレーション自動計測（ver 2.3 全面改訂）
+        //   格子線の位置をサブピクセルで求め、x_k = x0 + k·p の最小二乗フィットで
+        //   1mm 間隔 p を推定する。
+        //
+        // 旧実装（自己相関コム法）の問題:
+        //   ・自己相関のピーク位置が整数ラグなので、1mm<4px の画像では周期を
+        //     分解できない。「隣接ピーク間隔の中央値」が整数に張り付き、
+        //     真値 3.2px を 3.0px と誤って −6% の誤差が出た（しかも信頼と表示）。
+        //   ・5mm主線の周りに現れる副ピークが間隔統計を汚染する。
+        //   ・信頼判定 ac[peaks[0]]>0.15 は「最初に見つかったピーク」という
+        //     恣意的な量で、正しい推定値を誤って棄却していた。
+        //   ・赤格子が無いホルター印刷では、色付き波形そのものを格子と誤認し、
+        //     RR間隔由来の無意味な値を「信頼」として返していた。
+        //   ・JPEG圧縮された画像では赤格子マスクが崩れて全く検出できなかった。
+        // ============================================================
+
+        // 格子画素の列プロファイルを作る。kind: 'red'(赤方眼紙) / 'gray'(ホルター印刷)
+        function gridColumnProfile(imgData, width, height, kind) {
             const col = new Float32Array(width);
-            const yStep = Math.max(1, Math.floor(height / 500)); // 高さが大きい画像では間引き
-            let orangeCount = 0;
+            const yStep = Math.max(1, Math.floor(height / 500));
+            const rows = Math.ceil(height / yStep);
+            let hit = 0;
             for (let x = 0; x < width; x++) {
                 let c = 0;
                 for (let y = 0; y < height; y += yStep) {
                     const i = (y * width + x) * 4;
                     const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
-                    // 赤/オレンジ/ピンク格子: R が G・B より明確に高い（黒ECGトレース・白背景を除外）
-                    if ((r - b) > 25 && (r - g) > 18 && r > 140) c++;
+                    let ok;
+                    if (kind === 'red') {
+                        // 赤/オレンジ/ピンク格子（黒トレース・白背景を除外）
+                        ok = (r - b) > 25 && (r - g) > 18 && r > 140;
+                    } else {
+                        // 灰色の格子（黒トレースは lum<120、白背景は lum>235 で除外）
+                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                        const sat = Math.max(r, g, b) - Math.min(r, g, b);
+                        ok = sat < 25 && lum > 120 && lum < 235;
+                    }
+                    if (ok) c++;
                 }
-                col[x] = c;
-                orangeCount += c;
+                col[x] = c; hit += c;
             }
-            const frac = orangeCount / (width * Math.ceil(height / yStep));
-            if (frac < 0.003) return { pxPerSec: 0, method: 'none', confident: false, debug: `オレンジ格子不足 frac=${frac.toFixed(4)}` };
+            return { col, frac: hit / (width * rows) };
+        }
 
-            // 平均を除去して自己相関（lag 0..lim）
-            let mean = 0;
-            for (let x = 0; x < width; x++) mean += col[x];
-            mean /= width;
-            let ac0 = 0;
-            const cen = new Float32Array(width);
-            for (let x = 0; x < width; x++) { cen[x] = col[x] - mean; ac0 += cen[x] * cen[x]; }
-            if (ac0 <= 0) return { pxPerSec: 0, method: 'none', confident: false, debug: 'ac0=0' };
-
-            const lim = Math.min(260, Math.floor(width / 2));
-            const ac = new Float32Array(lim + 2);
-            for (let d = 0; d <= lim; d++) {
-                let s = 0;
-                for (let x = 0; x + d < width; x++) s += cen[x] * cen[x + d];
-                ac[d] = s / ac0;
+        // 列プロファイルの局所ピーク＝格子線。放物線内挿でサブピクセル位置を得る。
+        function gridLinePeaks(col, thr) {
+            const pos = [], amp = [];
+            for (let x = 1; x < col.length - 1; x++) {
+                if (col[x] >= col[x - 1] && col[x] > col[x + 1] && col[x] >= thr) {
+                    const y0 = col[x - 1], y1 = col[x], y2 = col[x + 1];
+                    const den = y0 - 2 * y1 + y2;
+                    let dx = Math.abs(den) > 1e-9 ? 0.5 * (y0 - y2) / den : 0;
+                    if (!(Math.abs(dx) <= 1)) dx = 0;
+                    pos.push(x + dx); amp.push(y1);
+                }
             }
+            return { pos, amp };
+        }
 
-            // 自己相関の局所ピーク(コムの歯 = グリッド周期の倍数)を収集
-            const peaks = [];
-            for (let d = 3; d < lim; d++) {
-                if (ac[d] > ac[d - 1] && ac[d] >= ac[d + 1] && ac[d] > 0.12) peaks.push(d);
+        // 周期 p を仮定して各線に格子番号 k を割り当て、最小二乗で p を精緻化する
+        function fitGridPeriod(pos, p) {
+            const n = pos.length;
+            const ks = new Float64Array(n);
+            const seen = new Set();
+            for (let i = 0; i < n; i++) { ks[i] = Math.round((pos[i] - pos[0]) / p); seen.add(ks[i]); }
+            if (seen.size < n * 0.9) return null;          // 同一番号への重複が多い＝周期が短すぎる
+            let sk = 0, sx = 0, skk = 0, skx = 0;
+            for (let i = 0; i < n; i++) { sk += ks[i]; sx += pos[i]; skk += ks[i] * ks[i]; skx += ks[i] * pos[i]; }
+            const den = n * skk - sk * sk;
+            if (Math.abs(den) < 1e-9) return null;
+            const slope = (n * skx - sk * sx) / den;
+            const inter = (sx - slope * sk) / n;
+            let ss = 0;
+            for (let i = 0; i < n; i++) { const e = pos[i] - (inter + slope * ks[i]); ss += e * e; }
+            return { p: slope, resid: Math.sqrt(ss / n) };
+        }
+
+        // 周期候補を細かく走査し、割り当て残差が最小の解を選ぶ（エイリアシング回避）
+        function searchGridPeriod(pos) {
+            const d = [];
+            for (let i = 1; i < pos.length; i++) { const v = pos[i] - pos[i - 1]; if (v > 0.8) d.push(v); }
+            if (d.length < 5) return null;
+            d.sort((a, b) => a - b);
+            const p0 = d[Math.floor(d.length / 2)];
+            let best = null;
+            for (let p = p0 * 0.7; p <= p0 * 1.45; p += 0.002) {
+                const f = fitGridPeriod(pos, p);
+                if (!f) continue;
+                if (Math.abs(f.p - p) > 0.15 * p) continue;   // 自己無撞着な解のみ採用
+                if (!best || f.resid < best.resid) best = f;
             }
-            if (peaks.length < 3) return { pxPerSec: 0, method: 'none', confident: false, debug: `ACピーク不足 peaks=${peaks.length}` };
+            return best;
+        }
 
-            // 連続ピーク間隔の中央値=基本周期(1mm)。外れ間隔を除外し平均で精緻化
-            const diffs = [];
-            for (let i = 1; i < peaks.length; i++) diffs.push(peaks[i] - peaks[i - 1]);
-            const sd = [...diffs].sort((a, b) => a - b);
-            const medDiff = sd[Math.floor(sd.length / 2)];
-            let sum = 0, n = 0;
-            for (const d of diffs) if (d > 0.6 * medDiff && d < 1.4 * medDiff) { sum += d; n++; }
-            const pFine = n ? sum / n : medDiff; // 1mm 間隔(px)
-
-            const pxPerSec = Math.round(pFine * 25); // 25mm(=1秒)
-            // 妥当性: 1mm=約2〜40px, 25mm(1s)=約60〜900px, コムが十分な歯数を持つ
-            const confident = pFine >= 2 && pFine <= 40 && peaks.length >= 4 &&
-                pxPerSec >= 60 && pxPerSec <= 900 && ac[peaks[0]] > 0.15;
-
-            if (!confident) {
-                return { pxPerSec: 0, method: 'none', confident: false, debug: `pFine=${pFine.toFixed(2)} npk=${peaks.length} → 信頼度不足` };
+        // 検出した格子間隔 p が 1mm か 5mm かを解釈する。
+        //   赤方眼紙は 1mm 格子が必ず印刷される。
+        //   ホルター印刷の灰色格子は 5mm ボックス（25mmごとに強線）で描かれるのが通例。
+        //   「5本に1本が強い」パターンは 1mm/5mm でも 5mm/25mm でも現れるため
+        //   判別には使えず、格子色と絶対スケールで判断する。
+        function resolveGridMm(p, kind) {
+            const inRange = v => v >= 2.2 && v <= 30;        // 1mm=2.2〜30px（55〜750 px/sec）
+            if (kind === 'gray') {
+                if (p >= 10 && inRange(p / 5)) return p / 5;
+                return inRange(p) ? p : null;
             }
-            return { pxPerSec, method: 'auto-grid', confident: true, debug: `1mm=${pFine.toFixed(2)}px → 25mm(1s)=${pxPerSec}px (歯${peaks.length})` };
+            if (inRange(p)) return p;
+            if (inRange(p / 5)) return p / 5;                // 1mm線が薄く5mm線だけ拾えた場合
+            return null;
+        }
+
+        function detectCalibration(imgData, width, height) {
+            for (const kind of ['red', 'gray']) {
+                const { col, frac } = gridColumnProfile(imgData, width, height, kind);
+                if (frac < 0.003) continue;
+                let mx = 0;
+                for (let x = 0; x < width; x++) if (col[x] > mx) mx = col[x];
+                if (mx <= 0) continue;
+                let pk = null;
+                for (const t of [0.25, 0.15, 0.10]) {
+                    const c = gridLinePeaks(col, mx * t);
+                    if (c.pos.length >= 10) { pk = c; break; }
+                }
+                if (!pk) continue;
+                const fit = searchGridPeriod(pk.pos);
+                if (!fit) continue;
+                const mm = resolveGridMm(fit.p, kind);
+                if (mm === null) continue;
+                const pxPerSec = Math.round(mm * 25);
+                const rr = fit.resid / fit.p;                // 格子の当てはまり具合
+                if (pxPerSec < 55 || pxPerSec > 750 || pk.pos.length < 10 || rr >= 0.12) continue;
+                return {
+                    pxPerSec, method: 'auto-grid', confident: true,
+                    debug: `${kind === 'red' ? '赤方眼' : '灰格子'} 間隔${fit.p.toFixed(2)}px(=${Math.round(fit.p / mm)}mm) 線${pk.pos.length}本 ` +
+                        `残差${(rr * 100).toFixed(1)}% → 1mm=${mm.toFixed(3)}px → 25mm(1s)=${pxPerSec}px`
+                };
+            }
+            return { pxPerSec: 0, method: 'none', confident: false, debug: '格子を検出できませんでした' };
         }
 
         function updateCalDisplay(index, pxPerSec, method) {
@@ -2150,9 +2255,30 @@
             const slopeTol = Math.max(0.02 * pxPerMm, 0.10 * maxSlope);
             const N = Math.max(3, Math.round(0.010 * pxPerSec));               // 持続10ms
 
+            // ver 2.3: 振幅条件の基準はQRS直前の等電位レベル（PR部）をローカル推定して使う。
+            //   引数 baseline は estimateIsoelectric（TP部・ST部を含むヒストグラム最頻値）
+            //   なので、ST部が持ち上がった波形では PR部より 0.5〜1.0mm 高く出ることがある。
+            //   その場合 PR部が振幅条件から外れて run が成立せず、走査が PR部を通り越して
+            //   P波の下行脚で停止し、Q-onset が 70〜100ms も手前へ飛ぶ事故が起きていた。
+            //   rLoc直前200msのうち「平坦なサンプル」の中央値を基準にすればPR部に一致する。
+            let localRef = baseline;
+            {
+                const refStart = Math.max(prevR + 5, Math.floor(rLoc - 0.20 * pxPerSec));
+                const flatVals = [];
+                for (let k = refStart; k < rLoc; k++) {
+                    if (Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) flatVals.push(smooth[k]);
+                }
+                if (flatVals.length >= 5) {
+                    flatVals.sort((a, b) => a - b);
+                    const med = flatVals[Math.floor(flatVals.length / 2)];
+                    // 基線から大きく離れる推定は誤りとみなし採用しない
+                    if (Math.abs(med - baseline) <= 1.5 * pxPerMm) localRef = med;
+                }
+            }
+
             let run = 0, coarse = -1;
             for (let k = rLoc - 1; k >= qLimit; k--) {
-                if (Math.abs(smooth[k] - baseline) <= ampTol && Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) {
+                if (Math.abs(smooth[k] - localRef) <= ampTol && Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) {
                     run++;
                     if (run >= N) { coarse = k + run - 1; break; }
                 } else {
@@ -2422,33 +2548,47 @@
                 // これによりT波の後に出現する心房ペーシングスパイク/P波の
                 // 急峻な立ち上がり・立ち下がりを最急勾配として誤検出するのを防ぐ。
                 let descEnd = slopeEnd;
+                let returnedToBase = false;
                 for (let k = tPeak + 1; k < slopeEnd; k++) {
                     // 陽性T: 山から下行して基線以下に到達したら終了
                     // 陰性T: 谷から上行して基線以上に到達したら終了
                     if (isNegativeT ? (smooth[k] >= baseline) : (smooth[k] <= baseline)) {
                         descEnd = k;
+                        returnedToBase = true;
                         break;
                     }
                 }
                 // 高心拍対策: T波がP波と融合し基線へ戻らない場合、下行脚探索が
                 // 続くP波の立ち上がりまで伸びて最急勾配を誤検出する。そこでT頂点直後の
                 // 「T-P谷(nadir=下行が反転して上行へ転じる最初の谷)」で探索上限を追加制限する。
-                // これによりT波の終末下行脚だけを対象に接線を引ける。
-                {
+                //
+                // ver 2.3: このガードは「基線に戻らなかった場合」に限定する。
+                //   基線復帰点が見つかった時点で探索範囲は既にP波の手前で閉じており、
+                //   谷ガードを重ねる必要はない。むしろT波頂上付近の1px程度のゆらぎ
+                //   （抽出信号は1/3px刻みなので平滑中央差分の最小分解能は約0.083）を
+                //   「反転」と誤認して探索をT波の頂上直後で打ち切り、ほぼ平坦な接線を
+                //   引いてしまう。その結果 tEnd が大きく後方へ飛び、
+                //   「tEnd > slopeEnd」でbeatごと棄却される事故が起きていた。
+                // あわせて反転判定を量子化ノイズより十分上に上げ、持続性も要求する。
+                if (!returnedToBase) {
                     const minGap = Math.max(2, Math.round(0.02 * pxPerSec)); // T頂点直後の微小ゆらぎを無視
-                    const turnTh = 0.03; // 反転とみなす平滑勾配の閾値
+                    const turnTh = 0.25;                                     // 量子化分解能(≈0.083)の3倍
+                    const hold = Math.max(2, Math.round(0.008 * pxPerSec));  // 反転の持続px数
                     let nadir = descEnd;
                     let started = false;
                     for (let k = tPeak + minGap; k < slopeEnd - 1; k++) {
                         const s = smoothedSlope(smooth, k, width);
-                        if (isNegativeT) {
-                            // 陰性T: まず上行(s>0)を確認し、その後 下行(s<0)へ転じる山を谷とみなす
-                            if (s > turnTh) started = true;
-                            else if (started && s < -turnTh) { nadir = k; break; }
-                        } else {
-                            // 陽性T: まず下行(s<0)を確認し、その後 上行(s>0)へ転じる谷で終了
-                            if (s < -turnTh) started = true;
-                            else if (started && s > turnTh) { nadir = k; break; }
+                        const desc = isNegativeT ? (s > turnTh) : (s < -turnTh);
+                        const rev = isNegativeT ? (s < -turnTh) : (s > turnTh);
+                        if (desc) { started = true; continue; }
+                        if (started && rev) {
+                            // 反転が hold px 続くことを確認（単発のゆらぎを除外）
+                            let ok = true;
+                            for (let j = k; j < Math.min(k + hold, slopeEnd - 1); j++) {
+                                const sj = smoothedSlope(smooth, j, width);
+                                if (!(isNegativeT ? (sj < -turnTh) : (sj > turnTh))) { ok = false; break; }
+                            }
+                            if (ok) { nadir = k; break; }
                         }
                     }
                     descEnd = Math.min(descEnd, nadir);
