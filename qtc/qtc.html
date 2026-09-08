@@ -848,7 +848,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.4 : 2026/9/3
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.5 : 2026/9/8
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -2153,6 +2153,46 @@
             return vals[Math.floor(vals.length / 2)];
         }
 
+        // ---------------------------------------------------------
+        // PRセグメント（QRS直前の等電位部）のレベル推定   ver 2.5
+        // ---------------------------------------------------------
+        // 基線は本来「QRS直前の等電位線」であり、Q波はここから下向きに離れ始める。
+        // estimateIsoelectric（前R+100ms〜Q直前のヒストグラム最頻値）は窓が広く、
+        // ST部・T波・P波を巻き込むため PR部より 1mm 以上高く出ることがある。
+        // 実測例: PR部が 123px なのに基線が 139px（+1.3mm）。この誤差は
+        //   ・基線が波形より上に描かれる（見た目の異常）
+        //   ・接線と基線の交点が手前に来て T-end が早まり QT が短く出る
+        //   ・Q-onset の振幅条件がP波の下行脚を拾い、マーカーがP波側へ飛ぶ
+        // の3つを同時に引き起こす。
+        //
+        // ここでは「R波から後方へ急峻部を抜け、その直後の平坦部40ms」を取る。
+        // QRS直前の平坦部＝PRセグメントなので、定義どおりの基線が得られる。
+        function estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec) {
+            const pxPerMm = pxPerSec / 25;
+            const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.12 * pxPerSec));
+            if (qLimit >= rLoc - 2) return null;
+            let maxSlope = 0;
+            for (let k = qLimit; k <= rLoc; k++) {
+                const s = Math.abs(smoothedSlope(smooth, k, width));
+                if (s > maxSlope) maxSlope = s;
+            }
+            const steep = Math.max(0.02 * pxPerMm, 0.10 * maxSlope);
+            const floorK = Math.max(prevR + 5, Math.floor(rLoc - 0.25 * pxPerSec));
+            // 1) QRSの急峻な立ち上がり/下がりを後方へ抜ける
+            let k = rLoc - 1;
+            while (k > floorK && Math.abs(smoothedSlope(smooth, k, width)) > steep) k--;
+            // 2) そこから40ms分の平坦サンプルを集め、中央値を取る。
+            //    中央値なので、rS型のように小さいr波が窓に混じっても引きずられない。
+            const span = Math.max(4, Math.round(0.040 * pxPerSec));
+            const vals = [];
+            for (let j = k; j > Math.max(floorK, k - span); j--) {
+                if (Math.abs(smoothedSlope(smooth, j, width)) <= steep) vals.push(smooth[j]);
+            }
+            if (vals.length < 3) return null;
+            vals.sort((a, b) => a - b);
+            return vals[Math.floor(vals.length / 2)];
+        }
+
         // beat間一貫性制約用: target近傍で最も平坦な等電位窓を再探索
         function estimateIsoelectricNear(smooth, prevR, roughQ, pxPerSec, target, tol) {
             const start = Math.max(prevR + Math.floor(0.10 * pxPerSec), prevR + 6);
@@ -2261,19 +2301,14 @@
             //   その場合 PR部が振幅条件から外れて run が成立せず、走査が PR部を通り越して
             //   P波の下行脚で停止し、Q-onset が 70〜100ms も手前へ飛ぶ事故が起きていた。
             //   rLoc直前200msのうち「平坦なサンプル」の中央値を基準にすればPR部に一致する。
+            // ver 2.5: PR部レベルを基準にする。
+            // 旧実装は「直前200msの平坦サンプルの中央値」だったが、窓にP波と
+            // TP部が混ざるため PR部より高く出て、P波の下行脚が振幅条件に入り
+            // Q-onset がP波側へ飛ぶ事故が起きた（実測で 17px = 60ms のずれ）。
             let localRef = baseline;
             {
-                const refStart = Math.max(prevR + 5, Math.floor(rLoc - 0.20 * pxPerSec));
-                const flatVals = [];
-                for (let k = refStart; k < rLoc; k++) {
-                    if (Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) flatVals.push(smooth[k]);
-                }
-                if (flatVals.length >= 5) {
-                    flatVals.sort((a, b) => a - b);
-                    const med = flatVals[Math.floor(flatVals.length / 2)];
-                    // 基線から大きく離れる推定は誤りとみなし採用しない
-                    if (Math.abs(med - baseline) <= 1.5 * pxPerMm) localRef = med;
-                }
+                const pr = estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec);
+                if (pr != null && Math.abs(pr - baseline) <= 1.5 * pxPerMm) localRef = pr;
             }
 
             let run = 0, coarse = -1;
@@ -2386,7 +2421,12 @@
                 const roughGuard = Math.max(3, Math.floor(0.01 * pxPerSec));
                 if (roughQ > rLoc - roughGuard) roughQ = Math.max(qLimit, rLoc - roughGuard);
 
-                const baseCand = estimateIsoelectric(smooth, prevR, roughQ, pxPerSec);
+                // ver 2.5: 基線候補は PR部レベルを優先する。
+                // estimateIsoelectric は窓が広くST-T部に引かれて高く出るため、
+                // 取れなかったときのフォールバックとしてのみ使う。
+                const prCand = estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec);
+                const baseCand = (prCand != null) ? prCand
+                    : estimateIsoelectric(smooth, prevR, roughQ, pxPerSec);
                 meta.push({ i, beatId, rLoc, prevR, rrSec, hr, roughQ, baseCand });
             }
 
@@ -2654,7 +2694,16 @@
 
                 // T-endの妥当性: 無効・接点より前・探索範囲超過なら不採用
                 // （画像端で切れたT波・平坦すぎるT波を捏造せず除外する）
-                if (!isFinite(tEnd) || tEnd <= contactX || tEnd > slopeEnd) continue;
+                // ver 2.5: 上限を slopeEnd（T波の探索窓）から「接点からの外挿距離」へ変更。
+                //   接線法は下行脚の接点から基線まで外挿するものなので、交点が探索窓の
+                //   数px外に出るのは正常。実際、最終拍は nextR=画像右端 でゲートが縮むため、
+                //   T波が画像内にあるのに 0.7〜12px 差で棄却されていた
+                //   （test_260903 b5、test_lqt b5）。
+                //   一方 ver2.3 で問題になった「ほぼ平坦な接線による暴走」は外挿距離が
+                //   287ms に達しており、100ms 上限で確実に弾ける。
+                const maxExtrap = Math.max(0.10 * pxPerSec, 20);
+                if (!isFinite(tEnd) || tEnd <= contactX ||
+                    tEnd > Math.min(width - 1, contactX + maxExtrap)) continue;
 
                 const qtMs = (tEnd - qTrough) / pxPerSec * 1000;
 
