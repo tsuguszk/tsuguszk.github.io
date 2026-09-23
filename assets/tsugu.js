@@ -1,4 +1,5 @@
 /* トップ下半分・報道・学会ページの動き
+   0. ヘッダーの実際の高さを測ってCSS変数に反映
    1. [data-reveal] をスクロールでふわっと表示
    2. .zs（新聞記事）をスクロールに合わせて約30%拡大
    3. 記事の拡大ビューア
@@ -12,6 +13,31 @@
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
   function ease(u) { return u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
+
+  /* ---------- 0. ヘッダーの実際の高さ ----------
+     --nav-h はCSSで決め打ちの目安値。実機（特にiPad Safari）では
+     env(safe-area-inset-top) 等の分だけヘッダーが --nav-h より高くなることがあり、
+     決め打ちのままだとヘッダー直下に置いた要素（スクロール進行バー・年ナビ等）が
+     ヘッダーの下に隠れてしまう。ここで実際の高さを測って --header-h に反映し、
+     ヘッダーの下端を基準にする箇所はすべて --header-h を使う。 */
+  var localnav = document.querySelector('.nx .localnav');
+  var nxRoot = document.querySelector('.nx');
+  if (localnav && nxRoot) {
+    var syncHeaderHeight = function () {
+      var h = localnav.offsetHeight;
+      // --header-h は .nx 自身が既定値(var(--nav-h))を持つため、
+      // 祖先(html等)ではなく .nx 自身に設定しないと上書きできない
+      if (h) { nxRoot.style.setProperty('--header-h', h + 'px'); }
+    };
+    syncHeaderHeight();
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(syncHeaderHeight).observe(localnav);
+    } else {
+      window.addEventListener('resize', syncHeaderHeight);
+    }
+    window.addEventListener('orientationchange', function () { setTimeout(syncHeaderHeight, 300); });
+    window.addEventListener('load', syncHeaderHeight);
+  }
 
   /* ---------- 1. ふわっと表示 ---------- */
   var reveals = document.querySelectorAll('.nx [data-reveal]');
