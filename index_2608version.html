@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="つぐとし,鈴木嗣敏,小児不整脈,こどもの不整脈,wpw,小児のアブレーション">
+  <meta name="description" content="小児不整脈を専門とする鈴木嗣敏のホームページ。アブレーション・電気生理検査の資料、QTc解析／PVC解析アプリ、不整脈のアニメーションなど。">
+  <title>つぐとしのweb site</title>
+  <link rel="shortcut icon" href="assets/icons/profile.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/profile-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/profile-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/profile-180.png">
+  <link rel="manifest" href="assets/icons/profile-index.webmanifest">
+  <meta name="theme-color" content="#222222">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="つぐとしHP">
+  <link rel="stylesheet" href="assets/site.css">
+  <style>
+    body {
+      background-image: url("for_top_page/gif/back.gif");
+      text-align: center;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
+
+    .title-image {
+      display: block;
+      margin: 0 auto;
+      max-width: 273px;
+    }
+
+    .updated {
+      color: #990000;
+      font-weight: bold;
+      margin: 10px 0 0;
+    }
+
+    .since {
+      color: #999900;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin: 2px 0 16px;
+    }
+
+    .rule {
+      display: block;
+      width: 640px;
+      max-width: 100%;
+      margin: 24px auto;
+    }
+
+    /* --- 検索フォーム --- */
+    .searchbox {
+      margin: 12px 0;
+    }
+
+    .searchbox input[type="text"],
+    .searchbox input[type="search"] {
+      max-width: 100%;
+      width: 22em;
+    }
+
+    .pubmed-hint {
+      color: #666666;
+      font-size: 0.8em;
+      line-height: 1.6;
+      max-width: 60em;
+      margin: 4px auto 20px;
+    }
+
+    .dim {
+      color: #999999;
+    }
+
+    /* --- リンク行 --- */
+    .linkrow {
+      margin: 8px 0;
+      line-height: 2.2;
+    }
+
+    .linkrow a {
+      margin: 0 0.5em;
+      white-space: nowrap;
+    }
+
+    .note {
+      color: #ff0000;
+      font-size: 0.75em;
+      white-space: nowrap;
+    }
+
+    .for-dr {
+      color: #ff0000;
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+
+    .desc {
+      color: #999999;
+      font-weight: normal;
+    }
+
+    /* --- お知らせ（左：経過／右：案内） --- */
+    .news {
+      display: grid;
+      grid-template-columns: 56fr 42fr;
+      gap: 0 2%;
+      margin: 16px 0 24px;
+      text-align: center;
+    }
+
+    .news-main p,
+    .news-side p {
+      margin: 14px 0;
+    }
+
+    .news-main p {
+      color: #990202;
+      font-weight: bold;
+    }
+
+    .news-main img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .news-side .star {
+      color: #ff0000;
+    }
+
+    .news-side .upd {
+      color: #0000ff;
+    }
+
+    .news-side .side-link {
+      color: #990000;
+      font-weight: bold;
+    }
+
+    .news-side .side-date {
+      font-size: 0.65em;
+    }
+
+    .news-side .pin {
+      color: #993300;
+      font-size: 1.15em;
+      font-weight: bold;
+    }
+
+    .news-side .pin img {
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+
+    /* --- 3列の検索パネル --- */
+    .search-panels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .search-panels section {
+      border: 1px solid #99ffcc;
+      padding: 8px 10px;
+      font-size: 0.85em;
+      box-sizing: border-box;
+    }
+
+    .search-panels form {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0 0;
+    }
+
+    .search-panels form input[type="search"],
+    .search-panels form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      box-sizing: border-box;
+    }
+
+    .search-panels form input[type="submit"] {
+      flex: none;
+      padding: 2px 8px;
+    }
+
+    /* --- 主要コンテンツへのリンク --- */
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 20px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+    }
+
+    .menu li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-weight: bold;
+    }
+
+    .menu li.wide {
+      grid-column: 1 / -1;
+    }
+
+    .menu img {
+      flex: none;
+      margin-top: 2px;
+    }
+
+    /* --- 記事ブロック --- */
+    .block {
+      margin: 32px auto;
+      max-width: 46em;
+    }
+
+    .block p {
+      margin: 6px 0;
+    }
+
+    .highlight {
+      color: #990000;
+      font-weight: bold;
+    }
+
+    .caption {
+      color: #993300;
+      font-size: 0.85em;
+    }
+
+    .caption-small {
+      font-size: 0.75em;
+    }
+
+    .address {
+      color: #663300;
+      margin: 32px 0 8px;
+    }
+
+    .address .label {
+      color: #996633;
+    }
+
+    @media screen and (max-width: 768px) {
+
+      .menu,
+      .news {
+        grid-template-columns: 1fr;
+      }
+
+      .searchbox input[type="text"],
+      .searchbox input[type="search"] {
+        width: 100%;
+        max-width: 260px;
+      }
+    }
+  .menu1 {      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px 20px;
+      margin: 20px 0;
+      padding: 0;
+      list-style: none;
+      text-align: left;
+}
+.menu1 {        grid-template-columns: 1fr;
+}
+.news1 {        grid-template-columns: 1fr;
+}
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <img src="for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site" class="title-image">
+      <p class="updated">2026/9/16 更新</p>
+      <p class="since">1997.1.1開設</p>
+    </header>
+
+    <!-- PubMed 検索 -->
+    <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank" class="searchbox">
+      <label>
+        Search <a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed">PubMed</a>:
+        <input name="db" type="hidden" value="PubMed">
+        <input name="term" type="search" value="">
+      </label>
+      <input type="submit" value="Go">
+    </form>
+
+    <p class="pubmed-hint">
+      keyword[tw] or [ot]，Mesh[mh]，著者[au]，フルネーム [fau], 1st author [1au], 施設[ad], タイトル[ti]，言語
+      : eng[la] or jpn[la]，出版年 : 2002:2004[dp]，雑誌名 : circulation[ta]<br>
+      <span class="dim">[tw] (jacc[ta] or J Cardiovasc Electrophysiol [ta] or Heart Rhythm [ta])</span>
+    </p>
+
+    <!-- よく使うリンク -->
+    <nav>
+      <p class="linkrow">
+        <a href="denden/index.html" target="_blank">denden</a>
+        <a href="https://self.pubfun.jp/users/mypage/" target="_blank">出版</a>
+        <a href="https://qr.quel.jp">QRcode</a>
+        <a href="https://jspec.jp">小児心電学会</a>
+        <a href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>
+        <a href="pvc.html">PVC解析</a>
+        <a href="qtc/index_qtc.html">QTc解析アプリ</a><span class="note">2026/9/8更新</span>
+      </p>
+      <p class="linkrow" id="FVP2">
+        <a href="index_fvp.html">FVPとWPWの鑑別資料</a>
+        <span class="note">2023/7/12更新</span>
+        <span class="for-dr">Dr向け</span>
+      </p>
+    </nav>
+
+    <hr>
+
+    <!-- 左：これまでの経過 ／ 右：施設案内など -->
+    <div class="news">
+      <div class="news-main">
+        <p>2025/4/1 : 日本小児心電学会の代表幹事に就任しました。
+          <a href="https://jspec.jp/about/greeting">web site</a>
+        </p>
+
+        <p>2022/11/11, 12に大阪市中央公会堂で<br>
+          第26回日本小児心電学会学術集会を会長として開催しました<br>
+          →<a href="https://e-stepinc.com/shinden26/index.html">学術集会website</a>　<a
+            href="https://youtu.be/ShHFJinMWUU">動画</a>
+        </p>
+
+        <p>2020/12/25の読売新聞(関西・中国・四国)に記事が掲載されました →<a href="for_top_page/20201225yomiuri-2.pdf">読売新聞記事</a></p>
+
+        <p>2020/1月 : 大阪市立総合医療センターに2006年に転勤してから12年で小児不整脈科の<br>
+          アブレーション件数が1000件を越えたのを記念して，シニアレジデントの加藤有子先生に<br>
+          まとめてもらった論文が ，<a href="index_kato_paper.html">Heart Rhythm (アメリカ不整脈学会雑誌)に掲載されました</a>．
+        </p>
+
+        <p><a href="index_kato_paper.html"><img src="kato_paper/kato_paper.jpg" width="500" height="146"
+              alt="Heart Rhythm 掲載論文"></a></p>
+
+        <p>2019年4月，リズミア(Rhythmia)というアブレーション治療用の新しい機械が導入されました．最新の3D
+          mappingシステムで，さらに高精度での治療が可能になりました．</p>
+
+        <p>2015年10月，西日本で初となるCARTO UNIVUシステムが導入されました．
+          こどもの不整脈カテーテル治療の被曝量が劇的に軽減されました．<br>
+          概要へのリンクです．→　<a href="pdf_download/univu.pdf">UNIVUシステム導入による被曝量の軽減について</a>
+        </p>
+
+        <p>2016/5/15の読売新聞(関西・中国・四国)に記事が掲載されました．<br>
+          記事のpdfへのリンクです．→　<a href="pdf_download/yomiuri_20160515.pdf">読売新聞　記事</a>
+        </p>
+
+        <p>2014年4月，読売新聞で「大阪市立総合医療センター・小児不整脈科」を採りあげて頂きました．
+          記事のpdfへのリンクです．→　<a href="for_top_page/20140420yomiuri.pdf">読売新聞　記事</a><br>
+          web版です．　→　<a href="http://www.yomidr.yomiuri.co.jp/page.jsp?id=96912">読売新聞　記事「深化する医療」</a>
+        </p>
+
+        <p>2012年4月、アブレーション治療専用のカテーテル検査室が完成しました。</p>
+
+        <p><a href="page_rfca/rfca_room_5.html">「カテ室五番」の紹介</a>　,　<a
+            href="page_rfca/rfca_room_5_2.html">「カテ室五番」ができるまで</a></p>
+
+        <p>2010年12月18日 : 「乳児の先天性接合部頻拍」に対する<br>
+          アブレーション治療について記者会見を開き各社で報道されました．<br>
+          ニュースがここから視聴できます．<a href="movie/JET_TV_news.m4v" target="_blank">TV</a> ,
+          <a href="movie/JET_mobile.m4v" target="_blank">TV(NHK_mobile)</a><br>
+          記事のpdfへのリンクです．→　<a href="pdf_download/NEWS101218JET.pdf">記事</a>
+        </p>
+
+        <p>2009年7月:日赤和歌山医療センターから中村好秀先生をお迎えし，日本初の「小児不整脈科」 が設立されました．</p>
+
+        <p>2006年4月: 東京女子医科大学から，大阪市立総合医療センター に転勤しました．</p>
+      </div>
+
+      <div class="news-side">
+        <p><a href="https://www.osakacity-hp.or.jp/ocgh/"><img src="for_top_page/OCGH_pict.jpg" width="506" height="333"
+              alt="大阪市立総合医療センター"></a></p>
+
+        <p><a href="https://www.osakacity-hp.or.jp/ocgh/dep/child/jj_n/index.html">病院の小児循環器・不整脈内科紹介ページへ</a></p>
+
+        <p class="upd"><span class="star">★</span>大阪市立総合医療センター入院案内，ペアレンツハウス大阪案内をupしました．</p>
+        <p class="side-link"><a href="page_rfca/rfca_admission.html">入院，宿泊施設案内</a>
+          <span class="side-date">2021/1/6 update</span>
+        </p>
+
+        <p class="upd"><span class="star">★</span>不整脈のアニメーション動画を追加しました．</p>
+        <p class="side-link"><a href="page/flash/flash.html">不整脈の動画</a>
+          <span class="side-date">2009/1/28 update</span>
+        </p>
+
+        <p class="pin"><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+          <a href="index_road.html">サイクリングのページへ</a>
+        </p>
+        <p class="pin"><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+          <a href="https://www.youtube.com/@tsugu_szk/videos">サイクリングmovie (YouTube)</a>
+        </p>
+      </div>
+    </div>
+
+    <nav>
+      <p class="linkrow">
+        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
+          href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急5489</a>
+        <a href="https://ekitan.com/">駅探</a>/
+        <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
+        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/<a
+          href="https://www.ikyu.com/">一休</a>/<a
+          href="https://www.agoda.com/ja-jp/trips?ds=ZAyZr6iN5E3fete%2B">Agoda</a>　<a href="https://www.jal.co.jp/5971/">JAL</a>/<a
+          href="https://ana.co.jp/">ANA</a>
+        <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini
+          API管理)</a>
+        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing
+          (API費用管理)</a>
+        <a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a>
+        <a href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://fast.com/ja/">インターネット速度計測</a>
+        <a href="https://github.com/tsuguszk/tsuguszk.github.io">GitHub</a>
+        <a href="12kokki.html">十二国記</a>
+        <a href="https://www.yodobashi.com">ヨドバシ</a>
+      </p>
+    </nav>
+
+    <!-- Google / Amazon / 楽天 -->
+    <div class="search-panels">
+      <section>
+        <a target="_blank" href="https://www.google.com/">Google</a>
+        <a href="https://images.google.com/imghp?hl=ja&amp;tab=ni&amp;ned=jp&amp;q=">image</a>
+        <a href="https://maps.google.co.jp/">map</a>
+        <a href="https://mail.google.com/mail/">G-Mail</a>
+        <a href="https://calendar.google.com/calendar/u/0/r">calender</a>
+        <form action="https://www.google.com/search" method="get">
+          <input type="search" name="q" maxlength="255" placeholder="検索">
+          <input type="hidden" name="hl" value="ja">
+          <input type="submit" name="btnG" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.amazon.co.jp/">Amazon</a>
+        <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
+        <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
+        <form method="get" action="https://www.amazon.co.jp/s">
+          <input type="hidden" name="tag" value="tsugutoshi-22">
+          <input type="search" name="k" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.rakuten.co.jp/">楽天市場</a>
+        <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
+          <input type="search" id="rakuten_keyword" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+    </div>
+
+    <img src="for_top_page/gif/line1.gif" width="640" height="9" alt="" class="rule">
+
+    <!-- 主要コンテンツ -->
+    <ul class="menu" id="anchor78285">
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page_rfca/rfca_manual.html">カテーテルアブレーション・電気生理検査(pdf)</a>
+          <span class="note">2021/1/6更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page/flash/flash.html">不整脈のアニメーション動画ファイル</a>
+          <span class="note">2015/1/18更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page/ECG.pdf">心電図電極の張り方</a></span>
+      </li>
+      <li id="FVP">
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="index_fvp.html">FVPとWPWの鑑別資料</a>
+          <span class="note">2023/7/7更新</span> <span class="for-dr">Dr向け</span><br>
+          <span class="desc">WPW/FVPの鑑別診断のための資料です。スライド等も同梱しています。</span></span>
+      </li>
+      <li class="wide">
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="page_rfca/rfca_admission.html">大阪市立総合医療センター入院案内・ペアレンツハウス大阪案内</a>
+          <span class="note">2021/1/6更新</span></span>
+      </li>
+      <li>
+        <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+        <span><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term=tsugutoshi+suzuki+[fau]">論文リスト</a>
+          <a href="https://scholar.google.com/citations?hl=en&amp;user=wbILea0AAAAJ">引用</a></span>
+      </li>
+      <li><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <span><a href="pvc.html">A paceでPVCが誘発されるか判定アプリ</a></span></li>
+      <li></li>
+      <li>      </li>
+      <li></li>
+      <li></li>
+    </ul>
+
+    <img src="for_top_page/gif/line2.gif" width="640" height="27" alt="" class="rule">
+
+
+      <img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""><a href="https://drive.google.com/drive/folders/1B52BjAafmBZEmYqRK8YvvaRQAPhirzRY?usp=sharing"><strong>カテのアンギオ画像合成ツール</strong></a><br>
+      カテーテル治療のカテ位置のRAO, LAO透視画像を合成するhtmlアプリ、macアプリのできがよいので、共有します。
+html版はwindowsでも使えるますが、保存先が指定できません。mac版は、保存先が指定できる、程度の違いです。
+<div class="block">
+    <p><img src="for_top_page/jpg/110-1098_IMG.JPG" width="283" height="208" alt="県立尼崎病院・心臓センター外来"></p>
+      <p class="caption">県立尼崎病院・心臓センター外来にて (2001.10)</p>
+    </div>
+
+    <div class="block">
+      <p><img src="poem.png" width="496" height="321" alt="娘が書いた詩"></p>
+      <p class="caption">2008.12.28. 小学校二年生の娘が学校で初めて詩を書いてきました．</p>
+      <p class="caption">う〜ん　　何度読んでも，すばらしい詩です．母親譲りの才能だそうです
+        <span class="caption-small">(おやばか．．．)</span>
+      </p>
+    </div>
+
+    <div class="block">
+      <p><img src="for_top_page/jpg/IMG_8841.png" width="283" height="340" alt="娘が幼稚園で自作した旗"></p>
+      <p class="caption">2004.5.</p>
+      <p class="caption">娘が4歳の誕生日に幼稚園で自作した旗です．</p>
+    </div>
+
+    <footer>
+      <p class="address">
+        <span class="label">web adress : </span>
+        <a href="https://tsugutoshi.com">tsugutoshi.com</a>
+      </p>
+      <p><a href="https://tsuguszk.github.io">tsuguszk.github.io</a></p>
+      <p><a href="index_road.html"><img src="for_top_page/shougatsu/HITU_382.gif" width="170" height="142"
+            alt="自転車・ロードバイクのページへ"></a></p>
+      <p><img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac"></p>
+    </footer>
+
+  </div>
+
+  <script>
+    // 楽天の検索は /search/mall/<キーワード>/ という形式なので送信時に組み立てる
+    document.getElementById('rakutenForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var keyword = document.getElementById('rakuten_keyword').value.trim();
+      if (keyword) {
+        window.open('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/', '_blank');
+      }
+    });
+  </script>
+</body>
+
+</html>
