@@ -108,7 +108,7 @@
 }
 .nx .tile h3 { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); font-weight: 800; }
 .nx .tile p { color: var(--ink-2); max-width: 30em; }
-.nx .tile .more { margin-top: auto; padding-top: 14px; color: var(--green); }
+.nx .tile .more { margin-top: auto; padding-top: 14px; color: var(--green); font-size: clamp(1.15rem, 1rem + .45vw, 1.35rem); }
 .nx .tile--press { padding-bottom: 0; }
 .nx .fan { position: relative; height: 250px; margin: 18px calc(-1 * clamp(24px, 3.2vw, 40px)) 0; overflow: hidden; }
 .nx .fan img {
@@ -203,7 +203,11 @@
 .nx .photo img { display: block; width: 100% !important; border-radius: 10px; }
 .nx .photo figcaption { margin-top: 10px; color: #7a3a12; font-size: .88rem; line-height: 1.6; }
 .nx .photo figcaption small { color: var(--muted); font-size: .8rem; }
-.nx .ride { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 22px; margin-top: 22px; padding: 18px 24px; }
+.nx .road { display: flex; flex-direction: column; align-items: center; gap: 18px; margin: 0 auto clamp(28px, 5vw, 48px); }
+.nx .road > a { display: block; line-height: 0; }
+.nx .road > a img { width: min(340px, 72vw) !important; filter: drop-shadow(0 18px 26px rgba(8, 58, 38, .32)); transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
+@media (hover: hover) { .nx .road > a:hover img { transform: rotate(-1.5deg) scale(1.02); } }
+.nx .ride { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 22px; padding: 14px 24px; }
 .nx .ride a { font-weight: 700; }
 .nx .ride img { width: 25px !important; vertical-align: middle; }
 
@@ -300,10 +304,9 @@ body.nx-body {
 }
 .nx .zs.zs-on .zs-step b { color: var(--accent); font-variant-numeric: tabular-nums; }
 .nx .zs.zs-on .zs-bar {
-  display: block; position: absolute; left: 0; right: 0; top: var(--nav-h); z-index: 3; height: 3px; background: rgba(14, 58, 42, .08);
+  display: block; position: absolute; left: 0; right: 0; top: var(--nav-h); z-index: 3; height: 7px; background: rgba(14, 58, 42, .12);
 }
-.nx .zs.zs-on .zs-bar span { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); transform-origin: 0 50%; transform: scaleX(var(--zs-p, 0)); }
-.nx .zs.zs-on.zs-reading .zs-cap { opacity: .94; }
+.nx .zs.zs-on .zs-bar span { display: block; height: 100%; width: 100%; border-radius: 0 4px 4px 0; background: linear-gradient(90deg, var(--accent), var(--green)); transform-origin: 0 50%; transform: scaleX(var(--zs-p, 0)); }
 
 .nx .group-head { max-width: 900px; margin: clamp(40px, 8vw, 90px) auto clamp(8px, 2vw, 20px); padding: 0 var(--gutter); text-align: center; }
 .nx .group-head h2 { font-size: clamp(1.6rem, 1.1rem + 2vw, 2.4rem); font-weight: 800; }
@@ -335,9 +338,9 @@ body.nx-body {
 /* ---------- 学会ページ ---------- */
 .nx .roles { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
 .nx .role {
-  position: sticky; top: calc(var(--nav-h) + 18px);
+  position: relative;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); align-items: center; gap: clamp(20px, 4vw, 56px);
-  min-height: min(560px, 72vh); margin-bottom: 7vh; padding: clamp(26px, 5vw, 64px);
+  margin-bottom: clamp(18px, 3vw, 30px); padding: clamp(24px, 4.5vw, 56px);
 }
 .nx .role:last-child { margin-bottom: 0; }
 .nx .role .big {
@@ -351,6 +354,27 @@ body.nx-body {
 .nx .roles .role { background: linear-gradient(150deg, rgba(255, 255, 255, .96), rgba(236, 255, 246, .92)); }
 .nx .roles .role--b { background: linear-gradient(150deg, rgba(255, 252, 245, .97), rgba(255, 236, 219, .94)); }
 .nx .roles .role--c { background: linear-gradient(150deg, rgba(255, 255, 255, .97), rgba(226, 244, 255, .94)); }
+
+/* 代表幹事あいさつ（写真＋本文） */
+.nx .role--greeting { grid-template-columns: 200px minmax(0, 1fr); align-items: start; gap: clamp(22px, 4vw, 52px); }
+.nx .role-portrait { margin: 0; text-align: center; }
+.nx .role-portrait img { display: block; width: 100% !important; max-width: 200px; margin: 0 auto !important; border-radius: 16px; box-shadow: 0 14px 30px -14px rgba(8, 58, 38, .45); }
+.nx .role-portrait figcaption { margin-top: 12px; color: var(--ink-2); font-size: .82rem; line-height: 1.6; }
+.nx .role-portrait figcaption b { display: block; margin-top: 2px; color: var(--ink); font-size: 1rem; }
+.nx .role .eyebrow { letter-spacing: .08em; }
+.nx .role--greeting h2 { margin-top: 2px; }
+.nx .greeting { max-width: 40em; margin-top: 18px; }
+.nx .role .greeting p { margin: 0 0 1em; color: var(--ink); font-size: 1rem; line-height: 1.95; }
+.nx .role .greeting-date { max-width: 40em; margin: 4px 0 0; color: var(--ink-2); font-size: .92rem; text-align: right; }
+
+/* 第26回学術集会（写真＋説明） */
+.nx .role--meeting { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+.nx .role-photo { margin: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 16px 34px -16px rgba(0, 0, 0, .45); }
+.nx .role-photo img { display: block; width: 100% !important; aspect-ratio: 4 / 3; object-fit: cover; }
+.nx .role .meeting-meta { margin-top: 8px; color: var(--accent); font-size: .95rem; font-weight: 800; letter-spacing: .04em; }
+.nx .role--meeting .actions { gap: 8px; }
+.nx .role--meeting .btn { min-height: 40px; padding: 7px 15px; font-size: .88rem; }
+.nx .role .meeting-theme { margin-top: 14px; padding-left: 14px; border-left: 3px solid rgba(196, 88, 28, .45); color: var(--ink); font-size: 1rem; }
 
 .nx .yearnav {
   position: sticky; top: var(--nav-h); z-index: 20; display: flex; gap: 6px; overflow-x: auto;
@@ -396,7 +420,8 @@ body.nx-body {
   .nx .hospital { grid-template-columns: 1fr 1fr; }
   .nx .year { grid-template-columns: 150px minmax(0, 1fr); }
   .nx .year-label b { font-size: 3.3rem; }
-  .nx .role { grid-template-columns: 1fr; align-content: center; gap: 18px; }
+  .nx .role, .nx .role--meeting { grid-template-columns: 1fr; align-content: center; gap: 18px; }
+  .nx .role--greeting { grid-template-columns: 160px minmax(0, 1fr); }
 }
 
 /* iPad 縦・小さめのタブレット */
@@ -452,7 +477,10 @@ body.nx-body {
 
   .nx .videos { grid-template-columns: 1fr; }
   .nx .talks { grid-template-columns: 1fr; }
-  .nx .role { position: relative; top: auto; min-height: 0; margin-bottom: 16px; }
+  .nx .role { margin-bottom: 16px; }
+  .nx .role--greeting { grid-template-columns: 1fr; }
+  .nx .role-portrait { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 14px; text-align: left; }
+  .nx .role-portrait figcaption { margin-top: 0; }
   .nx .year { display: block; padding-top: 18px; }
   .nx .year-label { position: static; margin-bottom: 12px; }
   .nx .year-label b { display: inline; font-size: 2.4rem; }
@@ -464,7 +492,6 @@ body.nx-body {
   .nx-js .nx [data-reveal] { opacity: 1; transform: none; transition: none; }
   .nx .tile, .nx .fan img { transition: none; }
   .nx .scroll-cue span { animation: none; }
-  .nx .role { position: relative; top: auto; }
 }
 
 @media print {

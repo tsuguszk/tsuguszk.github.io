@@ -1,6 +1,6 @@
 /* トップ下半分・報道・学会ページの動き
    1. [data-reveal] をスクロールでふわっと表示
-   2. .zs（新聞記事）をスクロールに合わせて、全体表示 → 文字が読める大きさまで拡大 → 次の箇所へ移動 → 縮小
+   2. .zs（新聞記事）をスクロールに合わせて約30%拡大
    3. 記事の拡大ビューア
    4. 学会ページの年ナビの現在地表示 */
 (function () {
@@ -26,13 +26,12 @@
     reveals.forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* ---------- 2. 記事の超拡大スクロール ----------
-     data-char : 元画像での本文1文字の大きさ(px)
-     data-path : 読む順に並べた注目点 [{x,y,z,w,t,h}]
-       x,y 画像内の位置(0〜1) / z 拡大度(0=全体, 1=本文が読める大きさ)
-       w   その箇所の幅(0〜1)。横書きの行が画面からはみ出さないよう倍率を抑える
-       t   表示する説明 / h その箇所で止まる長さ(画面の高さ単位) */
-  var TRANSITION = .7;
+  /* ---------- 2. 記事のスクロール拡大 ----------
+     記事1本あたり画面1枚弱のスクロールで、全体表示 → 注目点に向かって約30%拡大。
+     文字を読むのは「記事を拡大して読む」ボタンの役目なので、ここでは操作の軽さを優先する。
+     data-focus : 拡大の中心 "x,y"（画像内の位置 0〜1）。省略時は中央
+     data-zoom  : 最大倍率（全体表示に対する倍率）。省略時は 1.3 */
+  var TRAVEL = .75;            // 固定表示している間のスクロール量（画面の高さ単位）
 
   function Story(sec) {
     this.sec = sec;
@@ -40,28 +39,12 @@
     this.view = sec.querySelector('.zs-view');
     this.img = sec.querySelector('.zs-img');
     this.cap = sec.querySelector('.zs-cap');
-    this.step = sec.querySelector('.zs-step');
-    this.bar = sec.querySelector('.zs-bar');
     this.W = +this.img.getAttribute('width');
     this.H = +this.img.getAttribute('height');
-    this.charPx = +sec.getAttribute('data-char') || 30;
-
-    var path = JSON.parse(sec.getAttribute('data-path') || '[]');
-    var S = [{ x: .5, y: .5, k: .6, o: .2, h: 0, label: '' },
-             { x: .5, y: .5, z: 0, o: 1, h: .4, label: '全体' }];
-    path.forEach(function (p, i) {
-      S.push({ x: p.x, y: p.y, z: p.z == null ? 1 : p.z, w: p.w, o: 1, h: p.h == null ? .5 : p.h,
-               label: (i + 1) + ' / ' + path.length + '　' + (p.t || '') });
-    });
-    S.push({ x: .5, y: .5, z: 0, o: 1, h: .3, label: '全体' });
-    S.push({ x: .5, y: .5, k: .6, o: .2, h: 0, label: '' });
-
-    var t = 0;
-    S.forEach(function (s, i) { s.start = t; t += s.h; if (i < S.length - 1) { t += TRANSITION; } });
-    this.S = S;
-    this.len = t;
-    this.lastLabel = null;
-    sec.style.setProperty('--zs-len', (this.len + 1).toFixed(3));
+    var f = (sec.getAttribute('data-focus') || '.5,.5').split(',');
+    this.fx = +f[0]; this.fy = +f[1];
+    this.zoom = +sec.getAttribute('data-zoom') || 1.3;
+    sec.style.setProperty('--zs-len', (1 + TRAVEL).toFixed(2));
     sec.classList.add('zs-on');
   }
 
@@ -76,32 +59,11 @@
       : { x0: 0, x1: vw, y0: 0, y1: capRect.top - viewRect.top - 10 };
     if (R.y1 - R.y0 < vh * .45) { R.y1 = vh; }
     var padX = vw < 600 ? 12 : 36, padY = vw < 600 ? 14 : 26;
-    var fit = Math.min((R.x1 - R.x0 - 2 * padX) / this.W, (R.y1 - R.y0 - 2 * padY) / this.H);
-    var target = vw < 600 ? 17 : (vw < 1100 ? 19 : 21);
-    var W = this.W, H = this.H, charPx = this.charPx;
-
+    this.fit = Math.min((R.x1 - R.x0 - 2 * padX) / this.W, (R.y1 - R.y0 - 2 * padY) / this.H);
     this.R = R;
-    this.cx = (R.x0 + R.x1) / 2;
-    this.cy = (R.y0 + R.y1) / 2;
-    this.V = this.S.map(function (s) {
-      var sc;
-      if (s.k) {
-        sc = fit * s.k;
-      } else {
-        var read = target / charPx;
-        if (s.w) { read = Math.min(read, (R.x1 - R.x0) * .94 / (s.w * W)); }
-        read = Math.max(read, fit * 1.05);
-        sc = fit * Math.pow(read / fit, s.z);
-      }
-      // 画面を覆える大きさなら、画像の端が領域の内側に入り込まないよう注目点を寄せる
-      var hw = (R.x1 - R.x0) / 2 / sc, hh = (R.y1 - R.y0) / 2 / sc;
-      var cx = W <= 2 * hw ? W / 2 : clamp(s.x * W, hw, W - hw);
-      var cy = H <= 2 * hh ? H / 2 : clamp(s.y * H, hh, H - hh);
-      return { s: sc, cx: cx, cy: cy, o: s.o };
-    });
-    this.sMax = Math.max.apply(null, this.V.map(function (v) { return v.s; }));
-    this.img.style.width = (W * this.sMax).toFixed(1) + 'px';
-    this.img.style.height = (H * this.sMax).toFixed(1) + 'px';
+    this.sMax = this.fit * this.zoom;
+    this.img.style.width = (this.W * this.sMax).toFixed(1) + 'px';
+    this.img.style.height = (this.H * this.sMax).toFixed(1) + 'px';
   };
 
   Story.prototype.update = function () {
@@ -109,41 +71,27 @@
     var vh = window.innerHeight;
     var near = rect.bottom > -vh * .5 && rect.top < vh * 1.5;
     this.sec.classList.toggle('zs-active', near);
-    if (!near || !this.V) { return; }
+    if (!near || !this.R) { return; }
 
     var travel = Math.max(1, this.sec.offsetHeight - this.stage.offsetHeight);
-    var p = clamp(-rect.top / travel, 0, 1);
-    var t = p * this.len;
-    var S = this.S, V = this.V, a = V[0], b = V[0], u = 0, idx = 0;
-    for (var i = 0; i < S.length; i++) {
-      var holdEnd = S[i].start + S[i].h;
-      if (t <= holdEnd || i === S.length - 1) { a = b = V[i]; idx = i; break; }
-      if (t < S[i + 1].start) {
-        u = ease((t - holdEnd) / TRANSITION);
-        a = V[i]; b = V[i + 1]; idx = u < .5 ? i : i + 1;
-        break;
-      }
-    }
-    var s = Math.exp(Math.log(a.s) + (Math.log(b.s) - Math.log(a.s)) * u);
-    var cx = a.cx + (b.cx - a.cx) * u;
-    var cy = a.cy + (b.cy - a.cy) * u;
-    var o = a.o + (b.o - a.o) * u;
-    var tx = this.cx - s * cx, ty = this.cy - s * cy;
+    // 固定表示になる少し前（画面に入ってくる間）から動き始める
+    var p = clamp((-rect.top + vh * .35) / (travel + vh * .35), 0, 1);
+    var u = ease(clamp(p / .85, 0, 1));
+    var s = this.fit * (.92 + (this.zoom - .92) * u);
+    var R = this.R, W = this.W, H = this.H;
+    var hw = (R.x1 - R.x0) / 2 / s, hh = (R.y1 - R.y0) / 2 / s;
+    var fx = .5 + (this.fx - .5) * u, fy = .5 + (this.fy - .5) * u;
+    var cx = W <= 2 * hw ? W / 2 : clamp(fx * W, hw, W - hw);
+    var cy = H <= 2 * hh ? H / 2 : clamp(fy * H, hh, H - hh);
+    var tx = (R.x0 + R.x1) / 2 - s * cx, ty = (R.y0 + R.y1) / 2 - s * cy;
     this.img.style.transform = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0) scale(' + (s / this.sMax).toFixed(5) + ')';
-    this.img.style.opacity = o.toFixed(3);
+    this.img.style.opacity = (.35 + .65 * clamp(p / .25, 0, 1)).toFixed(3);
     this.sec.style.setProperty('--zs-p', p.toFixed(4));
-    this.sec.classList.toggle('zs-reading', S[idx].z > .5);
-
-    var label = S[idx].label;
-    if (this.step && label && label !== this.lastLabel) {
-      this.step.querySelector('span').textContent = label;
-      this.lastLabel = label;
-    }
   };
 
   var stories = [];
   if (!reduceMotion.matches) {
-    document.querySelectorAll('.nx .zs[data-path]').forEach(function (sec) { stories.push(new Story(sec)); });
+    document.querySelectorAll('.nx .zs').forEach(function (sec) { stories.push(new Story(sec)); });
   }
 
   var ticking = false;

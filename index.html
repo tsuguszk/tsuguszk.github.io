@@ -97,11 +97,54 @@
       white-space: nowrap;
     }
 
+    /* --- 3列の検索パネル --- */
+    .search-panels {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .search-panels section {
+      border: 1px solid #99ffcc;
+      padding: 8px 10px;
+      font-size: 0.85em;
+      box-sizing: border-box;
+    }
+
+    .search-panels form {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0 0;
+    }
+
+    .search-panels form input[type="search"],
+    .search-panels form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      box-sizing: border-box;
+    }
+
+    .search-panels form input[type="submit"] {
+      flex: none;
+      padding: 2px 8px;
+    }
+
     @media screen and (max-width: 768px) {
       .searchbox input[type="text"],
       .searchbox input[type="search"] {
         width: 100%;
         max-width: 260px;
+      }
+
+      .search-panels {
+        grid-template-columns: 1fr;
+      }
+
+      .search-panels form input[type="search"] {
+        max-width: none;
       }
     }
   </style>
@@ -160,6 +203,70 @@
       </p>
     </nav>
 
+    <!-- 移動・Google・そのほかのリンク（旧版と同じレイアウト） -->
+    <nav>
+      <p class="linkrow">
+        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
+          href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急5489</a>
+        <a href="https://ekitan.com/">駅探</a>/
+        <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
+        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/<a
+          href="https://www.ikyu.com/">一休</a>/<a
+          href="https://www.agoda.com/ja-jp/trips?ds=ZAyZr6iN5E3fete%2B">Agoda</a>　<a href="https://www.jal.co.jp/5971/">JAL</a>/<a
+          href="https://ana.co.jp/">ANA</a>
+        <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini
+          API管理)</a>
+        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing
+          (API費用管理)</a>
+        <a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a>
+        <a href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://fast.com/ja/">インターネット速度計測</a>
+        <a href="https://github.com/tsuguszk/tsuguszk.github.io">GitHub</a>
+        <a href="12kokki.html">十二国記</a>
+        <a href="https://www.yodobashi.com">ヨドバシ</a>
+      </p>
+    </nav>
+
+    <!-- Google / Amazon / 楽天 -->
+    <div class="search-panels">
+      <section>
+        <a target="_blank" href="https://www.google.com/">Google</a>
+        <a href="https://images.google.com/imghp?hl=ja&amp;tab=ni&amp;ned=jp&amp;q=">image</a>
+        <a href="https://maps.google.co.jp/">map</a>
+        <a href="https://mail.google.com/mail/">G-Mail</a>
+        <a href="https://calendar.google.com/calendar/u/0/r">calender</a>
+        <form action="https://www.google.com/search" method="get">
+          <input type="search" name="q" maxlength="255" placeholder="検索">
+          <input type="hidden" name="hl" value="ja">
+          <input type="submit" name="btnG" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.amazon.co.jp/">Amazon</a>
+        <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
+        <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
+        <form method="get" action="https://www.amazon.co.jp/s">
+          <input type="hidden" name="tag" value="tsugutoshi-22">
+          <input type="search" name="k" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+
+      <section>
+        <a href="https://www.rakuten.co.jp/">楽天市場</a>
+        <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
+          <input type="search" id="rakuten_keyword" placeholder="検索" required>
+          <input type="submit" value="GO">
+        </form>
+      </section>
+    </div>
+
     <!-- ここから下は新しいデザイン（assets/tsugu.css・assets/tsugu.js） -->
     <div class="nx home">
 
@@ -167,14 +274,14 @@
       <section class="sec" style="margin-top:0" aria-labelledby="explore-title">
         <div class="sec-head" data-reveal>
           <p class="eyebrow">Explore</p>
-          <h2 class="sec-title" id="explore-title">活動の記録</h2>
+          <h2 class="sec-title" id="explore-title">鈴木嗣敏の活動の記録</h2>
           <p class="sec-lede">新聞・テレビで紹介された記事と、学会での仕事をそれぞれのページにまとめました。</p>
         </div>
         <div class="tiles">
           <a class="tile tile--press glass" href="media.html" data-reveal>
             <p class="eyebrow">Press &amp; TV</p>
             <h3>新聞・テレビ報道</h3>
-            <p>読売新聞（2014・2016・2020年）の記事と、2010年の記者会見の報道・ニュース映像。スクロールすると、記事が文字の読める大きさまで拡大します。</p>
+            <p>読売新聞（2014・2016・2020年）の記事と、2010年の記者会見の報道・ニュース映像。記事は拡大して読めます。</p>
             <span class="more">記事を見る</span>
             <div class="fan" aria-hidden="true">
               <img src="assets/media/yomiuri-2016-1-thumb.webp" width="520" height="596" alt="" loading="lazy">
@@ -185,11 +292,11 @@
           <a class="tile tile--society glass" href="society.html" data-reveal="2">
             <p class="eyebrow">Academic</p>
             <h3>学会での仕事</h3>
-            <p>日本小児心電学会の運営と、2016年からの講演・セミナーの記録です。</p>
+            <p>日本小児心電学会の運営と、2012年からの講演・セミナーの記録です。</p>
             <ul class="facts">
               <li><b>2025</b><span>日本小児心電学会 代表幹事に就任</span></li>
               <li><b>第26回</b><span>日本小児心電学会学術集会 会長（2022年・大阪市中央公会堂）</span></li>
-              <li><b>30件+</b><span>2016年以降の講演・セミナー</span></li>
+              <li><b>60件+</b><span>2012年以降の講演・セミナー</span></li>
             </ul>
             <span class="more">活動を見る</span>
           </a>
@@ -206,13 +313,13 @@
           <li data-reveal><div class="t-card glass">
             <span class="chip society">学会</span><time datetime="2025-04-01">2025年4月1日</time>
             <h3>日本小児心電学会の代表幹事に就任</h3>
-            <p class="links"><a href="https://jspec.jp/about/greeting">学会のあいさつ</a><a href="society.html">学会での仕事</a></p>
+            <p class="links"><a href="society.html#greeting">代表あいさつ</a><a href="https://jspec.jp">学会ホームページ</a></p>
           </div></li>
           <li data-reveal><div class="t-card glass">
             <span class="chip society">学会</span><time datetime="2022-11-11">2022年11月11・12日</time>
             <h3>第26回日本小児心電学会学術集会を会長として開催</h3>
             <p>大阪市中央公会堂にて。</p>
-            <p class="links"><a href="https://e-stepinc.com/shinden26/index.html">学術集会website</a><a href="https://youtu.be/ShHFJinMWUU">動画</a></p>
+            <p class="links"><a href="https://e-stepinc.com/shinden26/index.html">学術集会website</a><a href="pdf_download/shinden26_poster.pdf">ポスター（PDF）</a><a href="https://youtu.be/ShHFJinMWUU">動画</a></p>
           </div></li>
           <li data-reveal><div class="t-card glass">
             <span class="chip press">報道</span><time datetime="2020-12-25">2020年12月25日</time>
@@ -353,94 +460,18 @@
         </ul>
       </section>
 
-      <!-- よく使うリンク・検索 -->
-      <section class="sec" aria-labelledby="links-title">
-        <div class="sec-head" data-reveal>
-          <p class="eyebrow">Links</p>
-          <h2 class="sec-title" id="links-title">よく使うリンク</h2>
-        </div>
-        <div class="launcher glass" data-reveal>
-          <div class="link-groups">
-            <div>
-              <h3>移動・宿泊</h3>
-              <ul class="pills">
-                <li><a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a></li>
-                <li><a href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急5489</a></li>
-                <li><a href="https://ekitan.com/">駅探</a></li>
-                <li><a href="https://www.jorudan.co.jp/index.html">電車乗換</a></li>
-                <li><a href="https://travel.rakuten.co.jp">楽天トラベル</a></li>
-                <li><a href="https://www.ikyu.com/">一休</a></li>
-                <li><a href="https://www.agoda.com/ja-jp/trips?ds=ZAyZr6iN5E3fete%2B">Agoda</a></li>
-                <li><a href="https://www.jal.co.jp/5971/">JAL</a></li>
-                <li><a href="https://ana.co.jp/">ANA</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3>GOOGLE・開発</h3>
-              <ul class="pills">
-                <li><a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini API管理)</a></li>
-                <li><a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Google Cloud Billing (API費用管理)</a></li>
-                <li><a href="https://me.developers.google.com/benefits">Google developer program (クレジット管理)</a></li>
-                <li><a href="https://analytics.google.com/analytics/web/?hl=ja">Google web解析</a></li>
-                <li><a href="https://github.com/tsuguszk/tsuguszk.github.io">GitHub</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3>そのほか</h3>
-              <ul class="pills">
-                <li><a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a></li>
-                <li><a href="https://fast.com/ja/">インターネット速度計測</a></li>
-                <li><a href="12kokki.html">十二国記</a></li>
-                <li><a href="https://www.yodobashi.com">ヨドバシ</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="searches">
-            <section class="search">
-              <div class="top">
-                <a target="_blank" href="https://www.google.com/">Google</a>
-                <a href="https://images.google.com/imghp?hl=ja&amp;tab=ni&amp;ned=jp&amp;q=">image</a>
-                <a href="https://maps.google.co.jp/">map</a>
-                <a href="https://mail.google.com/mail/">G-Mail</a>
-                <a href="https://calendar.google.com/calendar/u/0/r">calender</a>
-              </div>
-              <form action="https://www.google.com/search" method="get">
-                <input type="search" name="q" maxlength="255" placeholder="Googleで検索" aria-label="Googleで検索">
-                <input type="hidden" name="hl" value="ja">
-                <button type="submit">GO</button>
-              </form>
-            </section>
-            <section class="search">
-              <div class="top">
-                <a href="https://www.amazon.co.jp/">Amazon</a>
-                <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
-                <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
-              </div>
-              <form method="get" action="https://www.amazon.co.jp/s">
-                <input type="hidden" name="tag" value="tsugutoshi-22">
-                <input type="search" name="k" placeholder="Amazonで検索" aria-label="Amazonで検索" required>
-                <button type="submit">GO</button>
-              </form>
-            </section>
-            <section class="search">
-              <div class="top">
-                <a href="https://www.rakuten.co.jp/">楽天市場</a>
-              </div>
-              <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
-                <input type="search" id="rakuten_keyword" placeholder="楽天市場で検索" aria-label="楽天市場で検索" required>
-                <button type="submit">GO</button>
-              </form>
-            </section>
-          </div>
-        </div>
-      </section>
-
       <!-- 個人的なこと -->
       <section class="sec" aria-labelledby="personal-title">
         <div class="sec-head" data-reveal>
           <p class="eyebrow">Personal</p>
           <h2 class="sec-title" id="personal-title">ちょっと個人的なこと</h2>
+        </div>
+        <div class="road" data-reveal>
+          <a href="index_road.html"><img src="for_top_page/road_pic/road.png" width="500" height="750" alt="ロードバイクの写真（サイクリングのページへ）" loading="lazy"></a>
+          <div class="ride glass">
+            <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="index_road.html">サイクリングのページへ</a></span>
+            <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="https://www.youtube.com/@tsugu_szk/videos">サイクリングmovie (YouTube)</a></span>
+          </div>
         </div>
         <div class="personal">
           <figure class="photo glass" data-reveal>
@@ -456,10 +487,7 @@
             <figcaption>2004.5. 娘が4歳の誕生日に幼稚園で自作した旗です．</figcaption>
           </figure>
         </div>
-        <div class="ride glass" data-reveal>
-          <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="index_road.html">サイクリングのページへ</a></span>
-          <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="https://www.youtube.com/@tsugu_szk/videos">サイクリングmovie (YouTube)</a></span>
-        </div>
+
       </section>
 
       <footer class="foot-home">
