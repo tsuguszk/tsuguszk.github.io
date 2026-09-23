@@ -371,6 +371,9 @@ body.nx-body {
 .nx .role--meeting { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
 .nx .role-photo { margin: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 16px 34px -16px rgba(0, 0, 0, .45); }
 .nx .role-photo img { display: block; width: 100% !important; aspect-ratio: 4 / 3; object-fit: cover; }
+.nx .role-photo a { display: block; line-height: 0; }
+.nx .role-photo img { transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
+@media (hover: hover) { .nx .role-photo a:hover img { transform: scale(1.03); } }
 .nx .role .meeting-meta { margin-top: 8px; color: var(--accent); font-size: .95rem; font-weight: 800; letter-spacing: .04em; }
 .nx .role--meeting .actions { gap: 8px; }
 .nx .role--meeting .btn { min-height: 40px; padding: 7px 15px; font-size: .88rem; }
