@@ -121,24 +121,22 @@
   box-shadow: 0 16px 36px -10px rgba(0, 0, 0, .45);
   transition: transform .5s cubic-bezier(.2, .7, .2, 1);
 }
-.nx .fan img:nth-child(1) { transform: translateX(-118%) rotate(-7deg); }
-.nx .fan img:nth-child(2) { transform: translateX(-50%) translateY(-22px); z-index: 2; }
-.nx .fan img:nth-child(3) { transform: translateX(18%) rotate(6deg); }
+/* 1枚目=中央・大きめ（前面）／2枚目=右／3枚目=左 */
+.nx .fan img:nth-child(1) { transform: translateX(-50%) translateY(-24px); z-index: 2; width: 46% !important; }
+.nx .fan img:nth-child(2) { transform: translateX(20%) rotate(6deg); }
+.nx .fan img:nth-child(3) { transform: translateX(-122%) rotate(-7deg); }
 .nx .tile--society { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(223, 243, 255, .72)); padding-bottom: 0; }
-.nx .fan.fan--two img { width: 46% !important; }
-.nx .fan.fan--two img:nth-child(1) { transform: translateX(-80%) rotate(-6deg); }
-.nx .fan.fan--two img:nth-child(2) { transform: translateX(-16%) translateY(-16px) rotate(5deg); z-index: 2; }
+.nx .fan.fan--one img { width: 56% !important; top: 24px; transform: translateX(-50%) rotate(-2deg); }
 .nx .facts { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
 .nx .facts li { display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
 .nx .facts b { color: var(--accent); font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; font-feature-settings: "palt"; }
 .nx .facts span { color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
 @media (hover: hover) {
   .nx .tile:hover { transform: translateY(-4px); box-shadow: 0 28px 50px -22px rgba(8, 58, 38, .5); }
-  .nx .tile--press:hover .fan img:nth-child(1) { transform: translateX(-128%) rotate(-10deg); }
-  .nx .tile--press:hover .fan img:nth-child(2) { transform: translateX(-50%) translateY(-34px); }
-  .nx .tile--press:hover .fan img:nth-child(3) { transform: translateX(28%) rotate(9deg); }
-  .nx .tile--society:hover .fan.fan--two img:nth-child(1) { transform: translateX(-88%) rotate(-9deg); }
-  .nx .tile--society:hover .fan.fan--two img:nth-child(2) { transform: translateX(-10%) translateY(-26px) rotate(8deg); }
+  .nx .tile--press:hover .fan img:nth-child(1) { transform: translateX(-50%) translateY(-38px); }
+  .nx .tile--press:hover .fan img:nth-child(2) { transform: translateX(30%) rotate(9deg); }
+  .nx .tile--press:hover .fan img:nth-child(3) { transform: translateX(-132%) rotate(-10deg); }
+  .nx .tile--society:hover .fan.fan--one img { transform: translateX(-50%) translateY(-14px) rotate(-3deg); }
 }
 
 /* 2. これまでの歩み（年表） */
@@ -461,6 +459,8 @@ body.nx-body {
   .nx .sec { margin-top: 64px; }
   .nx .fan { height: 190px; }
   .nx .fan img { width: 46% !important; top: 34px; }
+  .nx .fan img:nth-child(1) { width: 54% !important; }
+  .nx .fan.fan--one img { width: 62% !important; }
   .nx .facts li { grid-template-columns: 4.4em 1fr; }
   .nx .facts b { font-size: 1.25rem; }
   .nx .t-card { padding: 15px 16px; }
