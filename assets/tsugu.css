@@ -111,6 +111,7 @@
   padding: clamp(24px, 3.2vw, 40px); overflow: hidden; color: var(--ink) !important; text-decoration: none;
   transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease;
 }
+.nx .tile-link { display: contents; color: inherit; text-decoration: none; }
 .nx .tile h3 { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); font-weight: 800; }
 .nx .tile p { color: var(--ink-2); max-width: 30em; }
 .nx .tile .more { margin-top: 14px; color: var(--green); font-size: clamp(1.15rem, 1rem + .45vw, 1.35rem); }
@@ -128,9 +129,16 @@
 .nx .tile--society { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(223, 243, 255, .72)); padding-bottom: 0; }
 .nx .fan.fan--one img { width: 56% !important; top: 24px; transform: translateX(-50%) rotate(-2deg); }
 .nx .facts { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
-.nx .facts li { display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.nx .facts li { border-top: 1px solid var(--line); }
+.nx .facts li a {
+  display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 12px 0;
+  color: inherit; text-decoration: none;
+}
 .nx .facts b { color: var(--accent); font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; font-feature-settings: "palt"; }
 .nx .facts span { color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
+@media (hover: hover) {
+  .nx .facts li a:hover b { color: var(--green); }
+}
 @media (hover: hover) {
   .nx .tile:hover { transform: translateY(-4px); box-shadow: 0 28px 50px -22px rgba(8, 58, 38, .5); }
   .nx .tile--press:hover .fan img:nth-child(1) { transform: translateX(-132%) rotate(-10deg); }
@@ -459,7 +467,7 @@ body.nx-body {
   .nx .fan img { width: 46% !important; top: 34px; }
   .nx .fan img:nth-child(3) { width: 58% !important; }
   .nx .fan.fan--one img { width: 62% !important; }
-  .nx .facts li { grid-template-columns: 4.4em 1fr; }
+  .nx .facts li a { grid-template-columns: 4.4em 1fr; }
   .nx .facts b { font-size: 1.25rem; }
   .nx .t-card { padding: 15px 16px; }
   .nx .t-card .chip { float: none; margin: 0 0 4px; }
