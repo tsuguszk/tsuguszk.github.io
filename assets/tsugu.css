@@ -218,6 +218,7 @@
 .nx .foot-home .bike { display: inline-block; margin: 18px 0 8px; }
 .nx .foot-home .bike img { width: 170px !important; }
 .nx .foot-home .mac { display: block; width: 88px !important; margin: 10px auto 0 !important; }
+.nx .foot-home .private-link { margin-top: 18px; color: var(--muted); font-size: .85rem; }
 
 /* ============================================================
    下層ページ（報道・学会）

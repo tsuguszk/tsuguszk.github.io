@@ -99,16 +99,9 @@
 | `page_rfca/rfca_room_5_2.html` | https://www.tsugutoshi.com/page_rfca/rfca_room_5_2.html | `G-R0BG9XQGE4` |
 | `page_rfca/rfca_room_5_OCGH_yong.html` | https://www.tsugutoshi.com/page_rfca/rfca_room_5_OCGH_yong.html | `G-R0BG9XQGE4` |
 | `page_rfca/tango_chou.html` | https://www.tsugutoshi.com/page_rfca/tango_chou.html | `G-R0BG9XQGE4` |
-| `private/album/DOCTOR/DOCTOR.html` | https://www.tsugutoshi.com/private/album/DOCTOR/DOCTOR.html | `G-R0BG9XQGE4` |
-| `private/album/FAMILY/FAMILY.html` | https://www.tsugutoshi.com/private/album/FAMILY/FAMILY.html | `G-R0BG9XQGE4` |
-| `private/album/PL/PL.html` | https://www.tsugutoshi.com/private/album/PL/PL.html | `G-R0BG9XQGE4` |
-| `private/album/UNIV/UNIV.html` | https://www.tsugutoshi.com/private/album/UNIV/UNIV.html | `G-R0BG9XQGE4` |
-| `private/album/album.html` | https://www.tsugutoshi.com/private/album/album.html | `G-R0BG9XQGE4` |
+| `private/index.html` | https://www.tsugutoshi.com/private/index.html | `G-R0BG9XQGE4` |
 | `pvc.html` | https://www.tsugutoshi.com/pvc.html | `G-GQDY5X09FF` |
 | `qtc/QTc/qtc.html` | https://www.tsugutoshi.com/qtc/QTc/qtc.html | `G-GQDY5X09FF` |
 | `qtc/index_qtc.html` | https://www.tsugutoshi.com/qtc/index_qtc.html | `G-R0BG9XQGE4` |
 | `qtc/qtc.html` | https://www.tsugutoshi.com/qtc/qtc.html | `G-GQDY5X09FF` |
 | `qtc/qtc_mobile.html` | https://www.tsugutoshi.com/qtc/qtc_mobile.html | `G-R0BG9XQGE4` |
-| `shoshi/index.html` | https://www.tsugutoshi.com/shoshi/index.html | `G-R0BG9XQGE4` |
-| `shoshi/shosi.html` | https://www.tsugutoshi.com/shoshi/shosi.html | `G-R0BG9XQGE4` |
-| `shoshi/shosi2.html` | https://www.tsugutoshi.com/shoshi/shosi2.html | `G-R0BG9XQGE4` |

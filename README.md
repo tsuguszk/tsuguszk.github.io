@@ -33,7 +33,6 @@ python3 -m http.server 8000
 | `assets/tsugu.js` | 上記ページのふわっと表示、新聞記事の超拡大スクロール、記事の拡大ビューア、学会ページの年ナビ |
 | `assets/showcase.css` / `assets/showcase.js` | Codex版（`index_codex.html`）専用。参考として残しているだけ |
 | `page_rfca/page.css` | `page_rfca/` 配下（アブレーション関連ページ）の共通スタイル |
-| `shoshi/shoshi.css` | 所思雑感セクションの共通スタイル |
 
 従来ページ固有の指定はそのページの `<style>` に書く。
 
@@ -96,6 +95,25 @@ python3 -m http.server 8000
 </body>
 </html>
 ```
+
+## アルバム・所思雑感（パスワード付きページ）
+
+`private/index.html` は、アルバム（PL学園時代・鳥取大学時代・大学卒業後・家族）と所思雑感（新しい順）を1ページにまとめたもの。
+GitHub Pages ではサーバー側でアクセスを制限できないため、ページの中身と写真を暗号化して公開し、ブラウザでパスワードを入れると復号して表示する。
+
+- 元のページと写真: `_private_src/`（git で管理する。先頭が `_` のフォルダは GitHub Pages が公開しないので、サイトの URL からは開けない。GitHub のリポジトリ画面では見える）
+  - `_private_src/index.html` … ページ本体。編集はここで行う
+  - `_private_src/album/…`、`_private_src/shoshi.gif` … ページ内の画像
+- 暗号化して書き出す（パスワードを画面で2回入力。表示されない）:
+
+```bash
+node tools/encrypt_private.mjs
+```
+
+- 書き出された `private/index.html` だけをコミットする。写真はページに埋め込まれて一緒に暗号化される。
+- パスワードを変えるときも同じコマンドを実行し直す（「この端末で記憶する」で記憶した端末も入力し直しになる）。
+- 暗号方式は PBKDF2-SHA256（60万回）＋ AES-256-GCM。短いパスワードは総当たりで破られうるので、10文字以上を推奨。
+- 以前の公開版（`shoshi/`、`private/album/` の HTML と写真）は git の履歴には残っている。
 
 ## 大容量配布ファイル
 
