@@ -21,6 +21,10 @@
   --r: 22px;
   --gutter: clamp(16px, 4vw, 40px);
   --nav-h: 56px;
+  /* ヘッダーの実際の高さ（safe-area分の余白を含む）。JS(tsugu.js)が正確な値に上書きする。
+     iPad Safari 等 env(safe-area-inset-top) が --nav-h より大きくなる環境では、
+     この値を使わないとヘッダー下のスクロールバー等が隠れてしまう */
+  --header-h: var(--nav-h);
 
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN",
@@ -61,6 +65,7 @@
   font-size: .78rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase;
 }
 .nx .sec-title { font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.9rem); font-weight: 800; }
+.nx .sec-title--long { max-width: 30em; margin: 0 auto; font-size: clamp(1.3rem, 1.05rem + 1.3vw, 1.85rem); line-height: 1.45; }
 .nx .sec-lede { margin: 14px auto 0; color: var(--ink-2); font-size: clamp(1rem, .95rem + .3vw, 1.12rem); }
 
 .nx .chip {
@@ -119,7 +124,10 @@
 .nx .fan img:nth-child(1) { transform: translateX(-118%) rotate(-7deg); }
 .nx .fan img:nth-child(2) { transform: translateX(-50%) translateY(-22px); z-index: 2; }
 .nx .fan img:nth-child(3) { transform: translateX(18%) rotate(6deg); }
-.nx .tile--society { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(223, 243, 255, .72)); }
+.nx .tile--society { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(223, 243, 255, .72)); padding-bottom: 0; }
+.nx .fan.fan--two img { width: 46% !important; }
+.nx .fan.fan--two img:nth-child(1) { transform: translateX(-80%) rotate(-6deg); }
+.nx .fan.fan--two img:nth-child(2) { transform: translateX(-16%) translateY(-16px) rotate(5deg); z-index: 2; }
 .nx .facts { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
 .nx .facts li { display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
 .nx .facts b { color: var(--accent); font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; font-feature-settings: "palt"; }
@@ -129,6 +137,8 @@
   .nx .tile--press:hover .fan img:nth-child(1) { transform: translateX(-128%) rotate(-10deg); }
   .nx .tile--press:hover .fan img:nth-child(2) { transform: translateX(-50%) translateY(-34px); }
   .nx .tile--press:hover .fan img:nth-child(3) { transform: translateX(28%) rotate(9deg); }
+  .nx .tile--society:hover .fan.fan--two img:nth-child(1) { transform: translateX(-88%) rotate(-9deg); }
+  .nx .tile--society:hover .fan.fan--two img:nth-child(2) { transform: translateX(-10%) translateY(-26px) rotate(8deg); }
 }
 
 /* 2. これまでの歩み（年表） */
@@ -288,7 +298,7 @@ body.nx-body {
 /* JS が有効で、動きを減らす設定でないときだけ超拡大モードにする */
 .nx .zs.zs-on { height: calc(var(--zs-len, 8) * 100vh); height: calc(var(--zs-len, 8) * 100svh); margin: 0; }
 .nx .zs.zs-on .zs-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
-.nx .zs.zs-on .zs-view { position: absolute; inset: var(--nav-h) 0 0 0; overflow: hidden; }
+.nx .zs.zs-on .zs-view { position: absolute; inset: var(--header-h) 0 0 0; overflow: hidden; }
 .nx .zs.zs-on .zs-img {
   position: absolute; top: 0; left: 0; max-width: none !important; margin: 0 !important;
   transform-origin: 0 0; backface-visibility: hidden;
@@ -305,7 +315,7 @@ body.nx-body {
 }
 .nx .zs.zs-on .zs-step b { color: var(--accent); font-variant-numeric: tabular-nums; }
 .nx .zs.zs-on .zs-bar {
-  display: block; position: absolute; left: 0; right: 0; top: var(--nav-h); z-index: 3; height: 7px; background: rgba(14, 58, 42, .12);
+  display: block; position: absolute; left: 0; right: 0; top: var(--header-h); z-index: 3; height: 7px; background: rgba(14, 58, 42, .12);
 }
 .nx .zs.zs-on .zs-bar span { display: block; height: 100%; width: 100%; border-radius: 0 4px 4px 0; background: linear-gradient(90deg, var(--accent), var(--green)); transform-origin: 0 50%; transform: scaleX(var(--zs-p, 0)); }
 
@@ -362,7 +372,7 @@ body.nx-body {
 .nx .role-portrait img { display: block; width: 100% !important; max-width: 200px; margin: 0 auto !important; border-radius: 16px; box-shadow: 0 14px 30px -14px rgba(8, 58, 38, .45); }
 .nx .role-portrait figcaption { margin-top: 12px; color: var(--ink-2); font-size: .82rem; line-height: 1.6; }
 .nx .role-portrait figcaption b { display: block; margin-top: 2px; color: var(--ink); font-size: 1rem; }
-.nx .role .eyebrow { letter-spacing: .08em; }
+.nx .role .eyebrow { letter-spacing: .08em; font-size: clamp(.98rem, .86rem + .35vw, 1.15rem); }
 .nx .role--greeting h2 { margin-top: 2px; }
 .nx .greeting { max-width: 40em; margin-top: 18px; }
 .nx .role .greeting p { margin: 0 0 1em; color: var(--ink); font-size: 1rem; line-height: 1.95; }
@@ -381,7 +391,7 @@ body.nx-body {
 .nx .role .meeting-theme { margin-top: 14px; padding-left: 14px; border-left: 3px solid rgba(196, 88, 28, .45); color: var(--ink); font-size: 1rem; }
 
 .nx .yearnav {
-  position: sticky; top: var(--nav-h); z-index: 20; display: flex; gap: 6px; overflow-x: auto;
+  position: sticky; top: var(--header-h); z-index: 20; display: flex; gap: 6px; overflow-x: auto;
   max-width: 1120px; margin: 0 auto 10px; padding: 10px var(--gutter);
   scrollbar-width: none; -webkit-overflow-scrolling: touch;
 }
@@ -393,8 +403,8 @@ body.nx-body {
 .nx .yearnav a:hover, .nx .yearnav a.is-cur { background: var(--ink); color: #fff; }
 
 .nx .years { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); }
-.nx .year { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 0 clamp(18px, 3vw, 40px); padding: 26px 0 18px; border-top: 1px solid rgba(14, 58, 42, .14); scroll-margin-top: calc(var(--nav-h) + 60px); }
-.nx .year-label { position: sticky; top: calc(var(--nav-h) + 70px); align-self: start; }
+.nx .year { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 0 clamp(18px, 3vw, 40px); padding: 26px 0 18px; border-top: 1px solid rgba(14, 58, 42, .14); scroll-margin-top: calc(var(--header-h) + 60px); }
+.nx .year-label { position: sticky; top: calc(var(--header-h) + 70px); align-self: start; }
 .nx .year-label b { display: block; color: var(--ink); font-size: clamp(3rem, 2rem + 3vw, 4.6rem); font-weight: 800; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .nx .year-label span { display: block; margin-top: 8px; color: var(--muted); font-size: .85rem; font-weight: 700; }
 .nx .talks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
