@@ -193,6 +193,7 @@
 }
 .nx .t-thumb img { display: block; width: 100% !important; height: 100% !important; object-fit: cover; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
 .nx .t-thumb--natural, .nx .t-thumb--natural img { height: auto !important; }
+.nx .t-thumbs { display: grid; gap: 8px; align-content: start; }
 .nx .t-thumb--icon { display: grid; place-items: center; background: linear-gradient(150deg, #fff, #e3f8ee); }
 .nx .t-thumb--icon svg { width: 48px; height: 48px; overflow: visible; }
 .nx .t-thumb--icon .i-heart, .nx .t-thumb--icon .i-outline { fill: #fde6d8; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; }
@@ -219,6 +220,7 @@
   }
   .nx .t-card:hover .t-thumb { transform: rotate(-3deg) scale(1.06); }
   .nx .t-card:hover .t-thumb img { transform: scale(1.14); }
+  .nx .t-card:hover .t-thumb--natural img { transform: none; }
   .nx .t-card:hover .paper img { transform: scale(1.05); }
 }
 
