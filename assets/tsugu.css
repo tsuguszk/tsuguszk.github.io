@@ -624,6 +624,7 @@ a.shot-img { cursor: pointer; }
   .nx .ride:hover { box-shadow: 0 30px 56px -28px rgba(8, 58, 38, .5); }
   .nx .shot-img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 26px 40px -20px rgba(8, 58, 38, .6); }
   .nx .shot-img:hover img { transform: scale(1.08); }
+  .nx .shot--full .shot-img:hover img { transform: none; }
   .nx .road-hero-photo .shot-img:hover img { transform: scale(1.05) rotate(-2deg); }
 }
 
