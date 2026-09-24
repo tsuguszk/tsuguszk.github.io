@@ -616,6 +616,7 @@ body.nx-body {
 a.shot-img { cursor: pointer; }
 .nx .shot:not(.shot--wide) .shot-img img { width: 100% !important; aspect-ratio: 4 / 3; object-fit: cover; }
 .nx .shot--tall .shot-img img { object-position: center 30%; }
+.nx .shot.shot--full .shot-img img { aspect-ratio: auto; }
 .nx .shot-img img { display: block; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
 .nx .road-hero-photo .shot-img { width: auto; overflow: visible; background: none; box-shadow: none; border-radius: 0; }
 .nx .shot figcaption { margin-top: 8px; color: var(--ink-2); font-size: .88rem; line-height: 1.65; }
