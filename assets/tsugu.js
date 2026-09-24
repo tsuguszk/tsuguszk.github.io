@@ -3,7 +3,8 @@
    1. [data-reveal] をスクロールでふわっと表示
    2. .zs（新聞記事）をスクロールに合わせて約30%拡大
    3. 記事の拡大ビューア
-   4. 学会ページの年ナビの現在地表示 */
+   4. 学会ページの年ナビの現在地表示
+   5. 写真の拡大表示（ロードバイクのページ） */
 (function () {
   'use strict';
 
@@ -206,5 +207,24 @@
       });
     }, { rootMargin: '-35% 0px -60% 0px' });
     document.querySelectorAll('.nx .year[id]').forEach(function (y) { yearObserver.observe(y); });
+  }
+
+  /* ---------- 5. 写真の拡大表示 ---------- */
+  var lb = document.getElementById('nx-lightbox');
+  if (lb && typeof lb.showModal === 'function') {
+    var lbImg = lb.querySelector('img'), lbCap = lb.querySelector('figcaption');
+    document.querySelectorAll('[data-lightbox]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var img = btn.querySelector('img');
+        var cap = btn.parentElement.querySelector('figcaption');
+        lbImg.src = img.currentSrc || img.src;
+        lbImg.alt = img.alt;
+        lbCap.textContent = cap ? cap.textContent : '';
+        lb.showModal();
+      });
+    });
+    lb.querySelector('[data-lb-close]').addEventListener('click', function () { lb.close(); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) { lb.close(); } });
+    lb.addEventListener('close', function () { lbImg.removeAttribute('src'); });
   }
 }());
