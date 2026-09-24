@@ -630,8 +630,6 @@ a.shot-img { cursor: pointer; }
 .nx .embed iframe { display: block; width: 100%; border: 0; }
 .nx .embed--yt { max-width: 720px; aspect-ratio: 16 / 9; }
 .nx .embed--yt iframe { height: 100%; }
-.nx .embed--strava { max-width: 590px; background: #fff; }
-.nx .embed--strava iframe { height: 405px; }
 .nx .ride-video { margin: 20px 0 6px; }
 .nx .ride-video video { display: block; width: 100%; max-width: 480px; border-radius: 14px; background: #0e1a15; }
 
@@ -657,7 +655,6 @@ a.shot-img { cursor: pointer; }
 }
 @media (max-width: 599px) {
   .nx .gallery { gap: 12px; }
-  .nx .embed--strava iframe { height: 360px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
