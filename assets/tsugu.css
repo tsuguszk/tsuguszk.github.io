@@ -606,6 +606,7 @@ body.nx-body {
 .nx .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 16px; margin: 20px 0 6px; }
 .nx .shot { margin: 0; }
 .nx .gallery--one { grid-template-columns: minmax(0, 640px); }
+.nx .gallery--small { grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 260px)); }
 .nx .shot--wide { grid-column: 1 / -1; }
 .nx .shot-img {
   display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 14px;
