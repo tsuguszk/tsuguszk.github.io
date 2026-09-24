@@ -178,6 +178,49 @@
 .nx .t-card .chip { float: right; margin: 0 0 4px 8px; }
 .nx .t-card .links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: .92rem; }
 .nx .t-card .paper { display: block; margin-top: 10px; border-radius: 8px; overflow: hidden; }
+.nx .t-card .paper img { transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+
+/* 年表カード：ホバーで少し大きく／小さな画像・イラスト */
+.nx .t-card {
+  position: relative;
+  transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease, background-color .35s ease;
+}
+.nx .t-card.has-thumb { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 16px; align-items: start; }
+.nx .t-thumb {
+  width: 76px; height: 76px; margin: 2px 0 0; overflow: hidden; border-radius: 14px;
+  background: #fff; box-shadow: 0 8px 18px -10px rgba(8, 58, 38, .55);
+  transition: transform .45s cubic-bezier(.2, .7, .2, 1);
+}
+.nx .t-thumb img { display: block; width: 100% !important; height: 100% !important; object-fit: cover; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.nx .t-thumb--round { width: 58px; height: 58px; margin: 6px 0 0 9px; border-radius: 50%; box-shadow: 0 0 0 3px #fff, 0 8px 18px -10px rgba(8, 58, 38, .55); }
+.nx .t-thumb--icon { display: grid; place-items: center; background: linear-gradient(150deg, #fff, #e3f8ee); }
+.nx .t-thumb--icon svg { width: 48px; height: 48px; overflow: visible; }
+.nx .t-thumb--icon .i-heart, .nx .t-thumb--icon .i-outline { fill: #fde6d8; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; }
+.nx .t-thumb--icon .i-ecg, .nx .t-thumb--icon .i-arrow { fill: none; stroke: var(--green); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nx .t-thumb--icon .i-ray { fill: var(--accent); opacity: .85; }
+.nx .t-icon--heart .i-heart { transform-origin: 24px 28px; animation: nx-beat 1.6s ease-in-out infinite; }
+.nx .t-icon--heart .i-ecg { stroke-dasharray: 60; animation: nx-ecg 2.4s linear infinite; }
+.nx .t-icon--map .i-dot { fill: var(--green); animation: nx-dot 2.4s ease-in-out infinite; }
+.nx .t-icon--map .d1 { fill: #d23c2a; } .nx .t-icon--map .d2 { fill: #e58a1f; animation-delay: .3s; }
+.nx .t-icon--map .d3 { fill: #e3c21b; animation-delay: .6s; } .nx .t-icon--map .d4 { fill: #2e9d62; animation-delay: .9s; }
+.nx .t-icon--map .d5 { fill: #3569c9; animation-delay: 1.2s; }
+.nx .t-icon--xray .i-ray { transform-origin: 20px 22px; animation: nx-spin 9s linear infinite; }
+.nx .t-icon--xray .i-arrow { animation: nx-drop 1.8s ease-in-out infinite; }
+@keyframes nx-beat { 0%, 60%, 100% { transform: scale(1); } 20% { transform: scale(1.1); } 35% { transform: scale(.97); } }
+@keyframes nx-ecg { from { stroke-dashoffset: 120; } to { stroke-dashoffset: 0; } }
+@keyframes nx-dot { 0%, 100% { opacity: .35; transform: scale(.8); } 50% { opacity: 1; transform: scale(1.15); } }
+.nx .t-icon--map .i-dot { transform-box: fill-box; transform-origin: center; }
+@keyframes nx-spin { to { transform: rotate(360deg); } }
+@keyframes nx-drop { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+@media (hover: hover) {
+  .nx .t-card:hover {
+    z-index: 2; transform: scale(1.04) translateY(-3px);
+    background: rgba(255, 255, 255, .9); box-shadow: 0 26px 46px -22px rgba(8, 58, 38, .55);
+  }
+  .nx .t-card:hover .t-thumb { transform: rotate(-3deg) scale(1.06); }
+  .nx .t-card:hover .t-thumb img { transform: scale(1.14); }
+  .nx .t-card:hover .paper img { transform: scale(1.05); }
+}
 
 /* 3. 病院 */
 .nx .hospital { display: grid; grid-template-columns: 1.15fr .85fr; overflow: hidden; }
@@ -482,6 +525,10 @@ body.nx-body {
   .nx .facts b { font-size: 1.25rem; }
   .nx .t-card { padding: 15px 16px; }
   .nx .t-card .chip { float: none; margin: 0 0 4px; }
+  .nx .t-card.has-thumb { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
+  .nx .t-thumb { width: 56px; height: 56px; border-radius: 12px; }
+  .nx .t-thumb--round { width: 48px; height: 48px; margin: 4px 0 0 4px; }
+  .nx .t-thumb--icon svg { width: 38px; height: 38px; }
   .nx .hospital { grid-template-columns: 1fr; }
   .nx .hospital figure img { height: auto !important; aspect-ratio: 3 / 2; }
   .nx .res-grid { grid-template-columns: 1fr; }
@@ -519,10 +566,108 @@ body.nx-body {
 }
 
 /* 動きを減らす設定 */
+/* ============================================================
+   ロードバイクのページ（index_road.html）
+   ============================================================ */
+.nx .road-hero {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: clamp(24px, 5vw, 64px);
+  max-width: 1120px; margin: 0 auto; padding: clamp(40px, 7vw, 90px) var(--gutter) clamp(20px, 4vw, 40px);
+}
+.nx .road-hero h1 { font-size: clamp(2.3rem, 1.3rem + 4.4vw, 4.4rem); font-weight: 800; letter-spacing: -.01em; }
+.nx .road-lede { margin: 14px 0 0; max-width: 32em; color: var(--ink-2); font-size: clamp(1rem, .95rem + .35vw, 1.15rem); }
+.nx .road-lede b { color: var(--accent); }
+.nx .road-cta { margin-top: 26px; }
+.nx .road-hero-photo { margin: 0; text-align: center; }
+.nx .road-hero-photo .shot-img { display: inline-block; max-width: min(380px, 80vw); animation: nx-float 6s ease-in-out infinite; }
+.nx .road-hero-photo img { filter: drop-shadow(0 22px 30px rgba(8, 58, 38, .35)); transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+@keyframes nx-float { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+.nx .road-jump { max-width: 1000px; margin: 0 auto clamp(30px, 5vw, 56px); padding: 0 var(--gutter); }
+
+.nx .rides { display: grid; gap: clamp(26px, 4.5vw, 48px); max-width: 1040px; margin: 0 auto; padding: 0 var(--gutter); }
+.nx .ride { padding: clamp(22px, 3.6vw, 44px); scroll-margin-top: calc(var(--header-h) + 16px); transition: box-shadow .35s ease; }
+.nx .ride-head { margin-bottom: 14px; text-align: left; }
+.nx .ride-date { display: inline-block; margin-bottom: 6px; color: var(--accent); font-size: .9rem; font-weight: 800; letter-spacing: .08em; }
+.nx .ride-head h2 { font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.1rem); font-weight: 800; }
+.nx .ride-body > p { max-width: 46em; color: var(--ink-2); }
+.nx .ride-sub { margin: 26px 0 10px; padding-left: 12px; border-left: 4px solid var(--accent); font-size: 1.08rem; font-weight: 800; }
+.nx .ride--note { background: linear-gradient(150deg, rgba(255, 255, 255, .8), rgba(223, 243, 255, .7)); }
+.nx .ride-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.nx .pill {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 999px;
+  background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); font-size: .9rem; font-weight: 700; text-decoration: none;
+  transition: transform .2s ease, background-color .2s ease;
+}
+.nx .pill:hover { background: #fff; transform: translateY(-2px); }
+.nx .ride-stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 6px; }
+.nx .ride-stats div { min-width: 120px; padding: 10px 16px; border-radius: 14px; background: rgba(255, 255, 255, .78); box-shadow: inset 0 0 0 1px var(--line); }
+.nx .ride-stats dt { color: var(--muted); font-size: .78rem; font-weight: 700; }
+.nx .ride-stats dd { margin: 0; color: var(--accent); font-size: 1.3rem; font-weight: 800; }
+
+/* 写真のギャラリー：ホバーで写真が少し大きく、押すと拡大表示 */
+.nx .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 16px; margin: 20px 0 6px; }
+.nx .shot { margin: 0; }
+.nx .gallery--one { grid-template-columns: minmax(0, 640px); }
+.nx .shot--wide { grid-column: 1 / -1; }
+.nx .shot-img {
+  display: block; width: 100%; padding: 0; overflow: hidden; border: 0; border-radius: 14px;
+  background: #fff; box-shadow: 0 14px 28px -18px rgba(8, 58, 38, .6); cursor: zoom-in;
+  transition: transform .4s cubic-bezier(.2, .7, .2, 1), box-shadow .4s ease;
+}
+a.shot-img { cursor: pointer; }
+.nx .shot:not(.shot--wide) .shot-img img { width: 100% !important; aspect-ratio: 4 / 3; object-fit: cover; }
+.nx .shot--tall .shot-img img { object-position: center 30%; }
+.nx .shot-img img { display: block; transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.nx .road-hero-photo .shot-img { width: auto; overflow: visible; background: none; box-shadow: none; border-radius: 0; }
+.nx .shot figcaption { margin-top: 8px; color: var(--ink-2); font-size: .88rem; line-height: 1.65; }
+@media (hover: hover) {
+  .nx .ride:hover { box-shadow: 0 30px 56px -28px rgba(8, 58, 38, .5); }
+  .nx .shot-img:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 26px 40px -20px rgba(8, 58, 38, .6); }
+  .nx .shot-img:hover img { transform: scale(1.08); }
+  .nx .road-hero-photo .shot-img:hover img { transform: scale(1.05) rotate(-2deg); }
+}
+
+.nx .embed { margin: 20px 0 6px; overflow: hidden; border-radius: 14px; background: #0e1a15; box-shadow: 0 14px 28px -18px rgba(8, 58, 38, .6); }
+.nx .embed iframe { display: block; width: 100%; border: 0; }
+.nx .embed--yt { max-width: 720px; aspect-ratio: 16 / 9; }
+.nx .embed--yt iframe { height: 100%; }
+.nx .embed--strava { max-width: 590px; background: #fff; }
+.nx .embed--strava iframe { height: 405px; }
+.nx .ride-video { margin: 20px 0 6px; }
+.nx .ride-video video { display: block; width: 100%; max-width: 480px; border-radius: 14px; background: #0e1a15; }
+
+/* 写真の拡大表示 */
+.nx-lightbox { max-width: min(96vw, 1200px); max-height: 94vh; padding: 0; border: 0; border-radius: 16px; background: #10201a; color: #fff; overflow: hidden; }
+.nx-lightbox::backdrop { background: rgba(8, 20, 14, .82); }
+.nx-lightbox[open] { animation: nx-pop .28s cubic-bezier(.2, .7, .2, 1); }
+.nx-lightbox figure { margin: 0; }
+.nx-lightbox img { display: block; max-width: 100%; max-height: calc(94vh - 60px); margin: 0 auto; }
+.nx-lightbox figcaption { padding: 10px 18px 14px; font-size: .9rem; line-height: 1.6; }
+.nx-lightbox figcaption:empty { display: none; }
+.nx-lightbox .lb-close {
+  position: absolute; top: 10px; right: 10px; width: 40px; height: 40px; border: 0; border-radius: 50%;
+  background: rgba(0, 0, 0, .5); color: #fff; font-size: 1.4rem; line-height: 1; cursor: pointer;
+}
+@keyframes nx-pop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 860px) {
+  .nx .road-hero { grid-template-columns: 1fr; text-align: center; }
+  .nx .road-lede { margin-left: auto; margin-right: auto; }
+  .nx .road-hero-photo { order: -1; }
+  .nx .road-hero-photo .shot-img { max-width: min(260px, 70vw); }
+}
+@media (max-width: 599px) {
+  .nx .gallery { gap: 12px; }
+  .nx .embed--strava iframe { height: 360px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nx-js .nx [data-reveal] { opacity: 1; transform: none; transition: none; }
   .nx .tile, .nx .fan img { transition: none; }
   .nx .scroll-cue span { animation: none; }
+  .nx .t-card, .nx .t-thumb, .nx .t-thumb img { transition: none; }
+  .nx .t-thumb--icon * { animation: none !important; }
+  .nx .road-hero-photo .shot-img { animation: none; }
+  .nx .shot-img, .nx .shot-img img { transition: none; }
 }
 
 @media print {
