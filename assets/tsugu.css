@@ -69,6 +69,7 @@
 .nx .br-sp { display: none; }
 /* 幅広（PC）は1行、スマホ・タブレットは2行にする見出し用 */
 .nx .sec-head--wide { max-width: 1120px; }
+.nx .sec-head--wide .sec-title { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); }
 .nx .br-narrow { display: none; }
 @media (min-width: 1100px) { .nx .sec-head--wide .sec-title { white-space: nowrap; } }
 @media (max-width: 1099px) {
