@@ -20,6 +20,10 @@
   <style>
     /* 論文の図：横長のカードいっぱいに、原寸より小さい図は中央に置く */
     .nx .paper-fig .shot-img img { margin: 0 auto !important; }
+    .nx .ref-table { margin-top: 18px; min-width: 460px; }
+    .nx .ref-table caption { margin-bottom: 4px; color: var(--ink); font-weight: 800; text-align: left; }
+    .nx .ref-table td { text-align: right; font-variant-numeric: tabular-nums; }
+    .nx .ref-table thead th:not(:first-child) { text-align: right; }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
@@ -94,31 +98,56 @@
         <section class="doc-card glass" id="wpw" data-reveal>
           <h2>WPW症候群</h2>
 
-          <h3>治療後の再発（リカレンス）の部位</h3>
+          <h3>副伝導路の部位の分布</h3>
           <ul>
-            <li>過去：左 50%、右 30%、中隔 20%</li>
-            <li>現在：左 65%、右 15%、中隔 20%</li>
+            <li>顕性WPW：左 50%、右 30%、中隔 20%</li>
+            <li>潜在性WPW：左 65%、右 15%、中隔 20%</li>
           </ul>
-          <p class="doc-note">右側が少なくなっています。この間に勉強してきた部分だと思います。</p>
+          <p class="doc-note">潜在性は、右側が少ない、というデータです。あまり知られていないデータだと思います。</p>
           <div class="gallery paper-fig">
-            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-50.jpg" width="1200" height="390" alt="WPW症候群の治療後の再発部位" loading="lazy" decoding="async"></button><figcaption>WPW症候群：治療後の再発の部位</figcaption></figure>
+            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-50.jpg" width="1200" height="390" alt="Table 3 副伝導路の部位の分布" loading="lazy" decoding="async"></button><figcaption>副伝導路の部位の分布（Table 3）</figcaption></figure>
           </div>
 
-          <h3>部位別・年齢別の成績</h3>
+          <h3>WPW症候群：部位別・年齢別の成績</h3>
           <p>成功率が2015〜2018年で劇的に少なくなっているのは、CARTO UNIVU systemを採用したからです。再発率が0という理想的な成績が得られています（赤線）。</p>
+          <p>年代別に見ると、右側の伝導路が劇的に減っています。</p>
           <div class="gallery paper-fig">
-            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-60.jpg" width="700" height="309" alt="WPW症候群の部位別・年齢別の成績" loading="lazy" decoding="async"></button><figcaption>WPW症候群：部位別・年齢別の成績</figcaption></figure>
-            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-70.jpg" width="700" height="595" alt="WPW症候群の成績の詳細" loading="lazy" decoding="async"></button><figcaption>WPW症候群：成績の詳細</figcaption></figure>
+            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-60.jpg" width="700" height="309" alt="Table 4A 副伝導路の部位別の成功率と再発率" loading="lazy" decoding="async"></button></figure>
+            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-70.jpg" width="700" height="595" alt="Table 4B 12年間の透視時間・成功率・再発率の推移" loading="lazy" decoding="async"></button></figure>
           </div>
+
+          <h3>参考データ：2026年に集計したデータ</h3>
+          <p>2006〜2026年のWPW症候群のアブレーションについて、副伝導路の位置別・期間別に集計した症例数と再発率です。</p>
+          <div class="doc-scroll">
+            <table class="doc-table ref-table">
+              <caption>症例数</caption>
+              <thead><tr><th>WPW位置</th><th>2006-2012</th><th>2013-2018</th><th>2019-2026</th><th>合計</th></tr></thead>
+              <tbody><tr><th>左側</th><td>131</td><td>105</td><td>106</td><td>342</td></tr><tr><th>中隔</th><td>45</td><td>45</td><td>52</td><td>142</td></tr><tr><th>右側</th><td>62</td><td>70</td><td>76</td><td>208</td></tr></tbody>
+            </table>
+          </div>
+          <div class="doc-scroll">
+            <table class="doc-table ref-table">
+              <caption>再発数</caption>
+              <thead><tr><th>WPW位置</th><th>2006-2012</th><th>2013-2018</th><th>2019-2026</th><th>合計</th></tr></thead>
+              <tbody><tr><th>左側</th><td>11</td><td>9</td><td>3</td><td>23</td></tr><tr><th>中隔</th><td>8</td><td>7</td><td>5</td><td>20</td></tr><tr><th>右側</th><td>12</td><td>10</td><td>4</td><td>26</td></tr></tbody>
+            </table>
+          </div>
+          <div class="doc-scroll">
+            <table class="doc-table ref-table">
+              <caption>再発率（%）</caption>
+              <thead><tr><th>WPW位置</th><th>2006-2012</th><th>2013-2018</th><th>2019-2026</th><th>全期間</th></tr></thead>
+              <tbody><tr><th>左側</th><td>8.4</td><td>8.6</td><td>2.8</td><td>6.7</td></tr><tr><th>中隔</th><td>17.8</td><td>15.6</td><td>9.6</td><td>14.1</td></tr><tr><th>右側</th><td>19.4</td><td>14.3</td><td>5.3</td><td>12.5</td></tr></tbody>
+            </table>
+          </div>
+          <div class="doc-actions"><a class="btn ghost" href="wpw_results.html">20年間の成績のページへ</a></div>
         </section>
 
         <section class="doc-card glass" id="others" data-reveal>
           <h2>そのほかの結果</h2>
 
-          <h3>全不整脈の分布</h3>
-          <p>年齢別に見ると、右側の伝導路が劇的に減っています。</p>
+          <h3>心室性不整脈の分布</h3>
           <div class="gallery paper-fig">
-            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-80.jpg" width="600" height="425" alt="全不整脈の分布" loading="lazy" decoding="async"></button><figcaption>全不整脈の分布</figcaption></figure>
+            <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-80.jpg" width="600" height="425" alt="Table 5 心室性不整脈の起源" loading="lazy" decoding="async"></button><figcaption>心室性不整脈の分布（Table 5）</figcaption></figure>
           </div>
 
           <h3>15kg以下の小児・そのほかの不整脈</h3>
