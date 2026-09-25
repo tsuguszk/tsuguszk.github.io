@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * アルバム・所思雑感ページをパスワードで暗号化して公開用に書き出す。
+ * 所思雑感ページをパスワードで暗号化して公開用に書き出す（アルバムは album/ でパスワードなしで公開）。
  *
  *   node tools/encrypt_private.mjs
  *
@@ -78,9 +78,9 @@ function page(payload) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
-  <title>アルバム・所思雑感</title>
+  <title>所思雑感</title>
   <meta name="theme-color" content="#8bf5c5">
-  <link rel="stylesheet" href="../assets/tsugu.css?v=20260925">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20260926">
   <style>
     /* 入口（パスワード入力）だけの見た目。復号後はページ全体が差し替わる */
     .nx .gate-hero { padding-bottom: clamp(20px, 4vw, 36px); }
@@ -104,14 +104,14 @@ function page(payload) {
         <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site"></a>
         <nav aria-label="サイト内">
           <a href="../index.html">トップ</a>
-          <a href="index.html" aria-current="page"><span class="long">アルバム・所思雑感</span><span class="short">アルバム</span></a>
+          <a href="index.html" aria-current="page">所思雑感</a>
         </nav>
       </div>
     </header>
     <main>
       <div class="page-hero gate-hero">
         <p class="eyebrow">Private</p>
-        <h1>アルバム・所思雑感</h1>
+        <h1>所思雑感</h1>
         <p class="sec-lede">このページはパスワードが必要です。</p>
       </div>
       <form class="box gate glass" id="f">

@@ -4,35 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex">
-  <title>アルバム・所思雑感 | つぐとしのweb site</title>
+  <title>所思雑感 | つぐとしのweb site</title>
   <link rel="shortcut icon" href="../assets/icons/profile.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/profile-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/profile-180.png">
   <meta name="theme-color" content="#8bf5c5">
-  <link rel="stylesheet" href="../assets/tsugu.css?v=20260925">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20260926">
   <style>
-    /* このページだけの追加（アルバム・所思雑感） */
+    /* このページだけの追加（所思雑感） */
     .nx .pv-group { max-width: 1120px; margin: 0 auto; padding: 0 var(--gutter); scroll-margin-top: calc(var(--header-h) + 16px); }
-    .nx .pv-group + .pv-group { margin-top: clamp(56px, 9vw, 110px); }
-    .nx .pv-head { max-width: 760px; margin: 0 auto clamp(22px, 4vw, 40px); text-align: center; }
-    .nx .pv-head h2 { font-size: clamp(1.75rem, 1.2rem + 2.4vw, 2.9rem); font-weight: 800; }
-
-    /* アルバム */
-    .nx .al-parts { display: grid; gap: clamp(22px, 3.8vw, 40px); }
-    .nx .al-part { padding: clamp(22px, 3.6vw, 44px); scroll-margin-top: calc(var(--header-h) + 16px); }
-    .nx .al-head h3 { font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.1rem); font-weight: 800; }
-    .nx .al-head .ride-date { display: block; margin-bottom: 4px; color: var(--accent); font-size: .8rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    .nx .al-count { margin-left: .7em; color: var(--muted); font-size: .85rem; font-weight: 700; letter-spacing: .04em; }
-    .nx .al-part .gallery--small { grid-template-columns: repeat(auto-fill, minmax(min(190px, 100%), 1fr)); gap: 20px 18px; }
-    .nx .al-part .shot { max-width: 300px; scroll-margin-top: calc(var(--header-h) + 24px); }
-    .nx .al-part .shot figcaption { font-size: .86rem; }
-    .nx .al-revisit { margin-top: clamp(28px, 4vw, 40px); padding-top: clamp(22px, 3.5vw, 34px); border-top: 1px dashed rgba(14, 58, 42, .22); }
-    .nx .al-revisit .doc-note { max-width: 40em; margin: 0; }
-    .nx .al-revisit .doc-note p { margin: 0 0 .3em; }
-    .nx .al-revisit .doc-note p:last-child { margin-bottom: 0; }
-    .nx #photo-pl-29:target .shot-img { box-shadow: 0 0 0 4px var(--accent), 0 14px 28px -18px rgba(8, 58, 38, .6); }
-
-    /* 所思雑感 */
     .nx #shoshi .yearnav { justify-content: center; padding-left: 0; padding-right: 0; }
     .nx #shoshi .years { padding: 0; }
     .nx .es-list { display: grid; gap: 16px; }
@@ -52,7 +32,6 @@
     .nx .es-fig .shot-img img { border-radius: 0; box-shadow: none; }
     .nx .es-dead { color: var(--muted); font-size: .85rem; word-break: break-all; }
     @media (max-width: 599px) {
-      .nx .al-part .gallery--small { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
       .nx .es-fig { width: 40%; margin-left: 14px; }
     }
   </style>
@@ -75,8 +54,7 @@
         <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
         <nav aria-label="ページ内">
           <a href="../index.html">トップ</a>
-          <a href="#album">アルバム</a>
-          <a href="#shoshi">所思雑感</a>
+          <a href="#shoshi" aria-current="page">所思雑感</a>
         </nav>
       </div>
     </header>
@@ -84,108 +62,11 @@
     <main>
       <div class="page-hero">
         <p class="eyebrow">Private</p>
-        <h1>アルバム・所思雑感</h1>
-        <p class="sec-lede">昔の写真と、1997年から2005年まで折々に書きためた雑感（全49編）をまとめたページです。</p>
-        <nav class="jump" aria-label="ページ内の移動"><a href="#album-pl">PL学園時代</a><a href="#album-univ">鳥取大学時代</a><a href="#album-doctor">大学卒業後</a><a href="#album-family">家族</a><a href="#shoshi">所思雑感</a></nav>
+        <h1>所思雑感</h1>
+        <p class="sec-lede">1997年から2005年まで折々に書きためた雑感（全49編）です。新しいものから順に並べています。</p>
       </div>
 
-      <section class="pv-group" id="album">
-        <div class="pv-head">
-          <p class="eyebrow">Album</p>
-          <h2>アルバム</h2>
-          <p class="sec-lede">個人的な写真ばかりです。</p>
-        </div>
-        <div class="al-parts">
-<section class="al-part glass" id="album-pl">
-<header class="al-head"><span class="ride-date">PL Gakuen</span><h3>PL学園時代<span class="al-count">8枚</span></h3></header>
-<div class="gallery gallery--small">
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/300.JPG" width="425" height="220" alt="小学校6年の時の写真です" loading="lazy" decoding="async"></button><figcaption>小学校6年の時の写真です。左から２番目が私です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/31.JPG" width="283" height="193" alt="高校の時の写真です" loading="lazy" decoding="async"></button><figcaption>高校の時の写真です。文化祭でワタガシを作ったときの写真。今でもワタガシは作れるような気がする。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/32.JPG" width="459" height="289" alt="まるがりです" loading="lazy" decoding="async"></button><figcaption>まるがりです。これも高校、球技大会の時の写真。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/33.JPG" width="248" height="183" alt="高校三年生の冬、金剛寮で冬休み返上で、みんなで勉強しました" loading="lazy" decoding="async"></button><figcaption>高校三年生の冬、金剛寮で冬休み返上で、みんなで勉強しました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/34.JPG" width="227" height="185" alt="後ろは雪に包まれたおくつきです" loading="lazy" decoding="async"></button><figcaption>後ろは雪に包まれたおくつきです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/30.JPG" width="227" height="135" alt="高校2年生、今はなき研学寮の血を引く研学コーナー(東21室)の面々" loading="lazy" decoding="async"></button><figcaption>高校2年生、今はなき研学寮の血を引く研学コーナー(東21室)の面々</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/28.JPG" width="227" height="178" alt="高校2年生" loading="lazy" decoding="async"></button><figcaption>高校2年生。修学旅行にて。高木文光、元気してるか？</figcaption></figure>
-<figure class="shot shot--full" id="photo-pl-29"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/PL/29.JPG" width="240" height="180" alt="二十歳でタイムカプセルを開けた後の宴会" loading="lazy" decoding="async"></button><figcaption>二十歳でタイムカプセルを開けた後の宴会。たくさんの幼なじみがあつまりました。みんな酔っぱらってます。</figcaption></figure>
-</div>
-</section>
-<section class="al-part glass" id="album-univ">
-<header class="al-head"><span class="ride-date">Tottori University</span><h3>鳥取大学時代<span class="al-count">29枚</span></h3></header>
-<div class="gallery gallery--small">
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/tottori.jpg" width="425" height="245" alt="ポリクリ8斑" loading="lazy" decoding="async"></button><figcaption>ポリクリ8斑</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/10.JPG" width="283" height="214" alt="大学4年生" loading="lazy" decoding="async"></button><figcaption>大学4年生。大学祭の時の写真です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/3.JPG" width="214" height="170" alt="鳥取大学では、ゴルフ部でした" loading="lazy" decoding="async"></button><figcaption>鳥取大学では、ゴルフ部でした。このスマートなボディとしなやかなスイング、今となっては面影もありません。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/2.JPG" width="283" height="230" alt="テニス同好会にも入ってました" loading="lazy" decoding="async"></button><figcaption>テニス同好会にも入ってました。こっちも気楽で楽しかったです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/5.JPG" width="227" height="151" alt="同じくテニス同好会のめんめんと" loading="lazy" decoding="async"></button><figcaption>同じくテニス同好会のめんめんと。お世話になった国澤さん、お元気でしょうか。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/4.JPG" width="227" height="168" alt="国家試験のために、勉強会をいっしょにした面々" loading="lazy" decoding="async"></button><figcaption>国家試験のために、勉強会をいっしょにした面々。一番危なかった私が合格してしまったため、この勉強会グループの合格率は100%でした。俺が国試合格したのは、この面々のお蔭です。感謝!!</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/6.JPG" width="227" height="174" alt="突然、時は変わって大学入学当時の写真" loading="lazy" decoding="async"></button><figcaption>突然、時は変わって大学入学当時の写真。PLの教会の方と父親、妹です。髪が7・3。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/7.JPG" width="283" height="200" alt="なつかしい" loading="lazy" decoding="async"></button><figcaption>なつかしい。ここは鳥取市で教養学部を学んだ２年間過ごした下宿です。月9000円で四畳半一間。座ったままで全てのものに手が届きました。ものすごい汚かった部屋です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/8.JPG" width="302" height="148" alt="大学卒業式の写真" loading="lazy" decoding="async"></button><figcaption>大学卒業式の写真。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/9.JPG" width="227" height="125" alt="同じく卒業式" loading="lazy" decoding="async"></button><figcaption>同じく卒業式。みんな元気してるかな?</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/1.JPG" width="227" height="147" alt="鳥取大学時代の写真" loading="lazy" decoding="async"></button></figure>
-</div>
-<div class="al-revisit">
-<div class="doc-note">
-<p>平成十一年春、我が母校、鳥取大学で、日本小児科学会がありました。</p>
-<p>発表演題も出さずに母校だということで行かせてもらいました。</p>
-<p>懐かしい町並みです。。。</p>
-</div>
-<div class="gallery gallery--small">
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00019.JPG" width="340" height="255" alt="JR米子駅です" loading="lazy" decoding="async"></button><figcaption>JR米子駅です。駅も6年でだいぶ様変わりしていました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00020.JPG" width="227" height="170" alt="鳥取大学です" loading="lazy" decoding="async"></button><figcaption>鳥取大学です。この建物も私が学生だった平成四年にはありませんでした。どんどん変わっていってるなー、という感じです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00021.JPG" width="227" height="170" alt="まったく変わっていない風景もあります" loading="lazy" decoding="async"></button><figcaption>まったく変わっていない風景もあります。ここには、巨大なコピー屋さんがあり、本一冊コピーしてくれたりしてました(違法か？)。試験の時は、情報交換の場にもなります。いろんな思いでここを歩いていたのを思い出します。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00022.JPG" width="227" height="170" alt="図書室の前" loading="lazy" decoding="async"></button><figcaption>図書室の前。ここも、試験の度に通っていました。この日はしまっていましたが、一階のソファーが懐かしい場所です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00023.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00024.JPG" width="340" height="255" alt="講義棟の周辺" loading="lazy" decoding="async"></button><figcaption>講義棟の周辺。ゴルフ部やテニス同好会は、ここで集合していました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00025.JPG" width="340" height="255" alt="この販売機にはお金をいくら入れたことでしょう" loading="lazy" decoding="async"></button><figcaption>この販売機にはお金をいくら入れたことでしょう。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00026.JPG" width="227" height="303" alt="講義棟への廊下" loading="lazy" decoding="async"></button><figcaption>講義棟への廊下。休憩時間になると、ここに人がすずなりになります。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00027.JPG" width="227" height="170" alt="食道の裏のゴルフ部の練習場所です" loading="lazy" decoding="async"></button><figcaption>食道の裏のゴルフ部の練習場所です。ここを草刈りして、ネットを張って、日が暮れるまで打ち込んでいたものです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00028.JPG" width="227" height="170" alt="僕らがたてたネットは3つあり、ぴかぴかだったのですが、今は、すっかりさび付いたネットが一つだけ寂しげに残っていました" loading="lazy" decoding="async"></button><figcaption>僕らがたてたネットは3つあり、ぴかぴかだったのですが、今は、すっかりさび付いたネットが一つだけ寂しげに残っていました。今はどうやって練習しているのでしょう.....</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00029.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00030.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00031.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00032.JPG" width="227" height="170" alt="ここで人体解剖実習がありました" loading="lazy" decoding="async"></button><figcaption>ここで人体解剖実習がありました。半年間毎日ここに通って、勉強していました。すっかり忘れていた懐かしい場所です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00033.JPG" width="227" height="170" alt="米子で住んでいた石田さんのお宅と下宿棟です" loading="lazy" decoding="async"></button><figcaption>米子で住んでいた石田さんのお宅と下宿棟です。今でも夢に時々出てくる場所です。二棟あった下宿は、左だけが残っていて、僕が住んでいた右の建物はなくなっていました。六畳一間で、トイレ・風呂・台所共用、家賃は1万2000円でした。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00034.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00035.JPG" width="227" height="170" alt="鳥取大学の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/UNIV/DSC00036.JPG" width="227" height="170" alt="PL米子教会があった場所です" loading="lazy" decoding="async"></button><figcaption>PL米子教会があった場所です。私が卒業した後、大山のふもとに引っ越ししました。外壁だけが残っていました。</figcaption></figure>
-</div>
-</div>
-</section>
-<section class="al-part glass" id="album-doctor">
-<header class="al-head"><span class="ride-date">After Graduation</span><h3>大学卒業後<span class="al-count">8枚</span></h3></header>
-<div class="gallery gallery--small">
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/12.JPG" width="340" height="243" alt="PL教校時代の写真です" loading="lazy" decoding="async"></button><figcaption>PL教校時代の写真です。のどかな夕暮れ、桜つみをした時の写真で、みんな、いい顔してます。とても気に入ってる写真です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/13.JPG" width="198" height="115" alt="PL教師の顔" loading="lazy" decoding="async"></button><figcaption>PL教師の顔。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/14.JPG" width="227" height="147" alt="恩師・山口先生と" loading="lazy" decoding="async"></button><figcaption>恩師・山口先生と。いろいろ教えていただき、また、いっしょにばかなこともたくさんしました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/15.JPG" width="227" height="151" alt="医者になって数カ月の頃です" loading="lazy" decoding="async"></button><figcaption>医者になって数カ月の頃です。今も年数回手紙をくれる患者さんです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/16.JPG" width="133" height="204" alt="これも同じく新米ぺーぺーの頃の写真" loading="lazy" decoding="async"></button><figcaption>これも同じく新米ぺーぺーの頃の写真。病棟は、旧市大病院、小児科病棟です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/17.JPG" width="175" height="125" alt="今は総合医療センターにおられる山田先生と" loading="lazy" decoding="async"></button><figcaption>今は総合医療センターにおられる山田先生と。山田先生には西宮市立中央病院でお世話になりました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/18.JPG" width="174" height="154" alt="こんなことをさせられることもあります" loading="lazy" decoding="async"></button><figcaption>こんなことをさせられることもあります。これは西宮の忘年会で、むりやり女装させられた時の写真です。おぞましい。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/DOCTOR/19.JPG" width="227" height="171" alt="大うけでした" loading="lazy" decoding="async"></button><figcaption>大うけでした。</figcaption></figure>
-</div>
-</section>
-<section class="al-part glass" id="album-family">
-<header class="al-head"><span class="ride-date">Family</span><h3>家族<span class="al-count">7枚</span></h3></header>
-<div class="gallery gallery--small">
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/100.JPG" width="283" height="232" alt="白浜にて" loading="lazy" decoding="async"></button><figcaption>白浜にて。大学2年の時の家族旅行。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/22.JPG" width="283" height="153" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/200.JPG" width="283" height="193" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/24.JPG" width="278" height="175" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/25.JPG" width="227" height="157" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/26.JPG" width="227" height="166" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="album/FAMILY/20.JPG" width="283" height="156" alt="家族の写真" loading="lazy" decoding="async"></button></figure>
-</div>
-</section>
-        </div>
-      </section>
-
-      <section class="pv-group" id="shoshi">
-        <div class="pv-head">
-          <p class="eyebrow">Essays</p>
-          <h2>所思雑感</h2>
-          <p class="sec-lede">折々に書きためた雑感です。新しいものから順に並べています。</p>
-        </div>
+      <section class="pv-group" id="shoshi" aria-label="所思雑感">
 <nav class="yearnav" aria-label="年ごとに移動"><a href="#shoshi-2005">2005</a><a href="#shoshi-2004">2004</a><a href="#shoshi-2003">2003</a><a href="#shoshi-2002">2002</a><a href="#shoshi-2001">2001</a><a href="#shoshi-2000">2000</a><a href="#shoshi-1999">1999</a><a href="#shoshi-1998">1998</a><a href="#shoshi-1997">1997</a></nav>
         <div class="years">
 <div class="year" id="shoshi-2005">
@@ -446,7 +327,7 @@
 <p>ピアノとクラリネットというのは、相性が合っているのでしょうか、二つの音が心地よく胸に響いてゆったりとした気持ちにさせてくれます。江上さんと青山とが音をふわっと合わせて曲を終わらせるその絶妙なタイミングに、プロのとぎすまされた心配りを感じます。</p>
 <p>東口君という方のファゴットという楽器の演奏も見事でした。初めてみる楽器から響いてくる少しこもった優しい音色とクラリネットとの音の重なり合いは、今までに聞いたことのない不思議な雰囲気を醸し出していました。</p>
 <p>調べに身をゆだねながら、彼のことをいろいろ思い起こしていました。</p>
-<p>まず思い出すのは二十歳のころ、タイムカプセルを開ける集まりの後、酔いつぶれた彼を介抱したことでしょうか。<a href="#photo-pl-29">あの時の彼</a>とこの目の前の堂々たる人物が同一人物とは思えません。</p>
+<p>まず思い出すのは二十歳のころ、タイムカプセルを開ける集まりの後、酔いつぶれた彼を介抱したことでしょうか。<a href="../album/index.html#photo-pl-29" target="_blank" rel="noopener">あの時の彼</a>とこの目の前の堂々たる人物が同一人物とは思えません。</p>
 <p>四、五年前に、酔っぱらってカラオケ屋で彼にクラリネットの演奏をせがんでしてもらったことがありますが、あれはプロに対して失礼なことをしたと今にして思います。ごめんなさい。</p>
 <p>そういえば、いまだに続いている毎日の<a href="../for_top_page/jpg/fukkin1.JPG" target="_blank">腹筋</a>、これは彼がこの飲み会の時、腹筋で腹が引き締まったというので、それから始めたものでした。</p>
 <p>高校の日本史のテストで、必死に勉強してもどうしても彼に勝てなかったことも思いおこされます。三、四人で必死に競い合ったいい思い出です。</p>
@@ -817,7 +698,7 @@
     </main>
 
     <footer class="page-foot">
-      <div class="links"><a href="../index.html">トップページ</a><a href="#album">アルバム</a><a href="#shoshi">所思雑感</a></div>
+      <div class="links"><a href="../index.html">トップページ</a><a href="#shoshi">所思雑感の先頭へ</a></div>
       <p>つぐとしのweb site · 1997.1.1 開設</p>
       <img src="../for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
     </footer>
@@ -828,6 +709,6 @@
     <figure><img alt=""><figcaption></figcaption></figure>
   </dialog>
 
-  <script src="../assets/tsugu.js?v=20260925" defer></script>
+  <script src="../assets/tsugu.js?v=20260926" defer></script>
 </body>
 </html>
