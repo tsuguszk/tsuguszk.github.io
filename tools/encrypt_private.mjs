@@ -76,33 +76,58 @@ function page(payload) {
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
   <title>アルバム・所思雑感</title>
+  <meta name="theme-color" content="#8bf5c5">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20260925">
   <style>
-    body { margin: 0; padding: 16px; background: #8bf5c5 url("../for_top_page/gif/back.gif"); color: #17372c; text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif; }
-    .box { max-width: 360px; margin: 24px auto; padding: 24px 22px; border-radius: 16px; background: rgba(255,255,255,.85); box-shadow: 0 10px 30px -14px rgba(8,58,38,.4); }
-    h1 { margin: 0 0 6px; font-size: 1.25rem; }
-    p { margin: 6px 0 14px; font-size: .9rem; color: #4d7262; }
-    input[type=password] { box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid #bcd; border-radius: 10px; font-size: 16px; }
-    label.rem { display: block; margin: 10px 0 0; font-size: .85rem; color: #4d7262; }
-    button { margin-top: 14px; width: 100%; min-height: 44px; border: 0; border-radius: 999px; background: #0e3a2a; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; }
-    .err { min-height: 1.4em; margin: 10px 0 0; color: #a3372c; font-size: .9rem; }
-    a { color: #006600; }
+    /* 入口（パスワード入力）だけの見た目。復号後はページ全体が差し替わる */
+    .nx .gate-hero { padding-bottom: clamp(20px, 4vw, 36px); }
+    .nx .gate { display: block; max-width: 400px; margin: 0 auto; padding: clamp(24px, 4vw, 34px) clamp(20px, 4vw, 30px); }
+    .nx .gate .field { display: block; margin: 0 0 6px; color: var(--ink-2); font-size: .85rem; font-weight: 800; letter-spacing: .04em; }
+    .nx .gate input[type=password] {
+      display: block; width: 100%; min-height: 46px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px;
+      background: #fff; color: var(--ink); font: inherit; font-size: 16px;
+    }
+    .nx .gate .rem { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; color: var(--ink-2); font-size: .88rem; cursor: pointer; }
+    .nx .gate .rem input { width: 18px; height: 18px; margin: 0; accent-color: var(--green); }
+    .nx .gate .btn { width: 100%; margin-top: 18px; }
+    .nx .gate .btn:disabled { opacity: .6; cursor: progress; }
+    .nx .gate .err { min-height: 1.4em; margin: 10px 0 0; color: var(--red); font-size: .9rem; font-weight: 700; }
   </style>
 </head>
-<body>
-  <p><a href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site" style="max-width:100%;height:auto;border:0;"></a></p>
-  <form class="box" id="f">
-    <h1>アルバム・所思雑感</h1>
-    <p>このページはパスワードが必要です。</p>
-    <input type="password" id="pw" autocomplete="current-password" placeholder="パスワード" required autofocus>
-    <label class="rem"><input type="checkbox" id="rem"> この端末で記憶する</label>
-    <button type="submit" id="go">開く</button>
-    <div class="err" id="err" role="alert"></div>
-  </form>
-  <p><a href="../index.html">トップページへ戻る</a></p>
+<body class="nx-body">
+  <div class="nx">
+    <header class="localnav">
+      <div class="in">
+        <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site"></a>
+        <nav aria-label="サイト内">
+          <a href="../index.html">トップ</a>
+          <a href="index.html" aria-current="page"><span class="long">アルバム・所思雑感</span><span class="short">アルバム</span></a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="page-hero gate-hero">
+        <p class="eyebrow">Private</p>
+        <h1>アルバム・所思雑感</h1>
+        <p class="sec-lede">このページはパスワードが必要です。</p>
+      </div>
+      <form class="box gate glass" id="f">
+        <label class="field" for="pw">パスワード</label>
+        <input type="password" id="pw" autocomplete="current-password" placeholder="パスワード" required autofocus>
+        <label class="rem"><input type="checkbox" id="rem"> この端末で記憶する</label>
+        <button type="submit" id="go" class="btn">開く</button>
+        <div class="err" id="err" role="alert"></div>
+      </form>
+    </main>
+    <footer class="page-foot">
+      <div class="links"><a href="../index.html">トップページへ戻る</a></div>
+      <p>つぐとしのweb site · 1997.1.1 開設</p>
+      <img src="../for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
+    </footer>
+  </div>
   <script id="payload" type="application/json">${payload}</script>
   <script>
   (function () {
