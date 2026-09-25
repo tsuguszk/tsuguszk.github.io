@@ -2,261 +2,209 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="平成9年（1997年）元旦に開設した、でんでん虫のホームページ。でんでん虫の独り言、闘病の記、処世訓解説、短歌、著書のPDFなど。">
   <title>でんでん虫のホームページ</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-R0BG9XQGE4');
-</script>
-  <link rel="stylesheet" href="../assets/site.css">
+  <meta name="theme-color" content="#8bf5c5">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20260925">
+  <script>document.documentElement.classList.add('nx-js');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+  <style>
+    .nx .dd-title { display: block; width: min(491px, 100%) !important; margin: 0 auto !important; }
+    .nx .dd-deco { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 14px 24px; margin-top: 22px; }
+    .nx .dd-deco img { flex: none; }
+    .nx .dd-dates { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; margin: 0; color: var(--ink-2); font-size: .92rem; font-weight: 700; }
+    .nx .dd-dates .upd { color: var(--red); }
+    .nx .dd-words { margin: 26px auto 0; color: #663300; font-size: clamp(1.02rem, .95rem + .4vw, 1.2rem); font-weight: 700; line-height: 1.9; }
+    .nx .dd-words span { display: block; }
+    .nx .dd-years { margin-top: 14px; }
+    .nx .doc-links small { display: inline; margin-left: .6em; color: #c2185b; font-weight: 700; }
+    .nx .dd-books { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(150px, 44%), 1fr)); gap: 16px; margin: 16px 0 0; padding: 0; list-style: none; }
+    .nx .dd-books li { margin: 0; }
+    .nx .dd-books a { display: block; border-radius: 10px; overflow: hidden; box-shadow: 0 14px 28px -18px rgba(8, 58, 38, .7); transition: transform .2s ease; }
+    .nx .dd-books a:hover { transform: translateY(-3px); }
+    .nx .dd-books img { display: block; width: 100% !important; }
+    .nx .dd-shelf { display: grid; gap: 8px; margin: 18px 0 0; padding: 0 !important; list-style: none; }
+    .nx .dd-shelf li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 0 !important; padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, .72); box-shadow: inset 0 0 0 1px var(--line); }
+    .nx .dd-shelf .name { flex: 1 1 16em; color: var(--ink); font-weight: 700; }
+    .nx .dd-shelf .name small { color: var(--muted); font-weight: 500; }
+    .nx .dd-shelf .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+    .nx .dd-shelf .pill { min-height: 32px; padding: 4px 12px; font-size: .85rem; }
+    .nx .dd-bio { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: clamp(18px, 4vw, 40px); align-items: start; }
+    .nx .dd-bio figure { margin: 0; text-align: center; }
+    .nx .dd-bio figure img { border-radius: 14px; box-shadow: 0 14px 28px -18px rgba(8, 58, 38, .6); }
+    .nx .dd-bio figcaption { margin-top: 8px; color: var(--muted); font-size: .88rem; }
+    .nx .dd-bio p { color: var(--ink-2); }
+    .nx .page-foot .mac { display: inline-block; }
+    @media (max-width: 719px) {
+      .nx .dd-bio { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body background="gif/back.gif" link="#187534"
-vlink="#187534" alink="#187534">
 
-<h3 class="center"><img src="jpg/title.jpg" border="0" width="491" height="55"> <table width="594"
-border="0" cellspacing="0" cellpadding="0" height="96">
-  <tr>
-    <td width="22%" height="81">
-      </h3>
-<h3><img src="gif/denden1.gif" width="85" height="63" class="v-mid"></h3>
-    </td>
-    <td width="78%">
-      <h3>
-      <span class="fs-sm">
+<body class="nx-body">
+  <div class="nx">
 
-      <p class="right"><span class="fs-sm">平成9年 (1997年) 元旦　開設</span>    </span></td>
-  </tr>
-</table></h3>
+    <header class="localnav">
+      <div class="in">
+        <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site"></a>
+        <nav aria-label="サイト内">
+          <a href="../index.html">トップ</a>
+          <a href="index.html" aria-current="page"><span class="long">でんでん虫のホームページ</span><span class="short">でんでん虫</span></a>
+        </nav>
+      </div>
+    </header>
 
-<div class="center">
-				<p><b><span class="fs-sm" style="color: #990000;">2024.9.13更新</span></b><i>　
-				  　</i><img src="jpg/denden2.jpg" width="111" height="63" class="v-mid"><br>
-                  <img src="gif/line1.gif" width="640" height="9"></p>
+    <main>
+      <div class="page-hero">
+        <p class="eyebrow">Denden-mushi's Homepage</p>
+        <h1><img class="dd-title" src="jpg/title.jpg" width="491" height="55" alt="でんでん虫のホームページ"></h1>
+        <div class="dd-deco">
+          <img src="gif/denden1.gif" width="85" height="63" alt="">
+          <p class="dd-dates"><span>平成9年 (1997年) 元旦　開設</span><span class="upd">2024.9.13更新</span></p>
+          <img src="jpg/denden2.jpg" width="111" height="63" alt="">
+        </div>
+        <p class="dd-words"><span>庭の紫陽花にでんでん虫が一匹誕生しました。</span><span>でんでん虫のホームページの誕生です。</span></p>
+        <nav class="jump" aria-label="このページの目次">
+          <a href="#hitorigoto">でんでん虫の独り言</a><a href="#pages">読みもの</a><a href="#shoseikun">処世訓解説</a><a href="#books">本・PDF</a><a href="#profile">略歴</a>
+        </nav>
+      </div>
 
-</div>
+      <div class="doc">
 
-<blockquote>
-  <p></p>
-<div class="center"><table width="567" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td width="99%">
-        <p><b><span style="color: #663300;">庭の紫陽花にでんでん虫が一匹誕生しました。</span></b></p>
+        <!-- でんでん虫の独り言 -->
+        <section class="doc-card glass" id="hitorigoto" data-reveal>
+          <a id="anchor369109"></a>
+          <h2>でんでん虫の独り言</h2>
+          <ul class="doc-links">
+            <li><a href="hitorigoto/index.html">でんでん虫の独り言<small>(2021.1.7)</small></a></li>
+          </ul>
+          <h3>年ごとに読む</h3>
+          <ul class="pills dd-years">
+            <li><a href="hitorigoto/index.html#1998">1998</a></li>
+            <li><a href="hitorigoto/index.html#1999">1999</a></li>
+            <li><a href="hitorigoto/index.html#2000">2000</a></li>
+            <li><a href="hitorigoto/index.html#2001">2001</a></li>
+            <li><a href="hitorigoto/index.html#2002">2002</a></li>
+            <li><a href="hitorigoto/index.html#2003">2003</a></li>
+            <li><a href="hitorigoto/index.html#2004">2004</a></li>
+            <li><a href="hitorigoto/index.html#2005">2005</a></li>
+            <li><a href="hitorigoto/index.html#2006">2006</a></li>
+            <li><a href="hitorigoto/index.html#2007">2007</a></li>
+            <li><a href="hitorigoto/index.html#2008">2008</a></li>
+            <li><a href="hitorigoto/index.html#2009">2009</a></li>
+            <li><a href="hitorigoto/index.html#2010">2010</a></li>
+            <li><a href="hitorigoto/index.html#2011">2011</a></li>
+            <li><a href="hitorigoto/index.html#2012">2012</a></li>
+            <li><a href="hitorigoto/index.html#2013">2013</a></li>
+            <li><a href="hitorigoto/index.html#2014">2014</a></li>
+            <li><a href="hitorigoto/index.html#2015">2015</a></li>
+            <li><a href="hitorigoto/index.html#2016">2016</a></li>
+            <li><a href="hitorigoto/index.html#2017">2017</a></li>
+            <li><a href="hitorigoto/index.html#2018">2018</a></li>
+            <li><a href="hitorigoto/index.html#2019">2019</a></li>
+            <li><a href="hitorigoto/index.html#2020">2020</a></li>
+            <li><a href="hitorigoto/index.html#2021">2021</a></li>
+            <li><a href="hitorigoto/index.html#history">でんでん虫の歴史</a></li>
+          </ul>
+        </section>
 
-        <p><b><span style="color: #663300;">でんでん虫のホームページの誕生です。</span></b>
-      </td>
-      <td width="1%">&nbsp;</td>
-    </tr>
-  </table>
-    </div>
-<p>
-  <p>
+        <!-- 読みもの -->
+        <section class="doc-card glass" id="pages" data-reveal>
+          <h2>読みもの</h2>
+          <ul class="doc-links">
+            <li><a href="page/toubyou/toubyou.html">「闘病の記」<small>(2002.6.21)</small></a></li>
+            <li><a href="page/kannome/kannome.html">観の目・見の目<small>(2005.9.21)</small></a></li>
+            <li><a href="page/sake/sake.html">酒ほがひ<small>(2009.3.19)</small></a></li>
+            <li><a href="page/chiisana/chiisana.html">小さな心が聞こえる<small>(2002.7.29)</small></a></li>
+            <li><a href="page/child/child.html">米寿を祝う<small>(2008.10.23)</small></a></li>
+            <li><a href="page/santa/santa.html">妹尾山太の絵の部屋<small>(2002.6.2)</small></a></li>
+            <li><a href="page/aisatsu/aisatsu.html">でんでん虫からの挨拶<small>(1997.1.1)</small></a></li>
+            <li><a href="page/profile/profile.html">でんでん虫のプロフィール<small>(2021.2.1)</small></a></li>
+          </ul>
+        </section>
 
-	<div class="center"></div>
-</blockquote>
-			<h3 class="center"><hr>
-					<br>
-					<a name="anchor369109"></a>　</h3>
-			<ol>
-				<h3>
+        <!-- 処世訓解説 -->
+        <section class="doc-card glass" id="shoseikun" data-reveal>
+          <h2>処世訓解説</h2>
+          <ul class="doc-links">
+            <li><a href="shoseikun/index.html">自分自身のための処世訓解説<small>(2014/12/30)</small></a></li>
+            <li><a href="page/tanka-2/tanka-2.html">小学生のための処世訓解説<small>(2007.7.13)</small></a></li>
+          </ul>
+        </section>
 
-				</h3>
-			</ol>
-			<div class="center"><table width="816" border="0" cellspacing="0" cellpadding="0"
-height="620">
+        <!-- 本・PDF -->
+        <section class="doc-card glass" id="books" data-reveal>
+          <h2>本・PDF</h2>
+          <ul class="dd-books">
+            <li><a href="https://books.apple.com/us/book/id1555976756"><img src="book2.jpg" width="200" height="279" alt="Apple Books の本（表紙）" loading="lazy"></a></li>
+            <li><a href="https://books.apple.com/us/book/id1555205686"><img src="book3.jpg" width="200" height="279" alt="Apple Books の本（表紙）" loading="lazy"></a></li>
+            <li><a href="https://books.apple.com/us/book/id1557373459"><img src="book4.jpg" width="200" height="279" alt="Apple Books の本（表紙）" loading="lazy"></a></li>
+            <li><a href="https://bit.ly/3zf8w96"><img src="chiisanakokoro.jpg" width="180" height="279" alt="小さな心が聞こえる（表紙）" loading="lazy"></a></li>
+          </ul>
+          <div class="doc-actions"><a class="pill" href="https://books.apple.com/us/book/id1555408308">Apple Books（もう1冊）</a></div>
 
-  <tr>
-    <td width="40%" nowrap><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="hitorigoto/index.html">でんでん虫の独り言</a><span class="fs-sm" style="color: #f70785;">(2021.1.7)</span></b></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="page/toubyou/toubyou.html">「闘病の記」</a>　<span class="fs-sm" style="color: #f70785;">(2002.6.21)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#1998">1998</a>, <a href="hitorigoto/index.html#1999">1999</a>, <a href="hitorigoto/index.html#2000">2000</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="page/kannome/kannome.html">観の目・見の目</a><span class="fs-sm" style="color: #f70785;">　(2005.9.21)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2001">2001</a>, <a href="hitorigoto/index.html#2002">2002</a>, <a href="hitorigoto/index.html#2003">2003</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"> <b><a
-      href="page/sake/sake.html">酒ほがひ</a><span class="fs-sm" style="color: #f70785;">　(2009.3.19)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2004">2004</a>, <a href="hitorigoto/index.html#2005">2005</a>, <a href="hitorigoto/index.html#2006">2006</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="page/chiisana/chiisana.html">小さな心が聞こえる</a><span class="fs-sm" style="color: #f70785;">　(2002.7.29)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2007">2007</a>, <a href="hitorigoto/index.html#2008">2008</a>, <a href="hitorigoto/index.html#2009">2009</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="page/child/child.html">米寿を祝う</a><span class="fs-sm" style="color: #f70785;">　(2008.10.23)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2010">2010</a>, <a href="hitorigoto/index.html#2011">2011</a>, <a href="hitorigoto/index.html#2012">2012</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36">&nbsp;</td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2013">2013</a>, <a href="hitorigoto/index.html#2014">2014</a>, <a href="hitorigoto/index.html#2015">2015</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36">&nbsp;</td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2016">2016</a>, <a href="hitorigoto/index.html#2017">2017</a>, <a href="hitorigoto/index.html#2018">2018</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><a href="page/santa/santa.html"> <b>妹尾山太の絵の部屋　</b></a><b><span class="fs-sm" style="color: #f70785;">(2002.6.2)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#2019">2019</a>, <a href="hitorigoto/index.html#2020">2020</a>, <a href="hitorigoto/index.html#2021">2021</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" alt="" width="17" height="21" class="v-mid"><b><a
-      href="page/aisatsu/aisatsu.html">でんでん虫からの挨拶</a><span class="fs-sm" style="color: #f70785;">　(1997.1.1)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><div class="right"><a href="hitorigoto/index.html#history">でんでん虫の歴史</a></div></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36"><img src="gif/i-pin.gif" width="21" height="21" class="v-mid"><b><a
-      href="page/profile/profile.html">でんでん虫のプロフィール</a><span class="fs-sm" style="color: #f70785;">　(2021.2.1)</span></b></td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td nowrap>&nbsp;</td>
-    <td nowrap>&nbsp;</td>
-    <td nowrap height="36">&nbsp;</td>
-    <td nowrap height="36"></td>
-  </tr>
-  <tr>
-    <td nowrap>&nbsp;</td>
-    <td nowrap>&nbsp;</td>
-    <td nowrap height="36">&nbsp;</td>
-    <td nowrap height="36"></td>
-  </tr>
-  <tr>
-    <td width="40%" nowrap>&nbsp;</td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="36">&nbsp;</td>
-    <td width="0%" nowrap height="36"></td>
-    </tr>
-  <tr>
-    <td height="35" colspan="3"><p><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="shoseikun/index.html">自分自身のための処世訓解説</a><span class="fs-sm" style="color: #f70785;">　(2014/12/30)</span></b></p>      </td>
-    <td height="35"></td>
-    </tr>
-  <tr>
-    <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td height="36"> </td>
-    <td height="36"></td>
-    </tr>
-  <tr>
-    <td width="40%" nowrap><img src="gif/i-pin.gif" alt="" width="21" height="21" class="v-mid"><b><a
-      href="page/tanka-2/tanka-2.html">小学生のための処世訓解説</a><span class="fs-sm" style="color: #f70785;">　(2007.7.13)</span></b></td>
-    <td width="5%" nowrap>&nbsp;</td>
-    <td width="55%" nowrap height="49"> </td>
-    <td width="0%" nowrap height="49"></td>
-    </tr>
-</table>
-			</div>
-			<p></p>
-<div class="center">
-			  <p><img src="gif/line3.gif" border="0" width="640" height="27"></p>
-			  </div>
-<p>
-  <blockquote>
-  <p>&nbsp;</p>
-  <p class="center">&nbsp;</p>
-  <p class="center"><a href="https://books.apple.com/us/book/id1555408308"></a>　<a href="https://books.apple.com/us/book/id1555976756"><img src="book2.jpg" width="200" height="279"></a>　<a href="https://books.apple.com/us/book/id1555205686"><img src="book3.jpg" width="200" height="279"></a>　<a href="https://books.apple.com/us/book/id1557373459"><img src="book4.jpg" width="200" height="279"></a>　<a href="https://bit.ly/3zf8w96"><img src="chiisanakokoro.jpg" width="180" height="279" alt=""/></a></p>
-  <p class="center">&nbsp;</p>
-  <p class="center">&nbsp;</p>
-  <p class="center">小さな心が聞こえる (1989年から1999年にPL誌に掲載された原稿, 当時 51歳)　<a href="https://bit.ly/3zf8w96">pdf</a></p>
-  <p class="center">でんでん虫の短歌 : <a href="https://amzn.to/3JAXL0v">https://amzn.to/3JAXL0v</a>　<a href="https://bit.ly/3DvxPCS">pdf</a></p>
-  <p class="center">自分自身のための処世訓解説 : <a href="https://amzn.asia/d/dw6Busn">https://amzn.asia/d/dw6Busn</a>　<a href="https://bit.ly/3RlxOqC">pdf</a></p>
-  <p class="center">でんでん虫の独り言　小学校編 : <a href="https://amzn.to/3hf5Ewd">https://amzn.to/3hf5Ewd</a>　<a href="https://bit.ly/40liJcy">pdf</a></p>
-  <p class="center">でんでん虫の独り言　花笑み編2021　<a href="https://bit.ly/47vK3rB">pdf</a></p>
-  <p class="center">闘病の記 (鈴木広子) : <a href="https://amzn.to/39icXm2">https://amzn.to/39icXm2</a>　<a href="https://bit.ly/40wkwvR">pdf</a></p>
-  <p class="center">心と生活の相談 3 : <a href="https://amzn.asia/d/4bryUUA">https://amzn.asia/d/4bryUUA</a>　<a href="https://bit.ly/3RoBsjA">pdf</a></p>
-  <p class="center">心と生活の相談 4 : <a href="https://amzn.asia/d/0AzX83x">https://amzn.asia/d/0AzX83x</a>　<a href="https://bit.ly/3YgndiO">pdf</a></p>
-  <p class="center">心と生活の相談 5 : <a href="https://amzn.asia/d/eEcpy3H">https://amzn.asia/d/eEcpy3H</a>　<a href="https://bit.ly/3XUq29M">pdf</a></p>
-  <p class="center">&nbsp;</p>
-  <p class="center"><a href="https://bit.ly/3EVcjHP">独り言をつぶやくでんでん虫 (2022/6/17,動画)</a></p>
-  <p class="center">&nbsp;</p>
-  </blockquote>
-  <blockquote><blockquote><blockquote><p>&nbsp;</p>
-      <blockquote>
-        <blockquote>
-          <h4 class="center">
-            <p><img src="jpg/1.jpg" width="425" height="282">            </p>
-            <p>2011年5月  サバーファームにて</p>
+          <ul class="dd-shelf">
+            <li><span class="name">小さな心が聞こえる <small>(1989年から1999年にPL誌に掲載された原稿, 当時 51歳)</small></span><span class="acts"><a class="pill" href="https://bit.ly/3zf8w96">pdf</a></span></li>
+            <li><span class="name">でんでん虫の短歌</span><span class="acts"><a class="pill" href="https://amzn.to/3JAXL0v">Amazon</a><a class="pill" href="https://bit.ly/3DvxPCS">pdf</a></span></li>
+            <li><span class="name">自分自身のための処世訓解説</span><span class="acts"><a class="pill" href="https://amzn.asia/d/dw6Busn">Amazon</a><a class="pill" href="https://bit.ly/3RlxOqC">pdf</a></span></li>
+            <li><span class="name">でんでん虫の独り言　小学校編</span><span class="acts"><a class="pill" href="https://amzn.to/3hf5Ewd">Amazon</a><a class="pill" href="https://bit.ly/40liJcy">pdf</a></span></li>
+            <li><span class="name">でんでん虫の独り言　花笑み編2021</span><span class="acts"><a class="pill" href="https://bit.ly/47vK3rB">pdf</a></span></li>
+            <li><span class="name">闘病の記 (鈴木広子)</span><span class="acts"><a class="pill" href="https://amzn.to/39icXm2">Amazon</a><a class="pill" href="https://bit.ly/40wkwvR">pdf</a></span></li>
+            <li><span class="name">心と生活の相談 3</span><span class="acts"><a class="pill" href="https://amzn.asia/d/4bryUUA">Amazon</a><a class="pill" href="https://bit.ly/3RoBsjA">pdf</a></span></li>
+            <li><span class="name">心と生活の相談 4</span><span class="acts"><a class="pill" href="https://amzn.asia/d/0AzX83x">Amazon</a><a class="pill" href="https://bit.ly/3YgndiO">pdf</a></span></li>
+            <li><span class="name">心と生活の相談 5</span><span class="acts"><a class="pill" href="https://amzn.asia/d/eEcpy3H">Amazon</a><a class="pill" href="https://bit.ly/3XUq29M">pdf</a></span></li>
+          </ul>
 
-          </h4>
-          <h4></h4>
-          <blockquote>
-                        <blockquote>
-                          <p>鈴木敏夫　略歴</p>
-                          <p>1938年(昭和13年) 3月　平壌府八千代町21番地で生まれ、<br>
-                          若松公立国民学校に学ぶ。</p>
-                          <p>2年生の時、終戦を迎え、1年間苦労したのち、38度線を<br>
-                            越え、内地 (宮城県本吉郡鹿折村）に引き揚げる。<br>
-                            以後、気仙沼中学、気仙沼高校を卒業し、東京学芸大学に学ぶ。<br>
-                            卒業と同時にＰＬ教団教校一期生として、教師を拝命する。<br>
-                            教校一期生の時、ＰＬ小学校が創立され、教諭として赴任する。<br>
-                            「一年間、やってみよ」とのことであったが、三十年を経て、<br>
-                            1992年 (平成4年) 5月30日、54歳の時、脳溢血で倒れる。</p>
-                          <p>これで死んだはずであったが、九死に一生を得て、<br>
-                            1994年4月、小学寮の寮長として復職。　<br>
-                            1997年4月、ＰＬ学園小学校の校長を拝命。</p>
-                          <p>2004年3月5日、65歳の時、2回目の脳溢血を経験するも、3か月で退院して職場に復帰。<br>
-                            2011年3月、73歳までＰＬ学園小学校の校長を務めた。<br>
-                            2011年4月、ＰＬ学園を離れ、総合事務所に勤務。</p>
-                          <p>2021年8月、83歳、妻の手術に伴い、サービス付き高齢者向け住宅「花笑み」に入所</p>
-                        </blockquote>
-                        </blockquote>
-                      </blockquote>
-                    </blockquote>
-                  </blockquote>
-                </blockquote>
-              </blockquote>
-            
-          <p>
-            <br>
-          </p>
-        
-      
-      <h5>&nbsp;</h5>
-    
-  
+          <h3>動画</h3>
+          <ul class="doc-links">
+            <li><a href="https://bit.ly/3EVcjHP">独り言をつぶやくでんでん虫<small>(2022/6/17,動画)</small></a></li>
+          </ul>
+        </section>
 
+        <!-- 略歴 -->
+        <section class="doc-card glass" id="profile" data-reveal>
+          <h2>鈴木敏夫　略歴</h2>
+          <div class="dd-bio">
+            <figure>
+              <img src="jpg/1.jpg" width="425" height="282" alt="2011年5月 サバーファームにて" loading="lazy">
+              <figcaption>2011年5月  サバーファームにて</figcaption>
+            </figure>
+            <div>
+              <p>1938年(昭和13年) 3月　平壌府八千代町21番地で生まれ、若松公立国民学校に学ぶ。</p>
+              <p>2年生の時、終戦を迎え、1年間苦労したのち、38度線を越え、内地 (宮城県本吉郡鹿折村）に引き揚げる。<br>
+                以後、気仙沼中学、気仙沼高校を卒業し、東京学芸大学に学ぶ。<br>
+                卒業と同時にＰＬ教団教校一期生として、教師を拝命する。<br>
+                教校一期生の時、ＰＬ小学校が創立され、教諭として赴任する。<br>
+                「一年間、やってみよ」とのことであったが、三十年を経て、1992年 (平成4年) 5月30日、54歳の時、脳溢血で倒れる。</p>
+              <p>これで死んだはずであったが、九死に一生を得て、<br>
+                1994年4月、小学寮の寮長として復職。<br>
+                1997年4月、ＰＬ学園小学校の校長を拝命。</p>
+              <p>2004年3月5日、65歳の時、2回目の脳溢血を経験するも、3か月で退院して職場に復帰。<br>
+                2011年3月、73歳までＰＬ学園小学校の校長を務めた。<br>
+                2011年4月、ＰＬ学園を離れ、総合事務所に勤務。</p>
+              <p>2021年8月、83歳、妻の手術に伴い、サービス付き高齢者向け住宅「花笑み」に入所</p>
+            </div>
+          </div>
+        </section>
 
-<h5 class="center"><a href="gif/PoweredByMac.gif"><img src="gif/PoweredByMac.gif" border="0" width="88" height="31" class="v-mid"></a></h5>
+      </div>
+    </main>
 
-<h5 class="center"><hr></h5>
+    <footer class="page-foot">
+      <div class="links"><a href="../index.html">つぐとしのweb site トップページ</a></div>
+      <p>でんでん虫のホームページ · 平成9年 (1997年) 元旦 開設</p>
+      <a class="mac" href="gif/PoweredByMac.gif"><img src="gif/PoweredByMac.gif" width="88" height="31" alt="Powered by Mac"></a>
+    </footer>
+  </div>
 
-<p></p>
-
-<p><br>
-  <br>
-
-</p>
-<div class="center">
-  <hr></div>
-<p>
-
+  <script src="../assets/tsugu.js?v=20260925" defer></script>
 </body>
 </html>
