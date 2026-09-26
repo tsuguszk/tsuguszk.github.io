@@ -95,3 +95,4 @@
   .nx .rox-portrait img, .nx .rox-badge { animation: none; }
   .nx .rox-card, .nx .rox-jump a { transition: none; }
 }
+.nx .rox-card--video video { display: block; width: 100%; height: auto; border-radius: 9px; background: #111; }

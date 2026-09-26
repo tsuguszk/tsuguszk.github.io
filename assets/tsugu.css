@@ -815,7 +815,9 @@ a.shot-img { cursor: pointer; }
 .nx-lightbox::backdrop { background: rgba(8, 20, 14, .82); }
 .nx-lightbox[open] { animation: nx-pop .28s cubic-bezier(.2, .7, .2, 1); }
 .nx-lightbox figure { margin: 0; }
-.nx-lightbox img { display: block; max-width: 100%; max-height: calc(94vh - 60px); margin: 0 auto; }
+/* 最大幅は画面の幅で指定する（100%だと Safari が説明文の幅で計算し、説明の短い写真が小さく表示される） */
+.nx-lightbox img { display: block; width: auto; height: auto; max-width: min(96vw, 1200px); max-height: calc(94vh - 60px); margin: 0 auto; }
+.nx-lightbox figcaption { max-width: min(96vw, 1200px); }
 .nx-lightbox figcaption { padding: 10px 18px 14px; font-size: .9rem; line-height: 1.6; }
 .nx-lightbox figcaption:empty { display: none; }
 .nx-lightbox .lb-close {
@@ -1050,6 +1052,7 @@ a.shot-img { cursor: pointer; }
 .nx .rox-col a { color: #7a3a12; font-weight: 800; }
 .nx .rox-col img { transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
 .nx .rox-col a:hover img { transform: scale(1.03); }
-.nx .mini-links { display: flex; justify-content: flex-end; gap: 14px; margin: -6px 6px 0; font-size: .78rem; }
-.nx .mini-links a { color: var(--muted); text-decoration: none; }
-.nx .mini-links a:hover { color: var(--accent); text-decoration: underline; }
+/* アルバム・所思雑感：詩のコラムの下に、2つでコラム1つ分の幅 */
+.nx .link-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.nx .link-pair .link-box { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 0 .3em; min-height: 72px; padding: 16px 18px; font-size: 1rem; text-align: center; }
+.nx .link-pair .link-box small { order: 2; flex-basis: 100%; margin-top: 2px; font-size: .74rem; }
