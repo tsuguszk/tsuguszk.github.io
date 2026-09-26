@@ -96,3 +96,10 @@
   .nx .rox-card, .nx .rox-jump a { transition: none; }
 }
 .nx .rox-card--video video { display: block; width: 100%; height: auto; border-radius: 9px; background: #111; }
+/* パスワード付きページへの入口 */
+.nx .rox-lock { display: flex; align-items: center; gap: 16px; max-width: 560px; padding: 18px 22px; border-radius: 22px; background: #fff; color: var(--ink) !important; text-decoration: none;
+  box-shadow: 0 8px 0 -2px var(--pop4), 0 16px 30px -18px rgba(0, 0, 0, .4); transition: transform .2s ease; }
+.nx .rox-lock:hover { transform: translateY(-3px) rotate(-1deg); }
+.nx .rox-lock-icon { display: grid; place-items: center; flex: none; width: 52px; height: 52px; border-radius: 50%; background: #e6f8f6; font-size: 1.5rem; }
+.nx .rox-lock b { display: block; font-family: var(--round); font-size: 1.05rem; }
+.nx .rox-lock small { display: block; margin-top: 2px; color: var(--muted); font-size: .85rem; }
