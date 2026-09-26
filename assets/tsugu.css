@@ -1017,3 +1017,37 @@ a.shot-img { cursor: pointer; }
   .nx .localnav, .nx .zs-actions, .nx .jump, .nx .yearnav { display: none; }
   .nx .glass { box-shadow: none; background: #fff; }
 }
+
+/* ============================================================
+   トップの1枚目「アブレーションの仕事」（横いっぱいのタイル）
+   ============================================================ */
+.nx .tile--ablation {
+  grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 0 clamp(20px, 3vw, 44px); align-items: stretch;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .86), rgba(226, 246, 238, .78));
+}
+.nx .abl-text { display: flex; flex-direction: column; min-width: 0; }
+.nx .abl-text .tile-links { margin-top: auto; padding-top: 12px; }
+.nx .abl-viz {
+  display: flex; flex-direction: column; justify-content: flex-end; min-height: 230px; padding: 16px 16px 10px; border-radius: 18px;
+  background: rgba(255, 255, 255, .72); box-shadow: inset 0 0 0 1px var(--line); text-decoration: none;
+}
+.nx .abl-bars { display: flex; flex: 1 1 auto; align-items: flex-end; gap: 3px; min-height: 160px; border-bottom: 1px solid rgba(14, 58, 42, .3); }
+.nx .abl-bars i {
+  flex: 1; height: var(--h); border-radius: 3px 3px 0 0; background: var(--accent);
+  transform-origin: bottom; transition: transform .7s cubic-bezier(.2, .7, .2, 1) var(--d, 0ms), filter .2s ease;
+}
+.nx .abl-bars i.ad { background: #e3a07c; }
+.nx-js .nx [data-reveal]:not(.is-in) .abl-bars i { transform: scaleY(0); }
+.nx .abl-viz small { display: flex; justify-content: space-between; margin-top: 8px; color: var(--muted); font-size: .78rem; font-weight: 700; }
+@media (hover: hover) {
+  .nx .tile--ablation:hover .abl-bars i { filter: brightness(1.1) saturate(1.1); }
+}
+@media (max-width: 860px) {
+  .nx .tile--ablation { grid-column: auto; grid-template-columns: 1fr; }
+  .nx .abl-viz { min-height: 190px; margin-top: 18px; }
+  .nx .abl-bars { min-height: 130px; }
+}
+@media (min-width: 1100px) {
+  .nx .tiles .tile--ablation { padding: 32px 32px; }
+}
+@media (prefers-reduced-motion: reduce) { .nx .abl-bars i { transition: none; } }

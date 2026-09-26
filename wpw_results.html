@@ -9,136 +9,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/profile-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/profile-180.png">
   <meta name="theme-color" content="#8bf5c5">
-  <link rel="stylesheet" href="assets/tsugu.css?v=20260926c">
+  <link rel="stylesheet" href="assets/tsugu.css?v=20260926d">
   <script>document.documentElement.classList.add('nx-js');</script>
-  <style>
-    /* このページだけの部品（WPW成績）。色は tsugu.css の --accent の色相で3段階にした（古い期間ほど薄い） */
-    .nx { --p1: #e3a07c; --p2: #d27a45; --p3: #c4581c; }
-    /* 表の横幅でカードが画面からはみ出さないように（表は .doc-scroll の中で横スクロール） */
-    .nx .doc { grid-template-columns: minmax(0, 1fr); }
-
-    /* 見出し：長いので語のまとまりで折り返す */
-    .nx .wpw-hero h1 { font-size: clamp(1.75rem, 1.1rem + 3vw, 3rem); line-height: 1.35; }
-    .nx .wpw-hero h1 .nw { display: inline-block; }
-    .nx .wpw-hero h1 .h1-sub { display: block; margin-top: .3em; font-size: .62em; }
-
-    /* 数字のタイル */
-    .nx .wpw-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-    .nx .wpw-kpis--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-    .nx .wpw-kpi { margin: 0; padding: 14px 16px 12px; border-radius: 14px; background: rgba(255, 255, 255, .8); box-shadow: inset 0 0 0 1px var(--line); }
-    .nx .wpw-kpi p { margin: 0; }
-    .nx .wpw-kpi .k-label { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: .86rem; font-weight: 800; }
-    .nx .wpw-kpi .k-value { color: var(--ink); font-size: clamp(1.8rem, 1.35rem + 1.8vw, 2.6rem); font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
-    .nx .wpw-kpi .k-value small { margin-left: 2px; font-size: .5em; font-weight: 700; letter-spacing: 0; }
-    .nx .wpw-kpi .k-sub { color: var(--muted); font-size: .8rem; line-height: 1.5; }
-    .nx .wpw-kpi .nw { display: inline-block; }
-    .nx .wpw-kpis--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-    .nx .wpw-kpi--all { background: #fff4ec; box-shadow: inset 0 0 0 2px rgba(196, 88, 28, .35); }
-    @media (max-width: 760px) { .nx .wpw-kpis--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    .nx .wpw-kpi-head { margin: 22px 0 0 !important; color: var(--ink); font-weight: 800; }
-    .nx .wpw-key { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--p3); }
-
-    /* 棒グラフ（HTMLとCSSだけで描く） */
-    .nx .wpw-chart { margin: 16px 0 0; padding: 18px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); }
-    .nx .wpw-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 !important; padding: 0 !important; list-style: none; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
-    .nx .wpw-legend li { display: flex; align-items: center; gap: 7px; margin: 0 !important; }
-    .nx .wpw-sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
-    .nx .wpw-sw.p1, .nx .wpw-fill.p1 { background: var(--p1); }
-    .nx .wpw-sw.p2, .nx .wpw-fill.p2 { background: var(--p2); }
-    .nx .wpw-sw.p3, .nx .wpw-fill.p3 { background: var(--p3); }
-    .nx .wpw-plot { position: relative; margin-top: 14px; }
-    .nx .wpw-unit { margin: 0 !important; color: var(--muted); font-size: .78rem; font-weight: 700; }
-    .nx .wpw-area { position: relative; height: 230px; margin: 12px 0 0 34px; }
-    .nx .wpw-grid { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--line); }
-    .nx .wpw-grid.base { border-top-color: rgba(14, 58, 42, .38); }
-    .nx .wpw-grid span {
-      position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%);
-      color: var(--muted); font-size: .76rem; line-height: 1; font-variant-numeric: tabular-nums;
-    }
-    .nx .wpw-groups { position: absolute; inset: 0; display: flex; }
-    .nx .wpw-group { display: flex; flex: 1; justify-content: center; }
-    .nx .wpw-bar {
-      position: relative; width: 26px; height: 100%; margin: 0; padding: 0; border: 0; background: none;
-      cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent;
-    }
-    .nx .wpw-bar:focus-visible { outline-color: var(--ink); outline-offset: 1px; }
-    .nx .wpw-fill {
-      position: absolute; left: 1px; right: 1px; bottom: 0; height: calc(var(--v) * 5%);
-      border-radius: 4px 4px 0 0; transition: filter .15s ease;
-    }
-    .nx .wpw-bar:hover .wpw-fill, .nx .wpw-bar.is-on .wpw-fill { filter: brightness(1.12) saturate(1.1); }
-    .nx .wpw-val {
-      position: absolute; left: 50%; bottom: calc(var(--v) * 5% + 4px); transform: translateX(-50%);
-      color: var(--ink); font-size: .74rem; font-weight: 800; line-height: 1; white-space: nowrap;
-    }
-    .nx .wpw-x { display: flex; margin-left: 34px; padding-top: 8px; }
-    .nx .wpw-x span { flex: 1; color: var(--ink); font-size: .92rem; font-weight: 800; text-align: center; }
-    .nx .wpw-tip {
-      position: absolute; z-index: 5; min-width: 150px; padding: 9px 12px; border-radius: 10px;
-      background: #fff; box-shadow: 0 10px 24px -10px rgba(8, 58, 38, .45), 0 0 0 1px var(--line);
-      font-size: .8rem; line-height: 1.5; pointer-events: none;
-    }
-    .nx .wpw-tip[hidden] { display: none; }
-    .nx .wpw-tip b { display: block; color: var(--ink); font-size: 1.1rem; line-height: 1.3; }
-    .nx .wpw-tip .t-name { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-weight: 700; }
-    .nx .wpw-tip .t-name i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
-    .nx .wpw-tip .t-sub { color: var(--muted); }
-    .nx .wpw-hint { margin: 10px 0 0 !important; color: var(--muted); font-size: .8rem; }
-
-    /* 表：数字は右揃え */
-    .nx .wpw-table { table-layout: fixed; min-width: 520px; }
-    .nx .wpw-table th:first-child { width: 22%; }
-    .nx .wpw-table th.num, .nx .wpw-table td { text-align: right; font-variant-numeric: tabular-nums; }
-    .nx .wpw-table tbody th, .nx .wpw-table tfoot th { font-weight: 800; }
-    .nx .wpw-table tfoot th, .nx .wpw-table tfoot td { border-top: 1px solid rgba(14, 58, 42, .32); border-bottom: 0; color: var(--muted); font-weight: 700; }
-    .nx .wpw-table th:first-child { text-align: left; }
-    .nx .wpw-table td.total { color: var(--ink); font-weight: 700; }
-    .nx .wpw-note-small { margin: 10px 0 0 !important; color: var(--muted); font-size: .84rem; }
-
-    @media (max-width: 599px) {
-      .nx .wpw-kpi { padding: 12px 12px 10px; }
-      .nx .wpw-kpis--3, .nx .wpw-kpis--4 { gap: 8px; }
-      .nx .wpw-kpis--3 .wpw-kpi, .nx .wpw-kpis--4 .wpw-kpi { padding: 12px 8px 10px; }
-      .nx .wpw-kpis--3 .k-sub, .nx .wpw-kpis--4 .k-sub { font-size: .7rem; letter-spacing: -.01em; }
-      .nx .wpw-kpis--3 .k-value, .nx .wpw-kpis--4 .k-value { font-size: 1.65rem; }
-      .nx .wpw-chart { padding: 16px 10px 12px; }
-      .nx .wpw-area { height: 200px; }
-      .nx .wpw-legend { font-size: .82rem; gap: 4px 14px; }
-    }
-    /* 位置の割合の円グラフ（CSSの conic-gradient で描く） */
-    .nx { --c-l: #c4581c; --c-s: #e0a526; --c-r: #2a8c7c; }
-    .nx .pies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
-    .nx .pie-card { margin: 0; padding: 16px 14px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); text-align: center; }
-    .nx .pie-card figcaption b { display: block; color: var(--ink); font-size: 1.15rem; font-weight: 800; }
-    .nx .pie-card figcaption small { display: block; min-height: 2.6em; color: var(--muted); font-size: .8rem; line-height: 1.45; }
-    .nx .pie {
-      position: relative; width: min(170px, 100%); aspect-ratio: 1; margin: 10px auto 12px; border-radius: 50%;
-      box-shadow: 0 10px 22px -12px rgba(8, 58, 38, .5); transition: transform .9s cubic-bezier(.2, .7, .2, 1), opacity .9s ease;
-    }
-    .nx .pie-hole {
-      position: absolute; inset: 27%; display: grid; place-content: center; border-radius: 50%; background: #fff;
-      color: var(--muted); font-size: .78rem; line-height: 1.1;
-    }
-    .nx .pie-hole b { color: var(--ink); font-size: 1.3rem; font-weight: 800; }
-    .nx-js .nx [data-reveal]:not(.is-in) .pie { transform: rotate(-90deg) scale(.7); opacity: 0; }
-    .nx .pie-legend { display: grid; gap: 4px; margin: 0 !important; padding: 0 !important; list-style: none; text-align: left; }
-    .nx .pie-legend li { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 2px 8px; margin: 0 !important; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
-    .nx .pie-legend b { color: var(--ink); font-size: 1rem; }
-    .nx .pie-legend small { grid-column: 2 / 4; margin-top: -4px; color: var(--muted); font-size: .75rem; font-weight: 400; }
-    .nx .pie-sw { width: 12px; height: 12px; border-radius: 3px; }
-    @media (max-width: 760px) {
-      .nx .pies { grid-template-columns: 1fr; }
-      .nx .pie-card { display: grid; grid-template-columns: 120px 1fr; grid-template-areas: "cap cap" "pie leg"; align-items: center; gap: 4px 16px; text-align: left; }
-      .nx .pie-card figcaption { grid-area: cap; }
-      .nx .pie-card figcaption small { min-height: 0; }
-      .nx .pie { grid-area: pie; width: 120px; margin: 6px 0; }
-      .nx .pie-legend { grid-area: leg; }
-    }
-    @media (prefers-reduced-motion: reduce) { .nx .pie { transition: none; } }
-    @media (forced-colors: active) {
-      .nx .wpw-fill, .nx .wpw-sw, .nx .wpw-key, .nx .pie, .nx .pie-sw { forced-color-adjust: none; }
-    }
-  </style>
+  <link rel="stylesheet" href="assets/ca.css?v=20260926c">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
   <script>
@@ -157,59 +30,90 @@
         <a class="logo" href="index.html" aria-label="トップページへ"><img src="for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site"></a>
         <nav aria-label="サイト内">
           <a href="index.html">トップ</a>
-          <a href="index.html#anchor78285"><span class="long">資料・アプリ</span><span class="short">資料</span></a>
-          <a href="wpw_results.html" aria-current="page"><span class="long">WPW治療成績</span><span class="short">成績</span></a>
+          <a href="ablation.html"><span class="long">アブレーションの仕事</span><span class="short">全体</span></a>
+          <a href="wpw_results.html" aria-current="page">WPW</a>
+          <a href="pvc_results.html"><span class="long">PVC/NSVT</span><span class="short">PVC</span></a>
+          <a href="avnrt_results.html">AVNRT</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <div class="page-hero wpw-hero">
-        <p class="eyebrow">Catheter ablation · 2006–2026</p>
+      <div class="page-hero ca-hero">
+        <p class="eyebrow"><a href="ablation.html">アブレーションの仕事</a> › WPW症候群 · 2006–2026</p>
         <h1><span class="nw">アブレーション治療</span><span class="nw">（WPW症候群）</span><span class="h1-sub">2026年までの20年間の成績</span></h1>
-        <p class="sec-lede">2006年に大阪市立総合医療センター 小児不整脈科に赴任してから、2026年までの20年間に当科で行った<b>WPW症候群のアブレーション治療</b>の成績です。副伝導路の位置（左側・中隔・右側）と治療した時期（3つの期間）に分けて、治療件数と再発をまとめ、顕性・間欠性・潜在性ごとの位置の割合も示しました。</p>
+        <p class="sec-lede">2006年に大阪市立総合医療センター 小児不整脈科に赴任してから、2026年までの20年間に当科で行った<b>WPW症候群のアブレーション治療</b>の成績です。副伝導路の位置（左側・中隔・右側）と治療した時期（3つの期間）に分けて、治療件数・成功率・再発をまとめ、顕性・間欠性・潜在性ごとの位置の割合、高周波と冷凍の治療方法、症状のない（無症候性）WPWも示しました。<a href="ablation.html">アブレーション全体のデータ</a>もご覧ください。</p>
         <nav class="jump" aria-label="このページの目次">
-          <a href="#summary">概要</a><a href="#location">位置の割合</a><a href="#chart">再発率のグラフ</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
+          <a href="#summary">概要</a><a href="#location">位置の割合</a><a href="#chart">再発率のグラフ</a><a href="#energy">高周波と冷凍</a><a href="#asymptomatic">無症候性WPW</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
         </nav>
       </div>
 
       <div class="doc">
         <section class="doc-card glass" id="summary" data-reveal>
           <h2>概要</h2>
-          <div class="wpw-kpis">
-            <div class="wpw-kpi">
+          <div class="ca-kpis ca-kpis--3">
+            <div class="ca-kpi">
               <p class="k-label">治療件数</p>
               <p class="k-value">720<small>件</small></p>
               <p class="k-sub"><span class="nw">2006年1月–2026年9月、</span><span class="nw">患者654人</span></p>
             </div>
-            <div class="wpw-kpi">
+            <div class="ca-kpi ca-kpi--ok">
+              <p class="k-label">全体の成功率</p>
+              <p class="k-value">97.4<small>%</small></p>
+              <p class="k-sub"><span class="nw">2006年1月–2026年9月、</span><span class="nw">成功701件 ÷ 720件</span></p>
+            </div>
+            <div class="ca-kpi">
               <p class="k-label">全体の再発率</p>
               <p class="k-value">9.4<small>%</small></p>
               <p class="k-sub"><span class="nw">2006年1月–2026年9月、</span><span class="nw">再発68件 ÷ 720件</span></p>
             </div>
           </div>
 
-          <p class="wpw-kpi-head">2019–2026年の再発率</p>
-          <div class="wpw-kpis wpw-kpis--4">
-            <div class="wpw-kpi">
-              <p class="k-label"><span class="wpw-key" aria-hidden="true"></span>左側</p>
+          <p class="ca-kpi-head">2019–2026年の再発率</p>
+          <div class="ca-kpis ca-kpis--4">
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" aria-hidden="true"></span>左側</p>
               <p class="k-value">3.2<small>%</small></p>
               <p class="k-sub"><span class="nw">2006–2012年</span><span class="nw">は8.1%</span></p>
             </div>
-            <div class="wpw-kpi">
-              <p class="k-label"><span class="wpw-key" aria-hidden="true"></span>中隔</p>
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" aria-hidden="true"></span>中隔</p>
               <p class="k-value">11.9<small>%</small></p>
               <p class="k-sub"><span class="nw">2006–2012年</span><span class="nw">は18.8%</span></p>
             </div>
-            <div class="wpw-kpi">
-              <p class="k-label"><span class="wpw-key" aria-hidden="true"></span>右側</p>
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" aria-hidden="true"></span>右側</p>
               <p class="k-value">5.7<small>%</small></p>
               <p class="k-sub"><span class="nw">2006–2012年</span><span class="nw">は18.5%</span></p>
             </div>
-            <div class="wpw-kpi wpw-kpi--all">
+            <div class="ca-kpi ca-kpi--all">
               <p class="k-label">3部位の合計</p>
               <p class="k-value">5.9<small>%</small></p>
               <p class="k-sub"><span class="nw">再発16件 ÷ 272件、</span><span class="nw">2006–2012年は12.9%</span></p>
+            </div>
+          </div>
+
+          <p class="ca-kpi-head">2019–2026年の成功率</p>
+          <div class="ca-kpis ca-kpis--4">
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" style="background:var(--c-ok)" aria-hidden="true"></span>左側</p>
+              <p class="k-value">98.4<small>%</small></p>
+              <p class="k-sub"><span class="nw">成功124件 ÷ 126件</span></p>
+            </div>
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" style="background:var(--c-ok)" aria-hidden="true"></span>中隔</p>
+              <p class="k-value">98.3<small>%</small></p>
+              <p class="k-sub"><span class="nw">成功58件 ÷ 59件</span></p>
+            </div>
+            <div class="ca-kpi">
+              <p class="k-label"><span class="ca-key" style="background:var(--c-ok)" aria-hidden="true"></span>右側</p>
+              <p class="k-value">98.9<small>%</small></p>
+              <p class="k-sub"><span class="nw">成功86件 ÷ 87件</span></p>
+            </div>
+            <div class="ca-kpi ca-kpi--ok">
+              <p class="k-label">3部位の合計</p>
+              <p class="k-value">98.5<small>%</small></p>
+              <p class="k-sub"><span class="nw">成功268件 ÷ 272件、</span><span class="nw">2006–2012年は95.6%</span></p>
             </div>
           </div>
 
@@ -236,49 +140,132 @@
               <ul class="pie-legend"><li><span class="pie-sw" style="background:var(--c-l)" aria-hidden="true"></span>左側<b>68%</b><small>130例</small></li><li><span class="pie-sw" style="background:var(--c-s)" aria-hidden="true"></span>中隔<b>18%</b><small>35例</small></li><li><span class="pie-sw" style="background:var(--c-r)" aria-hidden="true"></span>右側<b>14%</b><small>27例</small></li></ul>
             </figure>
           </div>
+          <h3>病型ごとの成功率と再発率</h3>
+          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead><tr><th scope="col">病型</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発率（%）</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">顕性</th><td>346</td><td>98.8</td><td>8.4</td></tr>
+                <tr><th scope="row">間欠性</th><td>106</td><td>97.2</td><td>12.3</td></tr>
+                <tr><th scope="row">潜在性</th><td>201</td><td>96.5</td><td>9.0</td></tr>
+              </tbody>
+            </table>
+          </div>
           <p class="doc-note">潜在性は、右側が少ない、というデータです。あまり知られていないデータだと思います。</p>
-          <p class="wpw-note-small">1人に複数の副伝導路があった場合は、それぞれの位置に1つずつ数えています（そのため位置の合計は人数より少し多くなります）。病型が記録されていなかった患者さんのうち、術前の心電図の記載から判定できた人はその病型に含め、判定できなかった9人は除いています。アブレーション1021例の論文（2006〜2018年）でも、同じ傾向でした（<a href="index_kato_paper.html">論文のページへ</a>）。</p>
+          <p class="ca-note-small">1人に複数の副伝導路があった場合は、それぞれの位置に1つずつ数えています（そのため位置の合計は人数より少し多くなります）。病型が記録されていなかった患者さんのうち、術前の心電図の記載から判定できた人はその病型に含め、判定できなかった9人は除いています。アブレーション1021例の論文（2006〜2018年）でも、同じ傾向でした（<a href="index_kato_paper.html">論文のページへ</a>）。</p>
         </section>
 
         <section class="doc-card glass" id="chart" data-reveal>
           <h2>位置別・期間別の再発率</h2>
-          <figure class="wpw-chart">
-            <ul class="wpw-legend" aria-label="凡例">
-              <li><span class="wpw-sw p1" aria-hidden="true"></span>2006–2012年</li>
-              <li><span class="wpw-sw p2" aria-hidden="true"></span>2013–2018年</li>
-              <li><span class="wpw-sw p3" aria-hidden="true"></span>2019–2026年</li>
+          <figure class="ca-chart">
+            <ul class="ca-legend" aria-label="凡例">
+              <li><span class="ca-sw p1" aria-hidden="true"></span>2006–2012年</li>
+              <li><span class="ca-sw p2" aria-hidden="true"></span>2013–2018年</li>
+              <li><span class="ca-sw p3" aria-hidden="true"></span>2019–2026年</li>
             </ul>
-            <div class="wpw-plot" role="group" aria-label="WPWの位置と期間ごとの再発率の棒グラフ">
-              <p class="wpw-unit">再発率（%）</p>
-              <div class="wpw-area">
-                <div class="wpw-grid" style="bottom:100%"><span>20</span></div>
-                <div class="wpw-grid" style="bottom:75%"><span>15</span></div>
-                <div class="wpw-grid" style="bottom:50%"><span>10</span></div>
-                <div class="wpw-grid" style="bottom:25%"><span>5</span></div>
-                <div class="wpw-grid base" style="bottom:0"><span>0</span></div>
-                <div class="wpw-groups">
-                  <div class="wpw-group">
-                    <button class="wpw-bar" type="button" style="--v:8.1" data-p="1" data-loc="左側" data-period="2006–2012年" data-rate="8.1" data-rec="11" data-n="136" aria-label="左側、2006–2012年：再発率8.1%（再発11件、治療136件）"><span class="wpw-fill p1"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:8.4" data-p="2" data-loc="左側" data-period="2013–2018年" data-rate="8.4" data-rec="9" data-n="107" aria-label="左側、2013–2018年：再発率8.4%（再発9件、治療107件）"><span class="wpw-fill p2"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:3.2" data-p="3" data-loc="左側" data-period="2019–2026年" data-rate="3.2" data-rec="4" data-n="126" aria-label="左側、2019–2026年：再発率3.2%（再発4件、治療126件）"><span class="wpw-fill p3"></span><span class="wpw-val" aria-hidden="true">3.2</span></button>
+            <div class="ca-plot" role="group" aria-label="WPWの位置と期間ごとの再発率の棒グラフ">
+              <p class="ca-unit">再発率（%）</p>
+              <div class="ca-area">
+                <div class="ca-grid" style="bottom:100%"><span>20</span></div>
+                <div class="ca-grid" style="bottom:75%"><span>15</span></div>
+                <div class="ca-grid" style="bottom:50%"><span>10</span></div>
+                <div class="ca-grid" style="bottom:25%"><span>5</span></div>
+                <div class="ca-grid base" style="bottom:0"><span>0</span></div>
+                <div class="ca-groups">
+                  <div class="ca-group">
+                    <button class="ca-bar" type="button" style="--v:8.1" data-tip="8.1%" data-name="左側 · 2006–2012年" data-sub="再発 11件 / 治療 136件" aria-label="左側、2006–2012年：再発率8.1%（再発11件、治療136件）"><span class="ca-fill p1"></span></button>
+                    <button class="ca-bar" type="button" style="--v:8.4" data-tip="8.4%" data-name="左側 · 2013–2018年" data-sub="再発 9件 / 治療 107件" aria-label="左側、2013–2018年：再発率8.4%（再発9件、治療107件）"><span class="ca-fill p2"></span></button>
+                    <button class="ca-bar" type="button" style="--v:3.2" data-tip="3.2%" data-name="左側 · 2019–2026年" data-sub="再発 4件 / 治療 126件" aria-label="左側、2019–2026年：再発率3.2%（再発4件、治療126件）"><span class="ca-fill p3"></span><span class="ca-val" aria-hidden="true">3.2</span></button>
                   </div>
-                  <div class="wpw-group">
-                    <button class="wpw-bar" type="button" style="--v:18.8" data-p="1" data-loc="中隔" data-period="2006–2012年" data-rate="18.8" data-rec="9" data-n="48" aria-label="中隔、2006–2012年：再発率18.8%（再発9件、治療48件）"><span class="wpw-fill p1"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:15.2" data-p="2" data-loc="中隔" data-period="2013–2018年" data-rate="15.2" data-rec="7" data-n="46" aria-label="中隔、2013–2018年：再発率15.2%（再発7件、治療46件）"><span class="wpw-fill p2"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:11.9" data-p="3" data-loc="中隔" data-period="2019–2026年" data-rate="11.9" data-rec="7" data-n="59" aria-label="中隔、2019–2026年：再発率11.9%（再発7件、治療59件）"><span class="wpw-fill p3"></span><span class="wpw-val" aria-hidden="true">11.9</span></button>
+                  <div class="ca-group">
+                    <button class="ca-bar" type="button" style="--v:18.8" data-tip="18.8%" data-name="中隔 · 2006–2012年" data-sub="再発 9件 / 治療 48件" aria-label="中隔、2006–2012年：再発率18.8%（再発9件、治療48件）"><span class="ca-fill p1"></span></button>
+                    <button class="ca-bar" type="button" style="--v:15.2" data-tip="15.2%" data-name="中隔 · 2013–2018年" data-sub="再発 7件 / 治療 46件" aria-label="中隔、2013–2018年：再発率15.2%（再発7件、治療46件）"><span class="ca-fill p2"></span></button>
+                    <button class="ca-bar" type="button" style="--v:11.9" data-tip="11.9%" data-name="中隔 · 2019–2026年" data-sub="再発 7件 / 治療 59件" aria-label="中隔、2019–2026年：再発率11.9%（再発7件、治療59件）"><span class="ca-fill p3"></span><span class="ca-val" aria-hidden="true">11.9</span></button>
                   </div>
-                  <div class="wpw-group">
-                    <button class="wpw-bar" type="button" style="--v:18.5" data-p="1" data-loc="右側" data-period="2006–2012年" data-rate="18.5" data-rec="12" data-n="65" aria-label="右側、2006–2012年：再発率18.5%（再発12件、治療65件）"><span class="wpw-fill p1"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:13.7" data-p="2" data-loc="右側" data-period="2013–2018年" data-rate="13.7" data-rec="10" data-n="73" aria-label="右側、2013–2018年：再発率13.7%（再発10件、治療73件）"><span class="wpw-fill p2"></span></button>
-                    <button class="wpw-bar" type="button" style="--v:5.7" data-p="3" data-loc="右側" data-period="2019–2026年" data-rate="5.7" data-rec="5" data-n="87" aria-label="右側、2019–2026年：再発率5.7%（再発5件、治療87件）"><span class="wpw-fill p3"></span><span class="wpw-val" aria-hidden="true">5.7</span></button>
+                  <div class="ca-group">
+                    <button class="ca-bar" type="button" style="--v:18.5" data-tip="18.5%" data-name="右側 · 2006–2012年" data-sub="再発 12件 / 治療 65件" aria-label="右側、2006–2012年：再発率18.5%（再発12件、治療65件）"><span class="ca-fill p1"></span></button>
+                    <button class="ca-bar" type="button" style="--v:13.7" data-tip="13.7%" data-name="右側 · 2013–2018年" data-sub="再発 10件 / 治療 73件" aria-label="右側、2013–2018年：再発率13.7%（再発10件、治療73件）"><span class="ca-fill p2"></span></button>
+                    <button class="ca-bar" type="button" style="--v:5.7" data-tip="5.7%" data-name="右側 · 2019–2026年" data-sub="再発 5件 / 治療 87件" aria-label="右側、2019–2026年：再発率5.7%（再発5件、治療87件）"><span class="ca-fill p3"></span><span class="ca-val" aria-hidden="true">5.7</span></button>
                   </div>
                 </div>
               </div>
-              <div class="wpw-x" aria-hidden="true"><span>左側</span><span>中隔</span><span>右側</span></div>
-              <div class="wpw-tip" aria-hidden="true" hidden></div>
+              <div class="ca-x" aria-hidden="true"><span>左側</span><span>中隔</span><span>右側</span></div>
+              <div class="ca-tip" aria-hidden="true" hidden></div>
             </div>
-            <figcaption class="wpw-hint">棒にマウスを合わせる（スマホではタップする）と、再発件数と治療件数も表示されます。すべての数字は下の集計表にあります。</figcaption>
+            <figcaption class="ca-hint">棒にマウスを合わせる（スマホではタップする）と、再発件数と治療件数も表示されます。すべての数字は下の集計表にあります。</figcaption>
           </figure>
+        </section>
+
+        <section class="doc-card glass" id="energy" data-reveal>
+          <h2>治療方法（高周波と冷凍）</h2>
+          <p>副伝導路は、ふつうは<b>高周波（RF）</b>で焼いて治療します。房室結節（心臓の電気の通り道）のすぐ近くにある中隔の副伝導路などでは、2016年から、凍らせて治療する<b>冷凍アブレーション（Cryo）</b>も使っています。通電した706件の内訳です。</p>
+          <div class="pies pies--2">
+            <figure class="pie-card">
+              <figcaption><b>治療方法</b><small>通電した706件</small></figcaption>
+              <div class="pie" style="background:conic-gradient(var(--c-rf) 0.00% 92.63%, var(--c-cryo) 92.63% 98.73%, var(--c-both) 98.73% 100.00%)" role="img" aria-label="治療方法の割合：高周波654件（93%）、冷凍43件（6%）、両方9件（1%）"><span class="pie-hole"><b>706</b>件</span></div>
+              <ul class="pie-legend"><li><span class="pie-sw" style="background:var(--c-rf)" aria-hidden="true"></span>高周波<b>93%</b><small>654件</small></li><li><span class="pie-sw" style="background:var(--c-cryo)" aria-hidden="true"></span>冷凍<b>6%</b><small>43件</small></li><li><span class="pie-sw" style="background:var(--c-both)" aria-hidden="true"></span>両方<b>1%</b><small>9件</small></li></ul>
+            </figure>
+            <figure class="pie-card" style="display:block">
+              <figcaption><b>期間ごとの内訳</b><small>冷凍は2016年から</small></figcaption>
+              <ul class="ca-legend" aria-label="凡例"><li><span class="ca-sw" style="--c:var(--c-rf)" aria-hidden="true"></span>高周波</li><li><span class="ca-sw" style="--c:var(--c-cryo)" aria-hidden="true"></span>冷凍</li><li><span class="ca-sw" style="--c:var(--c-both)" aria-hidden="true"></span>両方</li></ul>
+          <ul class="ca-stacks">
+            <li class="ca-stack"><span>2006–2012年</span><div class="ca-stack-bar" role="img" aria-label="2006–2012年：高周波225件、冷凍0件、両方0件"><i style="--w:100.00%;--c:var(--c-rf)" title="高周波 225件">225</i></div></li>
+            <li class="ca-stack"><span>2013–2018年</span><div class="ca-stack-bar" role="img" aria-label="2013–2018年：高周波199件、冷凍11件、両方3件"><i style="--w:93.43%;--c:var(--c-rf)" title="高周波 199件">199</i><i style="--w:5.16%;--c:var(--c-cryo)" title="冷凍 11件"></i><i style="--w:1.41%;--c:var(--c-both)" title="両方 3件"></i></div></li>
+            <li class="ca-stack"><span>2019–2026年</span><div class="ca-stack-bar" role="img" aria-label="2019–2026年：高周波230件、冷凍32件、両方6件"><i style="--w:85.82%;--c:var(--c-rf)" title="高周波 230件">230</i><i style="--w:11.94%;--c:var(--c-cryo)" title="冷凍 32件">32</i><i style="--w:2.24%;--c:var(--c-both)" title="両方 6件"></i></div></li>
+          </ul>
+            </figure>
+          </div>
+          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead><tr><th scope="col">治療方法</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発率（%）</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">高周波（RF）</th><td>654</td><td>98.9</td><td>8.9</td></tr>
+                <tr><th scope="row">冷凍（Cryo）</th><td>43</td><td>100.0</td><td>16.3</td></tr>
+                <tr><th scope="row">両方</th><td>9</td><td>88.9</td><td>11.1</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ca-note-small">「両方」は、1回の治療で高周波と冷凍の両方を使ったものです。冷凍だけで治療した43件のうち33件は中隔の副伝導路（残りは右側）で、治療する位置が違うため、成功率や再発率は単純には比べられません。</p>
+        </section>
+
+        <section class="doc-card glass" id="asymptomatic" data-reveal>
+          <h2>無症候性WPW（症状のないWPW症候群）</h2>
+          <p>学校心臓検診などで心電図のデルタ波が見つかり、頻拍の発作（症状）はないけれど治療を受けた患者さんは<b>76人</b>でした。副伝導路が心室から心房へ逆向きに電気を伝える性質（<b>AP-VA</b>）がないと、ふつうのWPWの頻拍（房室回帰性頻拍）は起こりません。</p>
+          <div class="ca-kpis ca-kpis--3">
+            <div class="ca-kpi">
+              <p class="k-label">無症候性WPW</p>
+              <p class="k-value">76<small>人</small></p>
+              <p class="k-sub"><span class="nw">成功76人、</span><span class="nw">再発7人</span></p>
+            </div>
+            <div class="ca-kpi ca-kpi--ok">
+              <p class="k-label">AP-VAなし</p>
+              <p class="k-value">27<small>人</small></p>
+              <p class="k-sub"><span class="nw">76人の36%</span></p>
+            </div>
+            <div class="ca-kpi">
+              <p class="k-label">AP-VAあり</p>
+              <p class="k-value">48<small>人</small></p>
+              <p class="k-sub"><span class="nw">76人の63%</span><span class="nw">（不明1人）</span></p>
+            </div>
+          </div>
+          <h3>位置ごとの AP-VA の有無</h3>
+          <ul class="ca-legend" aria-label="凡例"><li><span class="ca-sw" style="--c:var(--c-ok)" aria-hidden="true"></span>AP-VAなし</li><li><span class="ca-sw" style="--c:var(--c-re)" aria-hidden="true"></span>AP-VAあり</li><li><span class="ca-sw" style="--c:var(--c-rest)" aria-hidden="true"></span>不明</li></ul>
+          <ul class="ca-stacks">
+            <li class="ca-stack"><span>左側</span><div class="ca-stack-bar" role="img" aria-label="左側：AP-VAなし13件、AP-VAあり21件、不明0件"><i style="--w:38.24%;--c:var(--c-ok)" title="AP-VAなし 13件">13</i><i style="--w:61.76%;--c:var(--c-re)" title="AP-VAあり 21件">21</i></div></li>
+            <li class="ca-stack"><span>中隔</span><div class="ca-stack-bar" role="img" aria-label="中隔：AP-VAなし6件、AP-VAあり15件、不明0件"><i style="--w:28.57%;--c:var(--c-ok)" title="AP-VAなし 6件">6</i><i style="--w:71.43%;--c:var(--c-re)" title="AP-VAあり 15件">15</i></div></li>
+            <li class="ca-stack"><span>右側</span><div class="ca-stack-bar" role="img" aria-label="右側：AP-VAなし10件、AP-VAあり13件、不明1件"><i style="--w:41.67%;--c:var(--c-ok)" title="AP-VAなし 10件">10</i><i style="--w:54.17%;--c:var(--c-re)" title="AP-VAあり 13件">13</i><i style="--w:4.17%;--c:var(--c-rest)" title="不明 1件"></i></div></li>
+          </ul>
+          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead><tr><th scope="col">副伝導路の位置</th><th scope="col" class="num">人数</th><th scope="col" class="num">AP-VAなし</th><th scope="col" class="num">AP-VAあり</th><th scope="col" class="num">不明</th><th scope="col" class="num">なしの割合（%）</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">左側</th><td>34</td><td class="hi">13</td><td>21</td><td>0</td><td>38</td></tr>
+                <tr><th scope="row">中隔</th><td>21</td><td class="hi">6</td><td>15</td><td>0</td><td>29</td></tr>
+                <tr><th scope="row">右側</th><td>24</td><td class="hi">10</td><td>13</td><td>1</td><td>42</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="ca-note-small">1人の患者さんを1回だけ数えています（最初の治療）。副伝導路が2本以上あった患者さんはそれぞれの位置に数えているため、位置の合計は人数より少し多くなります。AP-VAの有無は、治療記録の診断欄（bidirectional・unidirectional など）と電気生理検査のVA伝導の記録から判定しました。</p>
         </section>
 
         <section class="doc-card glass" id="tables" data-reveal>
@@ -286,7 +273,7 @@
 
           <h3>治療件数</h3>
           <div class="doc-scroll">
-            <table class="doc-table wpw-table">
+            <table class="doc-table ca-table">
               <thead>
                 <tr><th scope="col">WPWの位置</th><th scope="col" class="num">2006–2012年</th><th scope="col" class="num">2013–2018年</th><th scope="col" class="num">2019–2026年</th><th scope="col" class="num">合計</th></tr>
               </thead>
@@ -303,7 +290,7 @@
 
           <h3>再発件数</h3>
           <div class="doc-scroll">
-            <table class="doc-table wpw-table">
+            <table class="doc-table ca-table">
               <thead>
                 <tr><th scope="col">WPWの位置</th><th scope="col" class="num">2006–2012年</th><th scope="col" class="num">2013–2018年</th><th scope="col" class="num">2019–2026年</th><th scope="col" class="num">合計</th></tr>
               </thead>
@@ -320,7 +307,7 @@
 
           <h3>再発率（%）</h3>
           <div class="doc-scroll">
-            <table class="doc-table wpw-table">
+            <table class="doc-table ca-table">
               <thead>
                 <tr><th scope="col">WPWの位置</th><th scope="col" class="num">2006–2012年</th><th scope="col" class="num">2013–2018年</th><th scope="col" class="num">2019–2026年</th><th scope="col" class="num">全期間</th></tr>
               </thead>
@@ -335,13 +322,50 @@
             </table>
           </div>
 
-          <p class="wpw-note-small">※「全体」の行は、左側・中隔・右側の数字を足し合わせた値です（再発率は、再発件数 ÷ 治療件数）。複数の副伝導路があった治療はそれぞれの位置に数えているため、「全体」は治療件数（720件）より少し多くなります。</p>
-          <p class="doc-note">集計方法：当科のアブレーション治療データベースから、2006年1月1日〜2026年9月26日のWPW症候群の治療720件（患者654人）を集計しました。同じ患者さんの2回目以降の治療も1件として数えています。再発は、データベースに再発と記録されたものを数えた値です（追跡期間の長さは揃えていません）。</p>
+          <h3>成功件数</h3>
+          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead>
+                <tr><th scope="col">WPWの位置</th><th scope="col" class="num">2006–2012年</th><th scope="col" class="num">2013–2018年</th><th scope="col" class="num">2019–2026年</th><th scope="col" class="num">合計</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">左側</th><td>130</td><td>105</td><td>124</td><td class="total">359</td></tr>
+                <tr><th scope="row">中隔</th><td>46</td><td>46</td><td>58</td><td class="total">150</td></tr>
+                <tr><th scope="row">右側</th><td>62</td><td>71</td><td>86</td><td class="total">219</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><th scope="row">全体※</th><td>238</td><td>222</td><td>268</td><td>728</td></tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <h3>成功率（%）</h3>
+          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead>
+                <tr><th scope="col">WPWの位置</th><th scope="col" class="num">2006–2012年</th><th scope="col" class="num">2013–2018年</th><th scope="col" class="num">2019–2026年</th><th scope="col" class="num">全期間</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">左側</th><td>95.6</td><td>98.1</td><td>98.4</td><td class="total">97.3</td></tr>
+                <tr><th scope="row">中隔</th><td>95.8</td><td>100.0</td><td>98.3</td><td class="total">98.0</td></tr>
+                <tr><th scope="row">右側</th><td>95.4</td><td>97.3</td><td>98.9</td><td class="total">97.3</td></tr>
+              </tbody>
+              <tfoot>
+                <tr><th scope="row">全体※</th><td>95.6</td><td>98.2</td><td>98.5</td><td>97.5</td></tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <p class="ca-note-small">※「全体」の行は、左側・中隔・右側の数字を足し合わせた値です（成功率・再発率は、成功・再発の件数 ÷ 治療件数）。複数の副伝導路があった治療はそれぞれの位置に数えているため、「全体」は治療件数（720件）より少し多くなります。</p>
+          <p class="doc-note">集計方法：当科のアブレーション治療データベースから、2006年1月1日〜2026年9月26日のWPW症候群の治療720件（患者654人）を集計しました。同じ患者さんの2回目以降の治療も1件として数えています。通電しなかった14件も治療件数に含めています。成功は、治療の終わりに副伝導路の伝導がなくなった、または症状が良くなったものです。再発は、データベースに再発と記録されたものを数えた値です（追跡期間の長さは揃えていません）。</p>
         </section>
 
         <section class="doc-card glass" id="related" data-reveal>
           <h2>関連ページ</h2>
           <ul class="doc-links">
+            <li><a href="ablation.html"><span>アブレーションの仕事（全症例のデータ）<small>年齢・体重の分布、成功率・再発率、不整脈ごとの成績</small></span></a></li>
+            <li><a href="pvc_results.html"><span>PVC/NSVTの成績<small>右室流出路・右室流入路・その他の部位ごとの治療件数と再発率</small></span></a></li>
+            <li><a href="avnrt_results.html"><span>AVNRTの成績<small>通常型とそれ以外、高周波と冷凍の比較</small></span></a></li>
             <li><a href="index_kato_paper.html"><span>1000例の治療成績（Heart Rhythm 2019）<small>当院で行った小児不整脈のアブレーション治療1021例の成績をまとめた論文の紹介</small></span></a></li>
           </ul>
         </section>
@@ -349,75 +373,13 @@
     </main>
 
     <footer class="page-foot">
-      <div class="links"><a href="index.html">トップページ</a><a href="index.html#anchor78285">資料・アプリ</a></div>
+      <div class="links"><a href="index.html">トップページ</a><a href="ablation.html">アブレーションの仕事</a><a href="index.html#anchor78285">資料・アプリ</a></div>
       <p>つぐとしのweb site · 1997.1.1 開設</p>
       <img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
     </footer>
   </div>
 
-  <script>
-    /* 棒グラフのツールチップ（マウス・タップ・キーボードで同じ内容を出す） */
-    (function () {
-      var plot = document.querySelector('.nx .wpw-plot');
-      if (!plot) return;
-      var tip = plot.querySelector('.wpw-tip');
-      var bars = plot.querySelectorAll('.wpw-bar');
-      var current = null;
-
-      function el(tag, cls, text) {
-        var n = document.createElement(tag);
-        if (cls) n.className = cls;
-        if (text) n.textContent = text;
-        return n;
-      }
-
-      function show(bar) {
-        if (current && current !== bar) current.classList.remove('is-on');
-        current = bar;
-        bar.classList.add('is-on');
-        var d = bar.dataset;
-        tip.textContent = '';
-        tip.appendChild(el('b', '', d.rate + '%'));
-        var name = el('span', 't-name');
-        var key = el('i');
-        key.style.background = 'var(--p' + d.p + ')';
-        name.appendChild(key);
-        name.appendChild(document.createTextNode(d.loc + ' · ' + d.period));
-        tip.appendChild(name);
-        tip.appendChild(el('span', 't-sub', '再発 ' + d.rec + '件 / 治療 ' + d.n + '件'));
-        tip.hidden = false;
-
-        var pr = plot.getBoundingClientRect();
-        var fr = bar.querySelector('.wpw-fill').getBoundingClientRect();
-        var tw = tip.offsetWidth, th = tip.offsetHeight;
-        var x = fr.left + fr.width / 2 - pr.left - tw / 2;
-        x = Math.max(0, Math.min(x, pr.width - tw));
-        var y = fr.top - pr.top - th - 8;
-        if (y < 0) y = fr.top - pr.top + 8;
-        tip.style.left = x + 'px';
-        tip.style.top = y + 'px';
-      }
-
-      function hide() {
-        tip.hidden = true;
-        if (current) current.classList.remove('is-on');
-        current = null;
-      }
-
-      bars.forEach(function (bar) {
-        bar.addEventListener('pointerenter', function () { show(bar); });
-        bar.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && document.activeElement !== bar) hide(); });
-        bar.addEventListener('focus', function () { show(bar); });
-        bar.addEventListener('blur', hide);
-        bar.addEventListener('click', function () { show(bar); });
-      });
-      document.addEventListener('pointerdown', function (e) {
-        if (current && !e.target.closest('.wpw-bar')) hide();
-      });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
-      window.addEventListener('resize', hide);
-    })();
-  </script>
+  <script src="assets/ca.js?v=20260926a" defer></script>
   <script src="assets/tsugu.js?v=20260926c" defer></script>
 </body>
 </html>

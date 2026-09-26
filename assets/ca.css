@@ -1,0 +1,182 @@
+/* アブレーションの成績ページ（ablation.html / wpw_results.html / pvc_results.html / avnrt_results.html）の共通部品。
+   tsugu.css の後に読み込む。グラフはすべて HTML と CSS で描く（外部ライブラリなし） */
+.nx {
+  --p1: #e3a07c; --p2: #d27a45; --p3: #c4581c;          /* 期間：古いほど薄い */
+  --c-l: #c4581c; --c-s: #e0a526; --c-r: #2a8c7c;          /* WPWの位置：左側・中隔・右側 */
+  --c-ok: #2a8c7c; --c-re: #c4581c; --c-rest: #e4ded5;     /* 成功・再発・残り */
+  --c-rf: #c4581c; --c-cryo: #3d8fd1; --c-both: #8a6fc0;  /* 高周波・冷凍・両方 */
+  --c-g1: #c4581c; --c-g2: #2a8c7c; --c-g3: #7d8b86;      /* 群の比較（3群まで） */
+}
+.nx .doc { grid-template-columns: minmax(0, 1fr); }
+
+/* 見出し：長いので語のまとまりで折り返す */
+.nx .ca-hero h1 { font-size: clamp(1.75rem, 1.1rem + 3vw, 3rem); line-height: 1.35; }
+.nx .ca-hero h1 .nw { display: inline-block; }
+.nx .ca-hero h1 .h1-sub { display: block; margin-top: .3em; font-size: .62em; }
+
+/* 数字のタイル */
+.nx .ca-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.nx .ca-kpis--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.nx .ca-kpis--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.nx .ca-kpi { margin: 0; padding: 14px 16px 12px; border-radius: 14px; background: rgba(255, 255, 255, .8); box-shadow: inset 0 0 0 1px var(--line); }
+.nx .ca-kpi p { margin: 0; }
+.nx .ca-kpi .k-label { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: .86rem; font-weight: 800; }
+.nx .ca-kpi .k-value { color: var(--ink); font-size: clamp(1.8rem, 1.35rem + 1.8vw, 2.6rem); font-weight: 800; line-height: 1.2; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.nx .ca-kpi .k-value small { margin-left: 2px; font-size: .5em; font-weight: 700; letter-spacing: 0; }
+.nx .ca-kpi .k-sub { color: var(--muted); font-size: .8rem; line-height: 1.5; }
+.nx .ca-kpi .nw { display: inline-block; }
+.nx .ca-kpi--all { background: #fff4ec; box-shadow: inset 0 0 0 2px rgba(196, 88, 28, .35); }
+.nx .ca-kpi--ok { background: #eaf7f3; box-shadow: inset 0 0 0 2px rgba(42, 140, 124, .35); }
+.nx .ca-kpi-head { margin: 22px 0 0 !important; color: var(--ink); font-weight: 800; }
+.nx .ca-key { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--p3); }
+@media (max-width: 760px) { .nx .ca-kpis--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* 棒グラフ（縦棒）。.ca-area の --k が「値1あたりの高さ（%）」。例：最大20なら --k:5% */
+.nx .ca-chart { margin: 16px 0 0; padding: 18px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); }
+.nx .ca-chart > h3 { margin: 0 0 4px; font-size: 1.02rem; }
+.nx .ca-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 !important; padding: 0 !important; list-style: none; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
+.nx .ca-legend li { display: flex; align-items: center; gap: 7px; margin: 0 !important; }
+.nx .ca-sw { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--c, var(--p3)); }
+.nx .ca-sw.p1, .nx .ca-fill.p1 { --c: var(--p1); }
+.nx .ca-sw.p2, .nx .ca-fill.p2 { --c: var(--p2); }
+.nx .ca-sw.p3, .nx .ca-fill.p3 { --c: var(--p3); }
+.nx .ca-plot { position: relative; margin-top: 14px; }
+.nx .ca-unit { margin: 0 !important; color: var(--muted); font-size: .78rem; font-weight: 700; }
+.nx .ca-area { position: relative; height: 230px; margin: 12px 0 0 34px; }
+.nx .ca-grid { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--line); }
+.nx .ca-grid.base { border-top-color: rgba(14, 58, 42, .38); }
+.nx .ca-grid span {
+  position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%);
+  color: var(--muted); font-size: .76rem; line-height: 1; font-variant-numeric: tabular-nums;
+}
+.nx .ca-groups { position: absolute; inset: 0; display: flex; }
+.nx .ca-group { display: flex; flex: 1; justify-content: center; gap: 2px; min-width: 0; }
+.nx .ca-bar {
+  position: relative; width: 26px; height: 100%; margin: 0; padding: 0; border: 0; background: none;
+  cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent;
+}
+.nx .ca-bar:focus-visible { outline-color: var(--ink); outline-offset: 1px; }
+.nx .ca-fill {
+  position: absolute; left: 1px; right: 1px; bottom: 0; height: calc(var(--v) * var(--k, 5%));
+  border-radius: 4px 4px 0 0; background: var(--c, var(--p3)); transition: filter .15s ease, height .9s cubic-bezier(.2, .7, .2, 1);
+}
+.nx-js .nx [data-reveal]:not(.is-in) .ca-fill { height: 0; }
+.nx .ca-bar:hover .ca-fill, .nx .ca-bar.is-on .ca-fill { filter: brightness(1.12) saturate(1.1); }
+.nx .ca-val {
+  position: absolute; left: 50%; bottom: calc(var(--v) * var(--k, 5%) + 4px); transform: translateX(-50%);
+  color: var(--ink); font-size: .74rem; font-weight: 800; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.nx .ca-x { display: flex; margin-left: 34px; padding-top: 8px; }
+.nx .ca-x span { flex: 1; min-width: 0; color: var(--ink); font-size: .92rem; font-weight: 800; text-align: center; }
+.nx .ca-xtitle { margin: 4px 0 0 34px !important; color: var(--muted); font-size: .78rem; font-weight: 700; text-align: center; }
+.nx .ca-tip {
+  position: absolute; z-index: 5; min-width: 150px; padding: 9px 12px; border-radius: 10px;
+  background: #fff; box-shadow: 0 10px 24px -10px rgba(8, 58, 38, .45), 0 0 0 1px var(--line);
+  font-size: .8rem; line-height: 1.5; pointer-events: none;
+}
+.nx .ca-tip[hidden] { display: none; }
+.nx .ca-tip b { display: block; color: var(--ink); font-size: 1.1rem; line-height: 1.3; }
+.nx .ca-tip .t-name { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-weight: 700; }
+.nx .ca-tip .t-name i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+.nx .ca-tip .t-sub { color: var(--muted); }
+.nx .ca-hint { margin: 10px 0 0 !important; color: var(--muted); font-size: .8rem; }
+
+/* ヒストグラム（年齢・体重）：棒を太く、すき間を狭く */
+.nx .ca-chart--hist .ca-group { padding: 0 1px; }
+.nx .ca-chart--hist .ca-bar { width: 100%; max-width: 44px; }
+.nx .ca-chart--hist .ca-x span { font-size: .74rem; font-weight: 700; }
+.nx .ca-chart--hist .ca-val { font-size: .68rem; }
+@media (max-width: 599px) {
+  .nx .ca-chart--hist .ca-val { display: none; }
+  .nx .ca-chart--hist .ca-x span { font-size: .6rem; letter-spacing: -.03em; }
+  .nx .ca-chart--dense .ca-x span:nth-child(even) { visibility: hidden; }
+}
+
+/* 横の積み上げ棒（期間ごとの高周波・冷凍の内訳など） */
+.nx .ca-stacks { display: grid; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.nx .ca-stack { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); align-items: center; gap: 10px; margin: 0 !important; }
+.nx .ca-stack > span { color: var(--ink); font-size: .88rem; font-weight: 800; }
+.nx .ca-stack-bar { display: flex; height: 28px; overflow: hidden; border-radius: 8px; background: var(--c-rest); }
+.nx .ca-stack-bar i {
+  display: grid; place-items: center; flex: 0 0 var(--w); min-width: 0; overflow: hidden;
+  background: var(--c); color: #fff; font-size: .74rem; font-style: normal; font-weight: 800; white-space: nowrap;
+  transition: flex-basis .9s cubic-bezier(.2, .7, .2, 1);
+}
+.nx-js .nx [data-reveal]:not(.is-in) .ca-stack-bar i { flex-basis: 0; }
+
+/* 表：数字は右揃え */
+.nx .ca-table { table-layout: fixed; min-width: 520px; }
+.nx .ca-table th:first-child { width: 24%; text-align: left; }
+.nx .ca-table th.num, .nx .ca-table td { text-align: right; font-variant-numeric: tabular-nums; }
+.nx .ca-table tbody th, .nx .ca-table tfoot th { font-weight: 800; }
+.nx .ca-table tfoot th, .nx .ca-table tfoot td { border-top: 1px solid rgba(14, 58, 42, .32); border-bottom: 0; color: var(--muted); font-weight: 700; }
+.nx .ca-table td.total { color: var(--ink); font-weight: 700; }
+.nx .ca-table td.hi { color: var(--c-ok); font-weight: 800; }
+.nx .ca-note-small { margin: 10px 0 0 !important; color: var(--muted); font-size: .84rem; }
+
+/* 円グラフ（conic-gradient） */
+.nx .pies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.nx .pies--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nx .pie-card { margin: 0; padding: 16px 14px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); text-align: center; }
+.nx .pie-card figcaption b { display: block; color: var(--ink); font-size: 1.15rem; font-weight: 800; }
+.nx .pie-card figcaption small { display: block; min-height: 2.6em; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.nx .pie {
+  position: relative; width: min(170px, 100%); aspect-ratio: 1; margin: 10px auto 12px; border-radius: 50%;
+  box-shadow: 0 10px 22px -12px rgba(8, 58, 38, .5); transition: transform .9s cubic-bezier(.2, .7, .2, 1), opacity .9s ease;
+}
+.nx .pie-hole {
+  position: absolute; inset: 27%; display: grid; place-content: center; border-radius: 50%; background: #fff;
+  color: var(--muted); font-size: .78rem; line-height: 1.1;
+}
+.nx .pie-hole b { color: var(--ink); font-size: 1.3rem; font-weight: 800; }
+.nx-js .nx [data-reveal]:not(.is-in) .pie { transform: rotate(-90deg) scale(.7); opacity: 0; }
+.nx .pie-legend { display: grid; gap: 4px; margin: 0 !important; padding: 0 !important; list-style: none; text-align: left; }
+.nx .pie-legend li { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 2px 8px; margin: 0 !important; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
+.nx .pie-legend b { color: var(--ink); font-size: 1rem; }
+.nx .pie-legend small { grid-column: 2 / 4; margin-top: -4px; color: var(--muted); font-size: .75rem; font-weight: 400; }
+.nx .pie-sw { width: 12px; height: 12px; border-radius: 3px; }
+
+/* 子ページへの入口 */
+.nx .ca-subs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.nx .ca-sub {
+  display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85);
+  box-shadow: inset 0 0 0 1px var(--line); color: inherit !important; text-decoration: none; transition: transform .3s ease, box-shadow .3s ease;
+}
+.nx .ca-sub b { color: var(--ink); font-size: 1.15rem; font-weight: 800; }
+.nx .ca-sub span { color: var(--ink-2); font-size: .86rem; line-height: 1.55; }
+.nx .ca-sub em { margin-top: auto; padding-top: 6px; color: var(--green); font-style: normal; font-weight: 800; }
+.nx .ca-sub em::after { content: " →"; }
+@media (hover: hover) { .nx .ca-sub:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line), 0 16px 30px -18px rgba(8, 58, 38, .5); } }
+
+@media (max-width: 760px) {
+  .nx .pies, .nx .pies--2 { grid-template-columns: 1fr; }
+  .nx .pie-card { display: grid; grid-template-columns: 120px 1fr; grid-template-areas: "cap cap" "pie leg"; align-items: center; gap: 4px 16px; text-align: left; }
+  .nx .pie-card figcaption { grid-area: cap; }
+  .nx .pie-card figcaption small { min-height: 0; }
+  .nx .pie { grid-area: pie; width: 120px; margin: 6px 0; }
+  .nx .pie-legend { grid-area: leg; }
+  .nx .ca-subs { grid-template-columns: 1fr; }
+}
+@media (max-width: 599px) {
+  .nx .ca-kpi { padding: 12px 12px 10px; }
+  .nx .ca-kpis--3, .nx .ca-kpis--4 { gap: 8px; }
+  .nx .ca-kpis--3 .ca-kpi, .nx .ca-kpis--4 .ca-kpi { padding: 12px 8px 10px; }
+  .nx .ca-kpis--3 .k-sub, .nx .ca-kpis--4 .k-sub { font-size: .7rem; letter-spacing: -.01em; }
+  .nx .ca-kpis--3 .k-value, .nx .ca-kpis--4 .k-value { font-size: 1.65rem; }
+  .nx .ca-chart { padding: 16px 10px 12px; }
+  .nx .ca-area { height: 200px; }
+  .nx .ca-legend { font-size: .82rem; gap: 4px 14px; }
+  .nx .ca-stack { grid-template-columns: 6em minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .nx .pie, .nx .ca-fill, .nx .ca-stack-bar i { transition: none; } }
+@media (forced-colors: active) {
+  .nx .ca-fill, .nx .ca-sw, .nx .ca-key, .nx .pie, .nx .pie-sw, .nx .ca-stack-bar i { forced-color-adjust: none; }
+}
+/* 1つのグループに棒が1本だけのときは太くする */
+.nx .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:only-child) .ca-bar { width: min(64px, 70%); }
+/* このページ群はナビが5項目あるので、スマホでは詰める */
+@media (max-width: 440px) {
+  .nx .localnav .in { gap: 8px; }
+  .nx .localnav .logo img { height: 26px !important; }
+  .nx .localnav nav a { padding: 5px 6px; font-size: .76rem; }
+}
