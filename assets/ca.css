@@ -106,7 +106,8 @@
 
 /* 表：数字は右揃え */
 .nx .ca-table { table-layout: fixed; min-width: 520px; }
-.nx .ca-table th:first-child { width: 24%; text-align: left; }
+.nx .ca-table th:first-child { width: 30%; text-align: left; }
+.nx .ca-table tbody th, .nx .ca-table tfoot th { white-space: normal; line-height: 1.45; }
 .nx .ca-table th.num, .nx .ca-table td { text-align: right; font-variant-numeric: tabular-nums; }
 .nx .ca-table tbody th, .nx .ca-table tfoot th { font-weight: 800; }
 .nx .ca-table tfoot th, .nx .ca-table tfoot td { border-top: 1px solid rgba(14, 58, 42, .32); border-bottom: 0; color: var(--muted); font-weight: 700; }
