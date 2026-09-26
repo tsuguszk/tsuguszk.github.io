@@ -1041,7 +1041,15 @@ a.shot-img { cursor: pointer; }
   .nx .tiles .tile--ablation { padding: 32px 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .nx .abl-photo img { transition: none; } }
-/* アブレーションの仕事のリンクは矢印ではなく「 , 」で区切る */
+/* アブレーションの仕事のリンクは矢印ではなく「 ・ 」で区切る */
 .nx .tile--ablation .tile-links { gap: 6px 0; }
 .nx .tile--ablation .tile-links a::after { content: none; }
-.nx .tile--ablation .tile-links a:not(:last-child)::after { content: "\00a0,\00a0"; color: var(--ink-2); font-weight: 400; }
+.nx .tile--ablation .tile-links a:not(:last-child)::after { content: "\00a0・\00a0"; color: var(--ink-2); font-weight: 400; }
+
+/* ちょっと個人的なこと：ロックス君のコラム、目立たないリンク */
+.nx .rox-col a { color: #7a3a12; font-weight: 800; }
+.nx .rox-col img { transition: transform .4s cubic-bezier(.2, .7, .2, 1); }
+.nx .rox-col a:hover img { transform: scale(1.03); }
+.nx .mini-links { display: flex; justify-content: flex-end; gap: 14px; margin: -6px 6px 0; font-size: .78rem; }
+.nx .mini-links a { color: var(--muted); text-decoration: none; }
+.nx .mini-links a:hover { color: var(--accent); text-decoration: underline; }
