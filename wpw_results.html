@@ -32,6 +32,9 @@
     .nx .wpw-kpi .k-value small { margin-left: 2px; font-size: .5em; font-weight: 700; letter-spacing: 0; }
     .nx .wpw-kpi .k-sub { color: var(--muted); font-size: .8rem; line-height: 1.5; }
     .nx .wpw-kpi .nw { display: inline-block; }
+    .nx .wpw-kpis--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .nx .wpw-kpi--all { background: #fff4ec; box-shadow: inset 0 0 0 2px rgba(196, 88, 28, .35); }
+    @media (max-width: 760px) { .nx .wpw-kpis--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     .nx .wpw-kpi-head { margin: 22px 0 0 !important; color: var(--ink); font-weight: 800; }
     .nx .wpw-key { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--p3); }
 
@@ -94,10 +97,10 @@
 
     @media (max-width: 599px) {
       .nx .wpw-kpi { padding: 12px 12px 10px; }
-      .nx .wpw-kpis--3 { gap: 8px; }
-      .nx .wpw-kpis--3 .wpw-kpi { padding: 12px 8px 10px; }
-      .nx .wpw-kpis--3 .k-sub { font-size: .7rem; letter-spacing: -.01em; }
-      .nx .wpw-kpis--3 .k-value { font-size: 1.65rem; }
+      .nx .wpw-kpis--3, .nx .wpw-kpis--4 { gap: 8px; }
+      .nx .wpw-kpis--3 .wpw-kpi, .nx .wpw-kpis--4 .wpw-kpi { padding: 12px 8px 10px; }
+      .nx .wpw-kpis--3 .k-sub, .nx .wpw-kpis--4 .k-sub { font-size: .7rem; letter-spacing: -.01em; }
+      .nx .wpw-kpis--3 .k-value, .nx .wpw-kpis--4 .k-value { font-size: 1.65rem; }
       .nx .wpw-chart { padding: 16px 10px 12px; }
       .nx .wpw-area { height: 200px; }
       .nx .wpw-legend { font-size: .82rem; gap: 4px 14px; }
@@ -182,12 +185,12 @@
             <div class="wpw-kpi">
               <p class="k-label">全体の再発率</p>
               <p class="k-value">9.4<small>%</small></p>
-              <p class="k-sub"><span class="nw">再発68件</span> <span class="nw">÷ 720件</span></p>
+              <p class="k-sub"><span class="nw">2006年1月–2026年9月、</span><span class="nw">再発68件 ÷ 720件</span></p>
             </div>
           </div>
 
           <p class="wpw-kpi-head">2019–2026年の再発率</p>
-          <div class="wpw-kpis wpw-kpis--3">
+          <div class="wpw-kpis wpw-kpis--4">
             <div class="wpw-kpi">
               <p class="k-label"><span class="wpw-key" aria-hidden="true"></span>左側</p>
               <p class="k-value">3.2<small>%</small></p>
@@ -202,6 +205,11 @@
               <p class="k-label"><span class="wpw-key" aria-hidden="true"></span>右側</p>
               <p class="k-value">5.7<small>%</small></p>
               <p class="k-sub"><span class="nw">2006–2012年</span><span class="nw">は18.5%</span></p>
+            </div>
+            <div class="wpw-kpi wpw-kpi--all">
+              <p class="k-label">3部位の合計</p>
+              <p class="k-value">5.9<small>%</small></p>
+              <p class="k-sub"><span class="nw">再発16件 ÷ 272件、</span><span class="nw">2006–2012年は12.9%</span></p>
             </div>
           </div>
 
