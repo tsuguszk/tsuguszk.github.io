@@ -1,0 +1,250 @@
+/* 大阪市立総合医療センター 小児不整脈部門「アブレーション治療の成績」
+   すべての指定は .ocgh-abl の中だけに効きます（病院サイトの他の部分に影響しません）。
+   文字は病院サイトと同じ Noto Sans JP。サイト側で読み込み済みなら、HTML の Google Fonts の行は消してかまいません。 */
+.ocgh-abl {
+  --ink: #1a1a1a; --ink-2: #333; --muted: #666; --line: #dde3ea; --accent: #0b78d8; --link: #2c6ea7; --gutter: 16px;
+  color: var(--ink); background: #fff; font-family: "Noto Sans JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  font-size: 16px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+.ocgh-abl *, .ocgh-abl *::before, .ocgh-abl *::after { box-sizing: border-box; }
+.ocgh-abl img { max-width: 100%; height: auto; }
+.ocgh-abl a { color: var(--link); }
+.ocgh-abl a:hover { text-decoration: none; }
+.ocgh-abl h1, .ocgh-abl h2, .ocgh-abl h3 { margin: 0; line-height: 1.4; color: var(--ink); }
+.ocgh-abl p { margin: 0 0 1em; }
+
+/* 4ページの切り替えタブ */
+.ocgh-abl .abl-tabs { display: flex; flex-wrap: wrap; gap: 6px; max-width: 960px; margin: 0 auto; padding: 16px var(--gutter) 0; }
+.ocgh-abl .abl-tabs a { padding: 6px 16px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); font-size: .9rem; font-weight: 700; text-decoration: none; }
+.ocgh-abl .abl-tabs a:hover { border-color: var(--accent); color: var(--accent); }
+.ocgh-abl .abl-tabs a[aria-current="page"] { border-color: transparent; background: linear-gradient(90deg, #0b78d8, #58a9ee); color: #fff; }
+
+/* 冒頭 */
+.ocgh-abl .page-hero { max-width: 960px; margin: 0 auto; padding: 24px var(--gutter) 28px; }
+.ocgh-abl .eyebrow { margin: 0 0 6px; color: var(--accent); font-size: .8rem; font-weight: 700; letter-spacing: .08em; }
+.ocgh-abl .eyebrow a { color: var(--accent); }
+.ocgh-abl .page-hero h1 { font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.3rem); font-weight: 700; }
+.ocgh-abl .sec-lede { margin: 14px 0 0; color: var(--ink-2); }
+.ocgh-abl .jump { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 16px; }
+.ocgh-abl .jump a { padding: 3px 12px; border-radius: 999px; background: #eef6fe; color: var(--link); font-size: .86rem; text-decoration: none; }
+.ocgh-abl .jump a:hover { background: #dcecfc; }
+
+/* 本文のカード */
+.ocgh-abl .doc { display: grid; gap: 28px; max-width: 960px; margin: 0 auto; padding: 0 var(--gutter) 40px; }
+.ocgh-abl .doc-card { padding: 0; }
+.ocgh-abl .doc-card > h2 { margin-bottom: 14px; padding: 8px 16px; background: linear-gradient(90deg, #0b78d8, #58a9ee); color: #fff; font-size: 1.15rem; font-weight: 700; }
+.ocgh-abl .doc-card h3 { margin: 22px 0 8px; padding-left: 10px; border-left: 4px solid var(--accent); font-size: 1.02rem; font-weight: 700; }
+.ocgh-abl .doc-card > p, .ocgh-abl .doc-card li { color: var(--ink-2); }
+.ocgh-abl .doc-note { margin: 16px 0 0; padding: 12px 16px; border-left: 4px solid var(--accent); background: #f4f8fc; color: var(--ink-2); font-size: .95rem; }
+.ocgh-abl .doc-links { display: grid; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
+.ocgh-abl .doc-links a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); font-weight: 700; text-decoration: none; }
+.ocgh-abl .doc-links a::after { content: "›"; margin-left: auto; color: var(--accent); font-size: 1.3rem; line-height: 1; }
+.ocgh-abl .doc-links a:hover { border-color: var(--accent); }
+.ocgh-abl .doc-links small { display: block; color: var(--muted); font-size: .82rem; font-weight: 400; }
+.ocgh-abl .doc-table { width: 100%; margin: 12px 0 0; border-collapse: collapse; font-size: .93rem; }
+.ocgh-abl .doc-table th, .ocgh-abl .doc-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.ocgh-abl .doc-table thead th { background: #f4f8fc; }
+.ocgh-abl .doc-table th { color: var(--ink); font-weight: 700; white-space: nowrap; }
+.ocgh-abl .doc-table td { color: var(--ink-2); }
+.ocgh-abl .doc-scroll { overflow-x: auto; }
+.ocgh-abl .abl-foot { max-width: 960px; margin: 0 auto; padding: 16px var(--gutter) 32px; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+.ocgh-abl [hidden] { display: none !important; }
+
+/* アブレーションの成績ページ（ablation.html / wpw_results.html / pvc_results.html / avnrt_results.html）の共通部品。
+   tsugu.css の後に読み込む。グラフはすべて HTML と CSS で描く（外部ライブラリなし） */
+.ocgh-abl {
+  --p1: #a9d2f5; --p2: #58a9ee; --p3: #0b78d8;          /* 期間：古いほど薄い */
+  --c-l: #0b78d8; --c-s: #f0a92b; --c-r: #2aa58c;          /* WPWの位置：左側・中隔・右側 */
+  --c-ok: #2aa58c; --c-re: #e2762e; --c-rest: #e6ebf0;     /* 成功・再発・残り */
+  --c-rf: #e2762e; --c-cryo: #3fa9f5; --c-both: #8a6fc0;  /* 高周波・冷凍・両方 */
+  --c-g1: #0b78d8; --c-g2: #2aa58c; --c-g3: #7d8b86;      /* 群の比較（3群まで） */
+}
+.ocgh-abl .doc { grid-template-columns: minmax(0, 1fr); }
+
+/* 見出し：長いので語のまとまりで折り返す */
+.ocgh-abl .ca-hero h1 { font-size: clamp(1.75rem, 1.1rem + 3vw, 3rem); line-height: 1.35; }
+.ocgh-abl .ca-hero h1 .nw { display: inline-block; }
+.ocgh-abl .ca-hero h1 .h1-sub { display: block; margin-top: .3em; font-size: .62em; }
+
+/* 数字のタイル */
+.ocgh-abl .ca-kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.ocgh-abl .ca-kpis--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ocgh-abl .ca-kpis--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ocgh-abl .ca-kpi { margin: 0; padding: 14px 16px 12px; border-radius: 14px; background: rgba(255, 255, 255, .8); box-shadow: inset 0 0 0 1px var(--line); }
+.ocgh-abl .ca-kpi p { margin: 0; }
+.ocgh-abl .ca-kpi .k-label { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-size: .86rem; font-weight: 800; }
+.ocgh-abl .ca-kpi .k-value { color: var(--ink); font-size: clamp(1.8rem, 1.35rem + 1.8vw, 2.6rem); font-weight: 800; line-height: 1.2; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.ocgh-abl .ca-kpi .k-value small { margin-left: 2px; font-size: .5em; font-weight: 700; letter-spacing: 0; }
+.ocgh-abl .ca-kpi .k-sub { color: var(--muted); font-size: .8rem; line-height: 1.5; }
+.ocgh-abl .ca-kpi .nw { display: inline-block; }
+.ocgh-abl .ca-kpi--all { background: #eef6fe; box-shadow: inset 0 0 0 2px rgba(11, 120, 216, .35); }
+.ocgh-abl .ca-kpi--ok { background: #eaf7f3; box-shadow: inset 0 0 0 2px rgba(42, 140, 124, .35); }
+.ocgh-abl .ca-kpi-head { margin: 22px 0 0 !important; color: var(--ink); font-weight: 800; }
+.ocgh-abl .ca-key { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--p3); }
+@media (max-width: 760px) { .ocgh-abl .ca-kpis--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* 棒グラフ（縦棒）。.ca-area の --k が「値1あたりの高さ（%）」。例：最大20なら --k:5% */
+.ocgh-abl .ca-chart { margin: 16px 0 0; padding: 18px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); }
+.ocgh-abl .ca-chart > h3 { margin: 0 0 4px; font-size: 1.02rem; }
+.ocgh-abl .ca-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 !important; padding: 0 !important; list-style: none; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
+.ocgh-abl .ca-legend li { display: flex; align-items: center; gap: 7px; margin: 0 !important; }
+.ocgh-abl .ca-sw { display: inline-block; flex: none; width: 12px; height: 12px; border-radius: 3px; background: var(--c, var(--p3)); }
+.ocgh-abl .ca-sw.p1, .ocgh-abl .ca-fill.p1 { --c: var(--p1); }
+.ocgh-abl .ca-sw.p2, .ocgh-abl .ca-fill.p2 { --c: var(--p2); }
+.ocgh-abl .ca-sw.p3, .ocgh-abl .ca-fill.p3 { --c: var(--p3); }
+.ocgh-abl .ca-plot { position: relative; margin-top: 14px; }
+.ocgh-abl .ca-unit { margin: 0 !important; color: var(--muted); font-size: .78rem; font-weight: 700; }
+.ocgh-abl .ca-area { position: relative; height: 230px; margin: 12px 0 0 34px; }
+.ocgh-abl .ca-grid { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--line); }
+.ocgh-abl .ca-grid.base { border-top-color: rgba(14, 58, 42, .38); }
+.ocgh-abl .ca-grid span {
+  position: absolute; right: calc(100% + 8px); top: 0; transform: translateY(-50%);
+  color: var(--muted); font-size: .76rem; line-height: 1; font-variant-numeric: tabular-nums;
+}
+.ocgh-abl .ca-groups { position: absolute; inset: 0; display: flex; }
+.ocgh-abl .ca-group { display: flex; flex: 1; justify-content: center; gap: 2px; min-width: 0; }
+.ocgh-abl .ca-bar {
+  position: relative; width: 26px; height: 100%; margin: 0; padding: 0; border: 0; background: none;
+  cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent;
+}
+.ocgh-abl .ca-bar:focus-visible { outline-color: var(--ink); outline-offset: 1px; }
+.ocgh-abl .ca-fill {
+  position: absolute; left: 1px; right: 1px; bottom: 0; height: calc(var(--v) * var(--k, 5%));
+  border-radius: 4px 4px 0 0; background: var(--c, var(--p3)); transition: filter .15s ease, height .9s cubic-bezier(.2, .7, .2, 1);
+}
+.ocgh-abl .reveal-off .ca-fill { height: 0; }
+.ocgh-abl .ca-bar:hover .ca-fill, .ocgh-abl .ca-bar.is-on .ca-fill { filter: brightness(1.12) saturate(1.1); }
+.ocgh-abl .ca-val {
+  position: absolute; left: 50%; bottom: calc(var(--v) * var(--k, 5%) + 4px); transform: translateX(-50%);
+  color: var(--ink); font-size: .74rem; font-weight: 800; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+.ocgh-abl .ca-x { display: flex; margin-left: 34px; padding-top: 8px; }
+.ocgh-abl .ca-x span { flex: 1; min-width: 0; color: var(--ink); font-size: .92rem; font-weight: 800; text-align: center; }
+.ocgh-abl .ca-xtitle { margin: 4px 0 0 34px !important; color: var(--muted); font-size: .78rem; font-weight: 700; text-align: center; }
+.ocgh-abl .ca-tip {
+  position: absolute; z-index: 5; min-width: 150px; padding: 9px 12px; border-radius: 10px;
+  background: #fff; box-shadow: 0 10px 24px -10px rgba(8, 58, 38, .45), 0 0 0 1px var(--line);
+  font-size: .8rem; line-height: 1.5; pointer-events: none;
+}
+.ocgh-abl .ca-tip[hidden] { display: none; }
+.ocgh-abl .ca-tip b { display: block; color: var(--ink); font-size: 1.1rem; line-height: 1.3; }
+.ocgh-abl .ca-tip .t-name { display: flex; align-items: center; gap: 6px; color: var(--ink-2); font-weight: 700; }
+.ocgh-abl .ca-tip .t-name i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; }
+.ocgh-abl .ca-tip .t-sub { color: var(--muted); }
+.ocgh-abl .ca-hint { margin: 10px 0 0 !important; color: var(--muted); font-size: .8rem; }
+
+/* ヒストグラム（年齢・体重）：棒を太く、すき間を狭く */
+.ocgh-abl .ca-chart--hist .ca-group { padding: 0 1px; }
+.ocgh-abl .ca-chart--hist .ca-bar { width: 100%; max-width: 44px; }
+.ocgh-abl .ca-chart--hist .ca-x span { font-size: .74rem; font-weight: 700; }
+.ocgh-abl .ca-chart--hist .ca-val { font-size: .68rem; }
+@media (max-width: 599px) {
+  .ocgh-abl .ca-chart--hist .ca-val { display: none; }
+  .ocgh-abl .ca-chart--hist .ca-x span { font-size: .6rem; letter-spacing: -.03em; }
+  .ocgh-abl .ca-chart--dense .ca-x span:nth-child(even) { visibility: hidden; }
+}
+
+/* 横の積み上げ棒（期間ごとの高周波・冷凍の内訳など） */
+.ocgh-abl .ca-stacks { display: grid; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.ocgh-abl .ca-stack { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); align-items: center; gap: 10px; margin: 0 !important; }
+.ocgh-abl .ca-stack > span { color: var(--ink); font-size: .88rem; font-weight: 800; }
+.ocgh-abl .ca-stack-bar { display: flex; height: 28px; overflow: hidden; border-radius: 8px; background: var(--c-rest); }
+.ocgh-abl .ca-stack-bar i {
+  display: grid; place-items: center; flex: 0 0 var(--w); min-width: 0; overflow: hidden;
+  background: var(--c); color: #fff; font-size: .74rem; font-style: normal; font-weight: 800; white-space: nowrap;
+  transition: flex-basis .9s cubic-bezier(.2, .7, .2, 1);
+}
+.ocgh-abl .reveal-off .ca-stack-bar i { flex-basis: 0; }
+
+/* 表：数字は右揃え */
+.ocgh-abl .ca-table { table-layout: fixed; min-width: 520px; }
+.ocgh-abl .ca-table th:first-child { width: 30%; text-align: left; }
+.ocgh-abl .ca-table tbody th, .ocgh-abl .ca-table tfoot th { white-space: normal; line-height: 1.45; }
+.ocgh-abl .ca-table th.num, .ocgh-abl .ca-table td { text-align: right; font-variant-numeric: tabular-nums; }
+.ocgh-abl .ca-table tbody th, .ocgh-abl .ca-table tfoot th { font-weight: 800; }
+.ocgh-abl .ca-table tfoot th, .ocgh-abl .ca-table tfoot td { border-top: 1px solid rgba(14, 58, 42, .32); border-bottom: 0; color: var(--muted); font-weight: 700; }
+.ocgh-abl .ca-table td.total { color: var(--ink); font-weight: 700; }
+.ocgh-abl .ca-table td.hi { color: var(--c-ok); font-weight: 800; }
+.ocgh-abl .ca-note-small { margin: 10px 0 0 !important; color: var(--muted); font-size: .84rem; }
+
+/* 円グラフ（conic-gradient） */
+.ocgh-abl .pies { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 16px; }
+.ocgh-abl .pies--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ocgh-abl .pie-card { margin: 0; padding: 16px 14px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85); box-shadow: inset 0 0 0 1px var(--line); text-align: center; }
+.ocgh-abl .pie-card figcaption b { display: block; color: var(--ink); font-size: 1.15rem; font-weight: 800; }
+.ocgh-abl .pie-card figcaption small { display: block; min-height: 2.6em; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+.ocgh-abl .pie {
+  position: relative; width: min(170px, 100%); aspect-ratio: 1; margin: 10px auto 12px; border-radius: 50%;
+  box-shadow: 0 10px 22px -12px rgba(8, 58, 38, .5); transition: transform .9s cubic-bezier(.2, .7, .2, 1), opacity .9s ease;
+}
+.ocgh-abl .pie-hole {
+  position: absolute; inset: 27%; display: grid; place-content: center; border-radius: 50%; background: #fff;
+  color: var(--muted); font-size: .78rem; line-height: 1.1;
+}
+.ocgh-abl .pie-hole b { color: var(--ink); font-size: 1.3rem; font-weight: 800; }
+.ocgh-abl .reveal-off .pie { transform: rotate(-90deg) scale(.7); opacity: 0; }
+.ocgh-abl .pie-legend { display: grid; gap: 4px; margin: 0 !important; padding: 0 !important; list-style: none; text-align: left; }
+.ocgh-abl .pie-legend li { display: grid; grid-template-columns: 14px 1fr auto; align-items: center; gap: 2px 8px; margin: 0 !important; color: var(--ink-2); font-size: .88rem; font-weight: 700; }
+.ocgh-abl .pie-legend b { color: var(--ink); font-size: 1rem; }
+.ocgh-abl .pie-legend small { grid-column: 2 / 4; margin-top: -4px; color: var(--muted); font-size: .75rem; font-weight: 400; }
+.ocgh-abl .pie-sw { width: 12px; height: 12px; border-radius: 3px; }
+
+/* 子ページへの入口 */
+.ocgh-abl .ca-subs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.ocgh-abl .ca-sub {
+  display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 14px; border-radius: 16px; background: rgba(255, 255, 255, .85);
+  box-shadow: inset 0 0 0 1px var(--line); color: inherit !important; text-decoration: none; transition: transform .3s ease, box-shadow .3s ease;
+}
+.ocgh-abl .ca-sub b { color: var(--ink); font-size: 1.15rem; font-weight: 800; }
+.ocgh-abl .ca-sub span { color: var(--ink-2); font-size: .86rem; line-height: 1.55; }
+.ocgh-abl .ca-sub em { margin-top: auto; padding-top: 6px; color: var(--green); font-style: normal; font-weight: 800; }
+.ocgh-abl .ca-sub em::after { content: " →"; }
+@media (hover: hover) { .ocgh-abl .ca-sub:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px var(--line), 0 16px 30px -18px rgba(8, 58, 38, .5); } }
+
+@media (max-width: 760px) {
+  .ocgh-abl .pies, .ocgh-abl .pies--2 { grid-template-columns: 1fr; }
+  .ocgh-abl .pie-card { display: grid; grid-template-columns: 120px 1fr; grid-template-areas: "cap cap" "pie leg"; align-items: center; gap: 4px 16px; text-align: left; }
+  .ocgh-abl .pie-card figcaption { grid-area: cap; }
+  .ocgh-abl .pie-card figcaption small { min-height: 0; }
+  .ocgh-abl .pie { grid-area: pie; width: 120px; margin: 6px 0; }
+  .ocgh-abl .pie-legend { grid-area: leg; }
+  .ocgh-abl .ca-subs { grid-template-columns: 1fr; }
+}
+@media (max-width: 599px) {
+  .ocgh-abl .ca-kpi { padding: 12px 12px 10px; }
+  .ocgh-abl .ca-kpis--3, .ocgh-abl .ca-kpis--4 { gap: 8px; }
+  .ocgh-abl .ca-kpis--3 .ca-kpi, .ocgh-abl .ca-kpis--4 .ca-kpi { padding: 12px 8px 10px; }
+  .ocgh-abl .ca-kpis--3 .k-sub, .ocgh-abl .ca-kpis--4 .k-sub { font-size: .7rem; letter-spacing: -.01em; }
+  .ocgh-abl .ca-kpis--3 .k-value, .ocgh-abl .ca-kpis--4 .k-value { font-size: 1.65rem; }
+  .ocgh-abl .ca-chart { padding: 16px 10px 12px; }
+  .ocgh-abl .ca-area { height: 200px; }
+  .ocgh-abl .ca-legend { font-size: .82rem; gap: 4px 14px; }
+  .ocgh-abl .ca-stack { grid-template-columns: 6em minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .ocgh-abl .pie, .ocgh-abl .ca-fill, .ocgh-abl .ca-stack-bar i { transition: none; } }
+@media (forced-colors: active) {
+  .ocgh-abl .ca-fill, .ocgh-abl .ca-sw, .ocgh-abl .ca-key, .ocgh-abl .pie, .ocgh-abl .pie-sw, .ocgh-abl .ca-stack-bar i { forced-color-adjust: none; }
+}
+/* 棒の太さ：3本組・2本組・1本でそれぞれ太く（ヒストグラムは別） */
+.ocgh-abl .ca-bar { width: min(72px, 30%); }
+.ocgh-abl .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:nth-child(2):last-child) .ca-bar { width: min(96px, 44%); }
+.ocgh-abl .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:only-child) .ca-bar { width: min(160px, 72%); }
+
+/* 全体のページの冒頭：文章の右に写真 */
+.ocgh-abl .ca-hero--photo { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: center; gap: clamp(20px, 4vw, 48px); max-width: 1120px; text-align: left; }
+.ocgh-abl .ca-hero--photo .ca-hero-text { grid-column: 1; grid-row: 1; }
+.ocgh-abl .ca-hero--photo .sec-lede { margin-left: 0; }
+.ocgh-abl .ca-hero--photo .jump { justify-content: flex-start; }
+.ocgh-abl .ca-hero-photo { grid-column: 2; grid-row: 1; margin: 0; }
+.ocgh-abl .ca-hero-photo .shot-img { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: default; }
+.ocgh-abl .ca-hero-photo img { display: block; width: 100% !important; height: auto; border: 6px solid #fff; border-radius: 20px; box-shadow: 0 20px 44px -22px rgba(8, 58, 38, .55); }
+@media (max-width: 860px) {
+  .ocgh-abl .ca-hero--photo { grid-template-columns: 1fr; }
+  .ocgh-abl .ca-hero-photo { grid-column: 1; grid-row: 2; max-width: 520px; }
+}
+
+/* 目次の中の、別ページ（WPW・AVNRT・PVC/NSVT）へ移るボタン */
+.ocgh-abl .jump a.jump-go::after { content: " \203A"; }
+
+/* スマホでは見出しを1行に収める */
+@media (max-width: 480px) { .ocgh-abl .page-hero.ca-hero h1 { font-size: 1.45rem; } .ocgh-abl .page-hero.ca-hero h1 .h1-sub { font-size: .72em; } }

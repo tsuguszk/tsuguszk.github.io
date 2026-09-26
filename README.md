@@ -96,6 +96,32 @@ python3 -m http.server 8000
 </html>
 ```
 
+## アブレーション成績のページ（`_ca_stats/`）
+
+`ablation.html`・`wpw_results.html`・`avnrt_results.html`・`pvc_results.html` の4ページと、病院の公式サイトへ渡すデータセットは、`_ca_stats/` のスクリプトで作る。**この4ページの HTML は直接編集しない**（作り直すと上書きされる）。見た目や文章を変えるときは `_ca_stats/build_*.py`（ページの文章・構成）か `assets/ca.css`（見た目）を直し、作り直す。
+
+| ファイル | 役割 |
+| --- | --- |
+| `_ca_stats/results_v2.json` | 材料になる集計値（件数・率・分布だけ。患者さんを特定できる情報は含まない。治療日は年月まで） |
+| `_ca_stats/ca_helpers.py` | 共通部品（グラフ・表・円グラフ）。CSS・JS の版番号も自動で決める |
+| `_ca_stats/build_ablation.py` ほか3つ | 4ページそれぞれの文章と構成 |
+| `_ca_stats/build_hospital.py` | 病院サイト用のデータセット → `_hospital/病院サイト用_アブレーション治療の成績/` と `.zip` |
+| `_ca_stats/build_all.py` | 上の5つをまとめて実行 |
+| `_ca_stats/mac_update_data.sh` | 年1回のデータ更新（Mac 専用） |
+
+作り直す（クラウドでも Mac でも同じ。Python 3.11 以上。Excel は使わない）:
+
+```bash
+python3 _ca_stats/build_all.py
+```
+
+- 版番号（`ca.css?v=…` など）は手で書かない。`tsugu.css`・`tsugu.js` は `index.html` に書かれた番号、`ca.css`・`ca.js` は中身から自動で決まる。
+- `_hospital/` は先頭が `_` なので公開サイトには出ない。病院へ渡すときは `_hospital/` の zip を使う。
+- 年1回のデータ更新だけは Mac で行う。CA データの Excel と集計スクリプト（`analyze_v2.py`）は Google ドライブの `AI_workspace/260626website改編/ca_stats/` に置いたままにし、GitHub には入れない:
+  1. `analyze_v2.py` の集計期間の終わりの日付（`'2026-09-26'`）を更新する
+  2. `zsh _ca_stats/mac_update_data.sh <CAデータ.xlsx>` を実行（集計 → 集計値だけをリポジトリへ → 作り直し → push）
+  3. ページ内の期間の文言（「2006–2026」「2026年9月まで」など）はクラウドの Claude に直してもらう
+
 ## アルバム（公開）と所思雑感（パスワード付きページ）
 
 以前は1ページにまとめていたが、2026年9月に分けた。
