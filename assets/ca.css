@@ -182,3 +182,16 @@
   .nx .localnav .logo img { height: 26px !important; }
   .nx .localnav nav a { padding: 5px 6px; font-size: .76rem; }
 }
+
+/* 全体のページの冒頭：文章の右に写真 */
+.nx .ca-hero--photo { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); align-items: center; gap: clamp(20px, 4vw, 48px); max-width: 1120px; text-align: left; }
+.nx .ca-hero--photo .ca-hero-text { grid-column: 1; grid-row: 1; }
+.nx .ca-hero--photo .sec-lede { margin-left: 0; }
+.nx .ca-hero--photo .jump { justify-content: flex-start; }
+.nx .ca-hero-photo { grid-column: 2; grid-row: 1; margin: 0; }
+.nx .ca-hero-photo .shot-img { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.nx .ca-hero-photo img { display: block; width: 100% !important; height: auto; border: 6px solid #fff; border-radius: 20px; box-shadow: 0 20px 44px -22px rgba(8, 58, 38, .55); }
+@media (max-width: 860px) {
+  .nx .ca-hero--photo { grid-template-columns: 1fr; }
+  .nx .ca-hero-photo { grid-column: 1; grid-row: 2; max-width: 520px; }
+}
