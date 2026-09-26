@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 /*
- * 所思雑感ページをパスワードで暗号化して公開用に書き出す（アルバムは album/ でパスワードなしで公開）。
+ * パスワード付きページを暗号化して公開用に書き出す。
  *
- *   node tools/encrypt_private.mjs
+ *   node tools/encrypt_private.mjs        … 所思雑感（_private_src → private/index.html）
+ *   node tools/encrypt_private.mjs rox    … ロックス君の写真（_rox_src → rox-album/index.html）
+ *
+ * 元のフォルダ（先頭が _ のフォルダ）は GitHub Pages では公開されない。
  *
  * - 元のページ: _private_src/index.html（写真も _private_src/ に置く。先頭が _ のフォルダは GitHub Pages で公開されない）
  * - 書き出し先: private/index.html（暗号化済み。これだけを公開する）
@@ -11,7 +14,7 @@
  * - パスワードは実行時に画面で2回入力する（画面には表示されない）。どこにも保存しない。
  * - 暗号方式: PBKDF2-SHA256（60万回）で鍵を作り、AES-256-GCM で暗号化。ブラウザ側で復号する。
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { webcrypto } from 'node:crypto';
@@ -19,19 +22,25 @@ import readline from 'node:readline';
 
 const crypto = webcrypto;
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SRC_DIR = join(ROOT, '_private_src');
+const TARGETS = {
+  private: { src: '_private_src', out: 'private', title: '所思雑感', store: 'tsugu-private-key' },
+  rox: { src: '_rox_src', out: 'rox-album', title: 'ロックス君 子犬のころから今まで', store: 'tsugu-rox-key' },
+};
+const T = TARGETS[process.argv[2] || 'private'];
+if (!T) { throw new Error('対象は private か rox です'); }
+const SRC_DIR = join(ROOT, T.src);
 const SRC = join(SRC_DIR, 'index.html');
-const OUT = join(ROOT, 'private', 'index.html');
+const OUT = join(ROOT, T.out, 'index.html');
 const ITERATIONS = 600000;
-const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.webp': 'image/webp' };
+const MIME = { '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.webp': 'image/webp', '.mp4': 'video/mp4' };
 
 function inlineImages(html) {
   let count = 0;
-  const out = html.replace(/(<img\b[^>]*?\bsrc=")([^"]+)(")/gi, (m, before, src, after) => {
+  const out = html.replace(/(<(?:img|source|video)\b[^>]*?\b(?:src|poster)=")([^"]+)(")/gi, (m, before, src, after) => {
     if (/^(https?:|data:|\.\.\/)/i.test(src)) { return m; }
     const file = join(SRC_DIR, src);
     const mime = MIME[extname(file).toLowerCase()];
-    if (!mime || !existsSync(file)) { throw new Error('画像が見つかりません: _private_src/' + src); }
+    if (!mime || !existsSync(file)) { throw new Error('画像が見つかりません: ' + T.src + '/' + src); }
     count++;
     return before + 'data:' + mime + ';base64,' + readFileSync(file).toString('base64') + after;
   });
@@ -67,8 +76,9 @@ async function main() {
   const data = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(html)));
 
   const payload = JSON.stringify({ v: 1, it: ITERATIONS, s: b64(salt), iv: b64(iv), d: b64(data) });
+  mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, page(payload));
-  console.log(`書き出しました: private/index.html（写真 ${count} 枚を埋め込み、${(data.length / 1024 / 1024).toFixed(1)} MB）`);
+  console.log(`書き出しました: ${T.out}/index.html（写真・動画 ${count} 点を埋め込み、${(data.length / 1024 / 1024).toFixed(1)} MB）`);
 }
 
 function page(payload) {
@@ -78,7 +88,7 @@ function page(payload) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="robots" content="noindex, nofollow">
-  <title>所思雑感</title>
+  <title>${T.title}</title>
   <meta name="theme-color" content="#8bf5c5">
   <link rel="stylesheet" href="../assets/tsugu.css?v=20260926">
   <style>
@@ -104,14 +114,14 @@ function page(payload) {
         <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site"></a>
         <nav aria-label="サイト内">
           <a href="../index.html">トップ</a>
-          <a href="index.html" aria-current="page">所思雑感</a>
+          <a href="index.html" aria-current="page">${T.title}</a>
         </nav>
       </div>
     </header>
     <main>
       <div class="page-hero gate-hero">
         <p class="eyebrow">Private</p>
-        <h1>所思雑感</h1>
+        <h1>${T.title}</h1>
         <p class="sec-lede">このページはパスワードが必要です。</p>
       </div>
       <form class="box gate glass" id="f">
@@ -132,7 +142,7 @@ function page(payload) {
   <script>
   (function () {
     var P = JSON.parse(document.getElementById('payload').textContent);
-    var STORE = 'tsugu-private-key';
+    var STORE = '${T.store}';
     function u8(b) { return Uint8Array.from(atob(b), function (c) { return c.charCodeAt(0); }); }
     function b64(buf) { return btoa(String.fromCharCode.apply(null, new Uint8Array(buf))); }
     async function open(key) {
