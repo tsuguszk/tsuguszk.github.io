@@ -119,7 +119,7 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
 .nx.home { max-width: 1160px; margin: 40px auto 0; padding: 0 var(--gutter) 24px; }
 
 /* 1. 活動の記録（2枚の大きな入口） */
-.nx .tiles { display: grid; grid-template-columns: 1.1fr .9fr .9fr; gap: clamp(14px, 2vw, 24px); }
+.nx .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
 .nx .tile {
   position: relative; display: flex; flex-direction: column;
   padding: clamp(24px, 3.2vw, 40px); overflow: hidden; color: var(--ink) !important; text-decoration: none;
@@ -875,6 +875,9 @@ a.shot-img { cursor: pointer; }
   .nx .tiles .tile .more { font-size: 1.1rem; }
   .nx .tiles .tile--society .fan.fan--one { flex: 1 1 auto; height: auto; min-height: 196px; }
   .nx .tiles .tile--society .fan.fan--one img { width: 62% !important; }
+  /* 論文の画像は下が少し切れるくらいに（カードの高さを学会の列に合わせる） */
+  .nx .tiles .tile--writing .fan { flex: 1 1 auto; height: auto; min-height: 180px; }
+  .nx .tiles .tile--writing .fan img { top: 44px; }
 }
 
 /* 概要ページ：大きな数字 */
