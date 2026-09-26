@@ -35,7 +35,10 @@
 .nx .rox-lede { margin: -6px 0 18px; color: var(--ink-2); }
 
 /* ---------- 長寿のお祝い ---------- */
-.nx .rox-choju { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: 22px; align-items: start; }
+.nx .rox-choju { display: grid; grid-template-columns: minmax(0, 1.62fr) minmax(0, .5fr); gap: 24px; align-items: start; }
+.nx .rox-maincol { display: grid; gap: 22px; }
+.nx .rox-msg--up { margin-top: 6px; text-align: center; font-size: clamp(1rem, .9rem + .5vw, 1.2rem); }
+.nx .rox-msg.rox-msg--up::after { top: -12px; bottom: auto; left: 50%; margin-left: -12px; border: 12px solid transparent; border-bottom-color: #fff7d6; border-top: 0; }
 .nx .rox-main figcaption { font-size: 1rem; }
 .nx .rox-tv { margin: 0; padding: 10px; border-radius: 26px; background: linear-gradient(140deg, var(--pop2), var(--pop1)); box-shadow: 0 24px 50px -24px rgba(160, 40, 60, .6); }
 .nx .rox-tv video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 18px; background: #111; }
