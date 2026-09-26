@@ -172,8 +172,10 @@
 @media (forced-colors: active) {
   .nx .ca-fill, .nx .ca-sw, .nx .ca-key, .nx .pie, .nx .pie-sw, .nx .ca-stack-bar i { forced-color-adjust: none; }
 }
-/* 1つのグループに棒が1本だけのときは太くする */
-.nx .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:only-child) .ca-bar { width: min(64px, 70%); }
+/* 棒の太さ：3本組・2本組・1本でそれぞれ太く（ヒストグラムは別） */
+.nx .ca-bar { width: min(72px, 30%); }
+.nx .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:nth-child(2):last-child) .ca-bar { width: min(96px, 44%); }
+.nx .ca-chart:not(.ca-chart--hist) .ca-group:has(> .ca-bar:only-child) .ca-bar { width: min(160px, 72%); }
 /* このページ群はナビが5項目あるので、スマホでは詰める */
 @media (max-width: 440px) {
   .nx .localnav .in { gap: 8px; }
