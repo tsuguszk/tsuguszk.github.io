@@ -115,7 +115,7 @@
 .nx.home { max-width: 1160px; margin: 40px auto 0; padding: 0 var(--gutter) 24px; }
 
 /* 1. 活動の記録（2枚の大きな入口） */
-.nx .tiles { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(14px, 2vw, 24px); align-items: start; }
+.nx .tiles { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(14px, 2vw, 24px); }
 .nx .tile {
   position: relative; display: flex; flex-direction: column;
   padding: clamp(24px, 3.2vw, 40px); overflow: hidden; color: var(--ink) !important; text-decoration: none;
@@ -124,8 +124,12 @@
 .nx .tile-link { display: contents; color: inherit; text-decoration: none; }
 .nx .tile h3 { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); font-weight: 800; }
 .nx .tile p { color: var(--ink-2); max-width: 30em; }
-.nx .tile .more { margin-top: 14px; color: var(--green); font-size: clamp(1.15rem, 1rem + .45vw, 1.35rem); }
+.nx .tile .more { margin-top: 12px; color: var(--green); font-size: clamp(1.15rem, 1rem + .45vw, 1.35rem); }
 .nx .tile--press { padding-bottom: 0; }
+/* 2枚のコラムの高さをそろえ、報道側は写真の帯を伸ばして余りを埋める */
+.nx .tile--press .fan { flex: 1 1 auto; min-height: 230px; }
+.nx .tile--press .fan img { width: 44% !important; top: 34px; }
+.nx .tile--press .fan img:nth-child(3) { width: 56% !important; }
 .nx .fan { position: relative; height: 250px; margin: 18px calc(-1 * clamp(24px, 3.2vw, 40px)) 0; overflow: hidden; }
 .nx .fan img {
   position: absolute; top: 40px; left: 50%; width: 40% !important; border-radius: 6px;
@@ -137,15 +141,17 @@
 .nx .fan img:nth-child(2) { transform: translateX(20%) rotate(6deg); }
 .nx .fan img:nth-child(3) { transform: translateX(-50%) translateY(-24px); z-index: 2; width: 50% !important; }
 .nx .tile--society { background: linear-gradient(160deg, rgba(255, 255, 255, .82), rgba(223, 243, 255, .72)); padding-bottom: 0; }
-.nx .fan.fan--one img { width: 56% !important; top: 24px; transform: translateX(-50%) rotate(-2deg); }
-.nx .facts { display: grid; gap: 10px; margin: 20px 0 0; padding: 0; list-style: none; }
+.nx .fan.fan--one { height: 196px; margin-top: 10px; }
+.nx .fan.fan--one img { width: 50% !important; top: 18px; transform: translateX(-50%) rotate(-2deg); }
+.nx .facts { display: grid; gap: 0; margin: 12px 0 0; padding: 0; list-style: none; }
 .nx .facts li { border-top: 1px solid var(--line); }
 .nx .facts li a {
-  display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 12px 0;
+  display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 12px; padding: 7px 0;
   color: inherit; text-decoration: none;
 }
-.nx .facts b { color: var(--accent); font-size: 1.5rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; font-feature-settings: "palt"; }
-.nx .facts span { color: var(--ink-2); font-size: .95rem; line-height: 1.5; }
+.nx .facts b { color: var(--accent); font-size: 1.35rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; font-feature-settings: "palt"; }
+.nx .facts span { color: var(--ink-2); font-size: .95rem; line-height: 1.45; }
+.nx .facts .nowrap { white-space: nowrap; }
 @media (hover: hover) {
   .nx .facts li a:hover b { color: var(--green); }
 }
