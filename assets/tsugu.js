@@ -217,9 +217,17 @@
       btn.addEventListener('click', function () {
         var img = btn.querySelector('img');
         var cap = btn.parentElement.querySelector('figcaption');
-        // 読み込み前でも正しい大きさで枠が決まるように、元の写真の縦横を先に渡す（Safari対策）
-        var w = img.naturalWidth || img.getAttribute('width'), h = img.naturalHeight || img.getAttribute('height');
-        if (w && h) { lbImg.width = w; lbImg.height = h; } else { lbImg.removeAttribute('width'); lbImg.removeAttribute('height'); }
+        // 表示する大きさを画面から計算して px で指定する。
+        // Safari は拡大表示の枠の幅を説明文の長さで決めてしまい、写真が小さく出ることがあるため
+        var w = +(img.naturalWidth || img.getAttribute('width')), h = +(img.naturalHeight || img.getAttribute('height'));
+        if (w && h) {
+          var s = Math.min(1, Math.min(window.innerWidth * 0.96, 1200) / w, (window.innerHeight * 0.94 - 60) / h);
+          lbImg.style.width = Math.round(w * s) + 'px';
+          lbImg.style.height = Math.round(h * s) + 'px';
+          lbCap.style.width = Math.round(w * s) + 'px';
+        } else {
+          lbImg.style.width = lbImg.style.height = lbCap.style.width = '';
+        }
         lbImg.src = img.currentSrc || img.src;
         lbImg.alt = img.alt;
         lbCap.textContent = cap ? cap.textContent : '';

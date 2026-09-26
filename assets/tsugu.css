@@ -817,7 +817,7 @@ a.shot-img { cursor: pointer; }
 .nx-lightbox figure { margin: 0; }
 /* 最大幅は画面の幅で指定する（100%だと Safari が説明文の幅で計算し、説明の短い写真が小さく表示される） */
 .nx-lightbox img { display: block; width: auto; height: auto; max-width: min(96vw, 1200px); max-height: calc(94vh - 60px); margin: 0 auto; }
-.nx-lightbox figcaption { max-width: min(96vw, 1200px); }
+.nx-lightbox figcaption { max-width: min(96vw, 1200px); box-sizing: border-box; }
 .nx-lightbox figcaption { padding: 10px 18px 14px; font-size: .9rem; line-height: 1.6; }
 .nx-lightbox figcaption:empty { display: none; }
 .nx-lightbox .lb-close {
