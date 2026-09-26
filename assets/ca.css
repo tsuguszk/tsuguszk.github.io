@@ -198,6 +198,4 @@
 }
 
 /* 目次の中の、別ページ（WPW・AVNRT・PVC/NSVT）へ移るボタン */
-.nx .jump a.jump-go { background: var(--ink); box-shadow: none; color: #fff; }
 .nx .jump a.jump-go::after { content: " \203A"; }
-.nx .jump a.jump-go:hover { background: var(--accent); color: #fff; }
