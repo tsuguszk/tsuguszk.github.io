@@ -19,6 +19,7 @@
   box-shadow: 0 6px 0 -2px var(--c, var(--pop3)), 0 10px 20px -12px rgba(0, 0, 0, .35); transition: transform .2s ease; }
 .nx .rox-jump a:hover { transform: translateY(-3px) rotate(-2deg); }
 .nx .rox-portrait { position: relative; justify-self: center; width: min(320px, 72vw); }
+.nx .rox-portrait-btn { border-radius: 50%; cursor: zoom-in; }
 .nx .rox-portrait img { display: block; width: 100% !important; aspect-ratio: 1; object-fit: cover; border: 10px solid #fff; border-radius: 50%;
   box-shadow: 0 24px 50px -22px rgba(120, 50, 10, .55); animation: rox-float 6s ease-in-out infinite; }
 .nx .rox-badge { position: absolute; right: -4px; top: 6%; display: grid; place-content: center; width: 96px; height: 96px; border-radius: 50%;
@@ -34,9 +35,10 @@
 .nx .rox-lede { margin: -6px 0 18px; color: var(--ink-2); }
 
 /* ---------- 長寿のお祝い ---------- */
-.nx .rox-choju { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 18px; align-items: start; }
+.nx .rox-choju { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .6fr); gap: 22px; align-items: start; }
+.nx .rox-main figcaption { font-size: 1rem; }
 .nx .rox-tv { margin: 0; padding: 10px; border-radius: 26px; background: linear-gradient(140deg, var(--pop2), var(--pop1)); box-shadow: 0 24px 50px -24px rgba(160, 40, 60, .6); }
-.nx .rox-tv video { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 18px; background: #111; }
+.nx .rox-tv video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 18px; background: #111; }
 .nx .rox-tv figcaption { padding: 10px 8px 2px; color: #fff; font-family: var(--round); font-weight: 800; font-size: .95rem; }
 .nx .rox-side { display: grid; gap: 18px; }
 .nx .rox-msg { position: relative; margin: 0; padding: 18px 20px; border-radius: 22px; background: #fff7d6; color: #6b4a00; font-family: var(--round); font-weight: 800; line-height: 1.7;
@@ -62,7 +64,9 @@
 .nx .rox-yl { position: sticky; top: calc(var(--header-h, 60px) + 16px); align-self: start; margin: 0; font-family: var(--round); font-weight: 800; color: var(--c, var(--pop1)); line-height: 1; }
 .nx .rox-yl b { display: block; font-size: 2.8rem; letter-spacing: -.01em; }
 .nx .rox-yl span { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 999px; background: #fff; color: var(--ink-2); font-size: .82rem; box-shadow: 0 4px 10px -6px rgba(0, 0, 0, .3); }
-.nx .rox-cards { columns: 3 220px; column-gap: 20px; padding-top: 12px; }
+/* 段組み（columns）は Safari で2段目以降の写真が出ないことがあるのでグリッドで並べる */
+.nx .rox-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 22px 20px; align-items: start; padding-top: 12px; }
+.nx .rox-cards .rox-card { margin: 0; }
 
 @keyframes rox-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes rox-wiggle { 0%, 100% { transform: rotate(12deg); } 50% { transform: rotate(-4deg) scale(1.06); } }
@@ -78,7 +82,7 @@
   .nx .rox-yl b { font-size: 2.2rem; }
 }
 @media (max-width: 599px) {
-  .nx .rox-cards { columns: 2 140px; column-gap: 12px; }
+  .nx .rox-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
   .nx .rox-card { padding: 7px 7px 9px; margin-bottom: 14px; }
   .nx .rox-card figcaption { font-size: .8rem; }
   .nx .rox-choju-row { gap: 12px; }
