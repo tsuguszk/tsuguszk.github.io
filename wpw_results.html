@@ -102,8 +102,32 @@
       .nx .wpw-area { height: 200px; }
       .nx .wpw-legend { font-size: .82rem; gap: 4px 14px; }
     }
+    /* 位置別の症例数（顕性・潜在性）の棒グラフ：縦軸 0〜160例 */
+    .nx { --q1: #c4581c; --q2: #2a8c7c; }
+    .nx .wpw-sw.q1, .nx .dist-fill.q1 { background: var(--q1); }
+    .nx .wpw-sw.q2, .nx .dist-fill.q2 { background: var(--q2); }
+    .nx .dist-plot { position: relative; margin-top: 14px; }
+    .nx .dist-group { display: flex; flex: 1; justify-content: center; gap: 10px; }
+    .nx .dist-bar { position: relative; width: 34px; height: 100%; }
+    .nx .dist-fill {
+      position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--v) / 160 * 100%);
+      border-radius: 4px 4px 0 0; transform-origin: bottom; transition: transform .8s cubic-bezier(.2, .7, .2, 1);
+    }
+    .nx .dist-val {
+      position: absolute; left: 50%; bottom: calc(var(--v) / 160 * 100% + 4px); transform: translateX(-50%);
+      color: var(--ink); font-size: .8rem; font-weight: 800; line-height: 1; white-space: nowrap;
+    }
+    .nx-js .nx [data-reveal]:not(.is-in) .dist-fill { transform: scaleY(0); }
+    .nx .dist-list { margin: 16px 0 0; padding-left: 1.2em; }
+    .nx .dist-list li { margin: 4px 0; }
+    .nx .dist-n { display: block; color: var(--muted); font-size: .86rem; }
+    @media (max-width: 599px) {
+      .nx .dist-bar { width: 26px; }
+      .nx .dist-group { gap: 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .nx .dist-fill { transition: none; } }
     @media (forced-colors: active) {
-      .nx .wpw-fill, .nx .wpw-sw, .nx .wpw-key { forced-color-adjust: none; }
+      .nx .wpw-fill, .nx .wpw-sw, .nx .wpw-key, .nx .dist-fill { forced-color-adjust: none; }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -136,7 +160,7 @@
         <h1><span class="nw">アブレーション治療</span><span class="nw">（WPW症候群）</span><span class="h1-sub">2026年までの20年間の成績</span></h1>
         <p class="sec-lede">2006年に大阪市立総合医療センター 小児不整脈科に赴任してから、2026年までの20年間に当科で行った<b>WPW症候群のアブレーション治療</b>の成績です。副伝導路の位置（左側・中隔・右側）と治療した時期（3つの期間）に分けて、症例数と再発をまとめました。</p>
         <nav class="jump" aria-label="このページの目次">
-          <a href="#summary">概要</a><a href="#chart">グラフ</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
+          <a href="#summary">概要</a><a href="#location">位置別の症例数</a><a href="#chart">再発率のグラフ</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
         </nav>
       </div>
 
@@ -177,6 +201,45 @@
           <p class="wpw-note-small">総症例数と全体の再発率は、下の集計表の数字から計算した値です。</p>
 
           <p class="doc-note">2019–2026年の再発率は、左側・中隔・右側のいずれの位置でも、それ以前の2つの期間より低くなっています。</p>
+        </section>
+
+        <section class="doc-card glass" id="location" data-reveal>
+          <h2>副伝導路の位置別の症例数（顕性・潜在性）</h2>
+          <p>アブレーション1021例の論文（2006〜2018年）で、WPW症候群の副伝導路を<b>顕性</b>（心電図にデルタ波が出るもの）と<b>潜在性</b>（逆行性にだけ伝導し、頻拍発作を起こすもの）に分けて、位置ごとに数えた症例数です。</p>
+          <figure class="wpw-chart">
+            <ul class="wpw-legend" aria-label="凡例">
+              <li><span class="wpw-sw q1" aria-hidden="true"></span>顕性WPW</li>
+              <li><span class="wpw-sw q2" aria-hidden="true"></span>潜在性</li>
+            </ul>
+            <div class="dist-plot" role="group" aria-label="副伝導路の位置ごとの顕性・潜在性の症例数の棒グラフ">
+              <p class="wpw-unit">症例数（例）</p>
+              <div class="wpw-area dist-area">
+                <div class="wpw-grid" style="bottom:100%"><span>160</span></div><div class="wpw-grid" style="bottom:75%"><span>120</span></div><div class="wpw-grid" style="bottom:50%"><span>80</span></div><div class="wpw-grid" style="bottom:25%"><span>40</span></div><div class="wpw-grid base" style="bottom:0%"><span>0</span></div>
+                <div class="wpw-groups">
+                  <div class="dist-group">
+                    <div class="dist-bar" style="--v:141" role="img" aria-label="左側、顕性WPW：141例"><span class="dist-fill q1"></span><span class="dist-val">141</span></div>
+                    <div class="dist-bar" style="--v:61" role="img" aria-label="左側、潜在性：61例"><span class="dist-fill q2"></span><span class="dist-val">61</span></div>
+                  </div>
+                  <div class="dist-group">
+                    <div class="dist-bar" style="--v:58" role="img" aria-label="中隔、顕性WPW：58例"><span class="dist-fill q1"></span><span class="dist-val">58</span></div>
+                    <div class="dist-bar" style="--v:20" role="img" aria-label="中隔、潜在性：20例"><span class="dist-fill q2"></span><span class="dist-val">20</span></div>
+                  </div>
+                  <div class="dist-group">
+                    <div class="dist-bar" style="--v:99" role="img" aria-label="右側、顕性WPW：99例"><span class="dist-fill q1"></span><span class="dist-val">99</span></div>
+                    <div class="dist-bar" style="--v:13" role="img" aria-label="右側、潜在性：13例"><span class="dist-fill q2"></span><span class="dist-val">13</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="wpw-x" aria-hidden="true"><span>左側</span><span>中隔</span><span>右側</span></div>
+            </div>
+            <figcaption class="wpw-hint">複数の副伝導路があった例（顕性11例、潜在性2例）は含めていません。出典：Heart Rhythm 2019（Table 3）</figcaption>
+          </figure>
+          <ul class="dist-list">
+            <li><b>顕性WPW</b>（3部位で298例）：左 約50%、右 約30%、中隔 約20%<span class="dist-n">（左側141例・中隔58例・右側99例）</span></li>
+            <li><b>潜在性</b>（3部位で94例）：左 約65%、右 約15%、中隔 約20%<span class="dist-n">（左側61例・中隔20例・右側13例）</span></li>
+          </ul>
+          <p class="doc-note">潜在性は、右側が少ない、というデータです。あまり知られていないデータだと思います。</p>
+          <p class="wpw-note-small">この内訳は論文の集計期間（2006〜2018年）の数字です。下の2026年までの集計には、顕性・潜在性の区別は含まれていません。<a href="index_kato_paper.html">アブレーション1000例の論文のページへ</a></p>
         </section>
 
         <section class="doc-card glass" id="chart" data-reveal>
