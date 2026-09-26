@@ -115,7 +115,7 @@
 .nx.home { max-width: 1160px; margin: 40px auto 0; padding: 0 var(--gutter) 24px; }
 
 /* 1. 活動の記録（2枚の大きな入口） */
-.nx .tiles { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(14px, 2vw, 24px); }
+.nx .tiles { display: grid; grid-template-columns: 1.1fr .9fr .9fr; gap: clamp(14px, 2vw, 24px); }
 .nx .tile {
   position: relative; display: flex; flex-direction: column;
   padding: clamp(24px, 3.2vw, 40px); overflow: hidden; color: var(--ink) !important; text-decoration: none;
@@ -495,6 +495,9 @@ body.nx-body {
    ============================================================ */
 @media (max-width: 1099px) {
   .nx .tiles { grid-template-columns: 1fr 1fr; }
+  .nx .tile--writing { grid-column: span 2; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 28px; align-content: start; }
+  .nx .tile--writing > :not(.fan) { grid-column: 1; }
+  .nx .tile--writing .fan { grid-column: 2; grid-row: 1 / span 8; height: auto; min-height: 300px; margin: -40px calc(-1 * clamp(24px, 3.2vw, 40px)) 0 0; }
   .nx .fan { height: 210px; }
   .nx .res-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .nx .res--wide { grid-column: span 2; }
@@ -511,6 +514,8 @@ body.nx-body {
 /* iPad 縦・小さめのタブレット */
 @media (max-width: 860px) {
   .nx .tiles { grid-template-columns: 1fr; }
+  .nx .tile--writing { grid-column: auto; display: flex; }
+  .nx .tile--writing .fan { height: 250px; min-height: 0; margin: 18px calc(-1 * clamp(24px, 3.2vw, 40px)) 0; }
   .nx .fan { height: 250px; }
   .nx .timeline::before { left: 11px; }
   .nx .timeline > li, .nx .timeline > li:nth-child(even) { width: auto; margin-left: 0; padding: 0 0 18px 38px; }
@@ -829,6 +834,173 @@ a.shot-img { cursor: pointer; }
   .nx .gallery { gap: 12px; }
 }
 
+
+/* ============================================================
+   論文・原稿（トップの3枚目・概要／論文／原稿のページ）
+   ============================================================ */
+.nx .tile--writing { background: linear-gradient(160deg, rgba(255, 255, 255, .84), rgba(255, 238, 222, .74)); padding-bottom: 0; }
+.nx .tile--writing .fan { flex: 1 1 auto; min-height: 210px; }
+.nx .tile--writing .fan img { width: 38% !important; top: 30px; }
+.nx .tile--writing .fan img:nth-child(3) { width: 44% !important; }
+.nx .tile-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; }
+.nx .tile-links a { color: var(--green); font-size: clamp(1.02rem, .95rem + .3vw, 1.15rem); font-weight: 700; text-decoration: none; }
+.nx .tile-links a::after { content: " →"; }
+.nx .tile-links a:hover { color: var(--accent); }
+@media (hover: hover) {
+  .nx .tile--writing:hover .fan img:nth-child(1) { transform: translateX(-132%) rotate(-10deg); }
+  .nx .tile--writing:hover .fan img:nth-child(2) { transform: translateX(30%) rotate(9deg); }
+  .nx .tile--writing:hover .fan img:nth-child(3) { transform: translateX(-50%) translateY(-38px); }
+}
+
+/* 3列のとき（1100px〜）は1枚が細いので、文字と余白を詰める */
+@media (min-width: 1100px) {
+  .nx .tiles .tile { padding: 28px 26px; }
+  .nx .tiles .tile--press, .nx .tiles .tile--society, .nx .tiles .tile--writing { padding-bottom: 0; }
+  .nx .tiles .tile h3 { font-size: 1.85rem; white-space: nowrap; }
+  .nx .tiles .tile p { font-size: .95rem; }
+  .nx .tiles .fan { margin-left: -26px; margin-right: -26px; }
+  .nx .tiles .facts li a { grid-template-columns: 4.9em 1fr; gap: 8px; }
+  .nx .tiles .facts b { font-size: 1.15rem; }
+  .nx .tiles .facts span { font-size: .88rem; }
+  .nx .tiles .tile .more { font-size: 1.1rem; }
+  .nx .tiles .tile--society .fan.fan--one { flex: 1 1 auto; height: auto; min-height: 196px; }
+  .nx .tiles .tile--society .fan.fan--one img { width: 62% !important; }
+}
+
+/* 概要ページ：大きな数字 */
+.nx .wr-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(10px, 1.6vw, 18px); max-width: 1120px; margin: 0 auto; }
+.nx .wr-stat { padding: clamp(18px, 2.4vw, 26px); text-align: center; }
+.nx .wr-stat b { display: block; color: var(--accent); font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); font-weight: 800; line-height: 1; letter-spacing: -.03em; font-feature-settings: "palt"; font-variant-numeric: tabular-nums; }
+.nx .wr-stat b small { margin-left: 2px; font-size: .42em; letter-spacing: 0; }
+.nx .wr-stat span { display: block; margin-top: 8px; color: var(--ink-2); font-size: .92rem; line-height: 1.5; }
+
+/* 概要ページ：2つの入口 */
+.nx .wr-doors { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 2vw, 24px); max-width: 1120px; margin: 0 auto; }
+.nx .wr-door { position: relative; display: flex; flex-direction: column; padding: clamp(24px, 3.2vw, 40px) clamp(24px, 3.2vw, 40px) 0; overflow: hidden; color: var(--ink) !important; text-decoration: none; transition: transform .35s cubic-bezier(.2, .7, .2, 1), box-shadow .35s ease; }
+.nx .wr-door h3 { font-size: clamp(1.6rem, 1.1rem + 1.8vw, 2.4rem); font-weight: 800; }
+.nx .wr-door p { color: var(--ink-2); }
+.nx .wr-door .more { margin-top: 4px; color: var(--green); font-size: clamp(1.1rem, 1rem + .4vw, 1.3rem); font-weight: 700; }
+.nx .wr-door .fan { flex: 1 1 auto; min-height: 260px; }
+.nx .wr-door--ms { background: linear-gradient(160deg, rgba(255, 255, 255, .84), rgba(223, 243, 255, .72)); }
+@media (hover: hover) {
+  .nx .wr-door:hover { transform: translateY(-4px); box-shadow: 0 28px 50px -22px rgba(8, 58, 38, .5); }
+  .nx .wr-door:hover .fan img:nth-child(1) { transform: translateX(-132%) rotate(-10deg); }
+  .nx .wr-door:hover .fan img:nth-child(2) { transform: translateX(30%) rotate(9deg); }
+  .nx .wr-door:hover .fan img:nth-child(3) { transform: translateX(-50%) translateY(-38px); }
+  .nx .wr-door:hover .shelf .cover { transform: translateY(-10px); }
+}
+/* 原稿の入口：本の背が並ぶ棚 */
+.nx .shelf { flex: 1 1 auto; display: flex; align-items: flex-end; justify-content: center; gap: 8px; min-height: 260px; margin: 18px calc(-1 * clamp(24px, 3.2vw, 40px)) 0; padding: 0 16px 0; border-bottom: 10px solid #b98c5c; }
+.nx .shelf .cover { width: clamp(46px, 5.4vw, 64px); height: auto; flex: none; transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.nx .shelf .cover:nth-child(2n) { transition-delay: .04s; }
+.nx .shelf .cover:nth-child(3n) { transition-delay: .08s; }
+
+/* 本・雑誌の表紙（CSSで描く） */
+.nx .cover {
+  position: relative; display: flex; flex-direction: column; justify-content: space-between;
+  width: 96px; aspect-ratio: 3 / 4.2; padding: 10px 8px 8px 12px; border-radius: 3px 7px 7px 3px;
+  background: var(--cv, #13724f); color: #fff; overflow: hidden;
+  box-shadow: inset 5px 0 0 rgba(0, 0, 0, .18), inset 6px 0 0 rgba(255, 255, 255, .25), 0 14px 28px -12px rgba(0, 0, 0, .5);
+  font-feature-settings: "palt"; line-height: 1.25;
+}
+.nx .cover::after { content: ""; position: absolute; left: 12px; right: 8px; top: 46%; height: 2px; background: rgba(255, 255, 255, .55); }
+.nx .cover .cv-top { font-size: .56rem; font-weight: 700; letter-spacing: .06em; opacity: .85; }
+.nx .cover .cv-title { font-size: .78rem; font-weight: 800; }
+.nx .cover .cv-foot { font-size: .52rem; opacity: .85; }
+.nx .shelf .cover { padding: 6px 5px 6px 9px; }
+.nx .shelf .cover .cv-title { font-size: .58rem; }
+.nx .cover.is-book { --cv: #13724f; }
+.nx .cover.is-book2 { --cv: #1d4f91; }
+.nx .cover.is-book3 { --cv: #7b3f98; }
+.nx .cover.is-mag { --cv: #c4581c; }
+.nx .cover.is-journal { --cv: #0b4d74; }
+.nx .cover.is-leaflet { --cv: #d08a1a; }
+.nx .cover.is-paper { --cv: #6b6b6b; }
+
+/* 概要ページ：テーマ */
+.nx .wr-themes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.8vw, 20px); max-width: 1120px; margin: 0 auto; }
+.nx .wr-theme { padding: clamp(20px, 2.6vw, 30px); }
+.nx .wr-theme .th-icon { display: inline-grid; place-items: center; width: 46px; height: 46px; margin-bottom: 10px; border-radius: 14px; background: var(--th, #fde6d8); font-size: 1.5rem; }
+.nx .wr-theme h3 { font-size: 1.25rem; font-weight: 800; }
+.nx .wr-theme > p { margin: 6px 0 10px; color: var(--ink-2); font-size: .94rem; }
+.nx .wr-theme ul { margin: 0; padding: 0; list-style: none; }
+.nx .wr-theme li { border-top: 1px solid var(--line); }
+.nx .wr-theme li a { display: grid; grid-template-columns: 3.2em 1fr; gap: 10px; padding: 8px 0; color: inherit; font-size: .92rem; line-height: 1.5; text-decoration: none; }
+.nx .wr-theme li a b { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.nx .wr-theme li a:hover span { color: var(--green); text-decoration: underline; }
+
+/* 論文ページ */
+.nx .papers { display: grid; gap: clamp(16px, 2.4vw, 26px); max-width: 1040px; margin: 0 auto; padding: 0; list-style: none; }
+.nx .paper { display: grid; grid-template-columns: clamp(150px, 20vw, 210px) minmax(0, 1fr); gap: clamp(18px, 3vw, 36px); padding: clamp(18px, 2.8vw, 32px); scroll-margin-top: calc(var(--header-h, 60px) + 16px); }
+.nx .paper-fig { margin: 0; }
+.nx .paper-fig button { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.nx .paper-fig img { display: block; width: 100%; height: auto; border-radius: 6px; box-shadow: 0 18px 34px -14px rgba(0, 0, 0, .45); transform: rotate(-2deg); transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.nx .paper:nth-child(even) .paper-fig img { transform: rotate(2deg); }
+.nx .paper-fig button:hover img, .nx .paper-fig button:focus-visible img { transform: rotate(0) scale(1.04); }
+.nx .paper-fig figcaption { display: none; }
+.nx .paper-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; color: var(--ink-2); font-size: .9rem; }
+.nx .paper-meta .yr { color: var(--accent); font-size: 1.5rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.nx .paper-meta .jn { font-weight: 700; font-style: italic; }
+.nx .paper h3 { margin-top: 10px; font-size: clamp(1.08rem, .98rem + .5vw, 1.32rem); font-weight: 800; line-height: 1.45; }
+.nx .paper .ja { margin: 4px 0 0; color: var(--ink-2); font-size: .95rem; font-weight: 700; }
+.nx .paper .authors { margin: 10px 0 0; color: var(--ink-2); font-size: .88rem; line-height: 1.55; }
+.nx .paper .authors b { color: var(--ink); }
+.nx .paper .cite { margin: 4px 0 0; color: var(--ink-2); font-size: .82rem; line-height: 1.55; overflow-wrap: anywhere; }
+.nx .paper .summary { margin: 14px 0 0; font-size: .98rem; line-height: 1.85; }
+.nx .paper .key { display: flex; align-items: baseline; gap: 10px; margin: 14px 0 0; padding: 10px 14px; border-radius: 12px; background: rgba(253, 230, 216, .7); }
+.nx .paper .key b { flex: none; color: var(--accent); font-size: 1.7rem; font-weight: 800; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.nx .paper .key span { color: var(--ink-2); font-size: .9rem; line-height: 1.5; }
+.nx .paper .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.nx .paper .actions .btn { min-height: 38px; padding: 0 16px; font-size: .88rem; }
+.nx .chip.first { background: #fde6d8; color: #9a3d0c; }
+.nx .chip.co { background: #dff3ff; color: #0b4d74; }
+.nx .chip.ja-paper { background: #dcf6e8; color: #0d5a3b; }
+
+/* 原稿ページ */
+.nx .mss { max-width: 980px; margin: 0 auto; padding: 0; list-style: none; }
+.nx .ms { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: clamp(16px, 2.6vw, 30px); align-items: start; margin-bottom: clamp(14px, 2vw, 20px); padding: clamp(18px, 2.6vw, 28px); scroll-margin-top: calc(var(--header-h, 60px) + 16px); }
+.nx .ms .cover { width: 100%; transform: rotate(-3deg); transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.nx .ms:nth-child(even) .cover { transform: rotate(3deg); }
+.nx .ms:hover .cover { transform: rotate(0) translateY(-4px); }
+.nx .ms-photo { margin: 0; }
+.nx .ms-photo button { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+.nx .ms-photo img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 14px 28px -12px rgba(0, 0, 0, .5); transform: rotate(-3deg); }
+.nx .ms-photo figcaption { display: none; }
+.nx .ms-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.nx .ms-head time { color: var(--accent); font-weight: 800; font-variant-numeric: tabular-nums; }
+.nx .ms h3 { margin-top: 8px; font-size: clamp(1.1rem, 1rem + .5vw, 1.35rem); font-weight: 800; line-height: 1.45; }
+.nx .ms .pub { margin: 6px 0 0; color: var(--ink-2); font-size: .93rem; line-height: 1.6; }
+.nx .ms .pub b { color: var(--ink); }
+.nx .ms .desc { margin: 10px 0 0; font-size: .95rem; line-height: 1.8; }
+.nx .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+.nx .tags li { padding: 3px 10px; border-radius: 999px; background: rgba(14, 58, 42, .06); color: var(--ink-2); font-size: .8rem; }
+.nx .ms .links { margin: 12px 0 0; font-size: .92rem; }
+.nx .ms .links a { margin-right: 14px; }
+.nx .chip.book { background: #dcf6e8; color: #0d5a3b; }
+.nx .chip.mag { background: #fde6d8; color: #9a3d0c; }
+.nx .chip.journal { background: #dff3ff; color: #0b4d74; }
+.nx .chip.news { background: #fff1c7; color: #7a4d00; }
+.nx .chip.leaflet { background: #efe6ff; color: #4c2a86; }
+.nx .ms-year { max-width: 980px; margin: clamp(26px, 4vw, 40px) auto 12px; color: var(--ink); font-size: clamp(1.8rem, 1.2rem + 2vw, 2.6rem); font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.nx .ms-year:first-child { margin-top: 0; }
+.nx .ms-year small { margin-left: 10px; color: var(--ink-2); font-size: .9rem; font-weight: 700; letter-spacing: 0; }
+
+@media (max-width: 860px) {
+  .nx .wr-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .nx .wr-doors, .nx .wr-themes { grid-template-columns: 1fr; }
+}
+@media (max-width: 599px) {
+  .nx .paper { grid-template-columns: 1fr; }
+  .nx .paper-fig { max-width: 190px; margin: 0 auto; }
+  .nx .ms { grid-template-columns: 72px minmax(0, 1fr); gap: 14px; padding: 16px; }
+  .nx .ms .cover { padding: 6px 5px 6px 9px; }
+  .nx .ms .cover .cv-title { font-size: .58rem; }
+  .nx .ms .cover .cv-top, .nx .ms .cover .cv-foot { font-size: .46rem; }
+  .nx .shelf { gap: 5px; padding: 0 8px; min-height: 210px; }
+  .nx .shelf .cover { width: 40px; }
+  .nx .wr-door .fan { min-height: 220px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .nx-js .nx [data-reveal] { opacity: 1; transform: none; transition: none; }
   .nx .tile, .nx .fan img { transition: none; }
@@ -837,6 +1009,7 @@ a.shot-img { cursor: pointer; }
   .nx .t-thumb--icon * { animation: none !important; }
   .nx .road-hero-photo .shot-img { animation: none; }
   .nx .shot-img, .nx .shot-img img { transition: none; }
+  .nx .wr-door, .nx .cover, .nx .paper-fig img { transition: none; }
 }
 
 @media print {
