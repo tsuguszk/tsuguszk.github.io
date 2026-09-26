@@ -1,0 +1,837 @@
+{
+ "overall": {
+  "n": 1720,
+  "patients": 1488,
+  "success": 1599,
+  "success_pct": 93.0,
+  "recur": 220,
+  "recur_pct": 12.8,
+  "first": "2006-06",
+  "last": "2026-09",
+  "age_median": 11.0,
+  "age_max": 67.0,
+  "under18": 1527,
+  "infants": 21,
+  "under15kg": 131,
+  "chd": 258,
+  "age_hist": [
+   {
+    "label": "0",
+    "n": 21
+   },
+   {
+    "label": "1",
+    "n": 44
+   },
+   {
+    "label": "2",
+    "n": 34
+   },
+   {
+    "label": "3",
+    "n": 37
+   },
+   {
+    "label": "4",
+    "n": 48
+   },
+   {
+    "label": "5",
+    "n": 64
+   },
+   {
+    "label": "6",
+    "n": 85
+   },
+   {
+    "label": "7",
+    "n": 107
+   },
+   {
+    "label": "8",
+    "n": 112
+   },
+   {
+    "label": "9",
+    "n": 101
+   },
+   {
+    "label": "10",
+    "n": 100
+   },
+   {
+    "label": "11",
+    "n": 114
+   },
+   {
+    "label": "12",
+    "n": 148
+   },
+   {
+    "label": "13",
+    "n": 162
+   },
+   {
+    "label": "14",
+    "n": 157
+   },
+   {
+    "label": "15",
+    "n": 94
+   },
+   {
+    "label": "16",
+    "n": 57
+   },
+   {
+    "label": "17",
+    "n": 42
+   },
+   {
+    "label": "18–29",
+    "n": 117
+   },
+   {
+    "label": "30+",
+    "n": 76
+   }
+  ],
+  "wt_hist": [
+   {
+    "label": "<10",
+    "n": 59
+   },
+   {
+    "label": "10–15",
+    "n": 72
+   },
+   {
+    "label": "15–20",
+    "n": 151
+   },
+   {
+    "label": "20–30",
+    "n": 327
+   },
+   {
+    "label": "30–40",
+    "n": 295
+   },
+   {
+    "label": "40–50",
+    "n": 362
+   },
+   {
+    "label": "50–60",
+    "n": 264
+   },
+   {
+    "label": "60–70",
+    "n": 125
+   },
+   {
+    "label": "70+",
+    "n": 65
+   }
+  ],
+  "by_cat": [
+   {
+    "name": "WPW",
+    "n": 700,
+    "patients": 641,
+    "success": 690,
+    "success_pct": 98.6,
+    "recur": 67,
+    "recur_pct": 9.6
+   },
+   {
+    "name": "AVNRT",
+    "n": 331,
+    "patients": 294,
+    "success": 314,
+    "success_pct": 94.9,
+    "recur": 38,
+    "recur_pct": 11.5
+   },
+   {
+    "name": "PVC/NSVT",
+    "n": 264,
+    "patients": 240,
+    "success": 241,
+    "success_pct": 91.3,
+    "recur": 33,
+    "recur_pct": 12.5
+   },
+   {
+    "name": "心室頻拍（sVT）",
+    "n": 144,
+    "patients": 121,
+    "success": 130,
+    "success_pct": 90.3,
+    "recur": 27,
+    "recur_pct": 18.8
+   },
+   {
+    "name": "心房内リエントリー性頻拍・心房粗動（IART/AFL）",
+    "n": 167,
+    "patients": 137,
+    "success": 149,
+    "success_pct": 89.2,
+    "recur": 26,
+    "recur_pct": 15.6
+   },
+   {
+    "name": "異所性心房頻拍（EAT/focal AT）",
+    "n": 123,
+    "patients": 99,
+    "success": 107,
+    "success_pct": 87.0,
+    "recur": 32,
+    "recur_pct": 26.0
+   },
+   {
+    "name": "twin AV node",
+    "n": 40,
+    "patients": 31,
+    "success": 30,
+    "success_pct": 75.0,
+    "recur": 8,
+    "recur_pct": 20.0
+   },
+   {
+    "name": "心房細動・多源性心房頻拍（AF/MAT）",
+    "n": 35,
+    "patients": 27,
+    "success": 26,
+    "success_pct": 74.3,
+    "recur": 9,
+    "recur_pct": 25.7
+   },
+   {
+    "name": "接合部頻拍（JET）",
+    "n": 9,
+    "patients": 8,
+    "success": 5,
+    "success_pct": 55.6,
+    "recur": 0,
+    "recur_pct": 0.0
+   },
+   {
+    "name": "PJRT",
+    "n": 14,
+    "patients": 13,
+    "success": 14,
+    "success_pct": 100.0,
+    "recur": 5,
+    "recur_pct": 35.7
+   },
+   {
+    "name": "Mahaim",
+    "n": 10,
+    "patients": 10,
+    "success": 10,
+    "success_pct": 100.0,
+    "recur": 1,
+    "recur_pct": 10.0
+   }
+  ],
+  "by_period": [
+   {
+    "period": "2006–2012",
+    "n": 571,
+    "patients": 491,
+    "success": 522,
+    "success_pct": 91.4,
+    "recur": 106,
+    "recur_pct": 18.6
+   },
+   {
+    "period": "2013–2018",
+    "n": 528,
+    "patients": 476,
+    "success": 500,
+    "success_pct": 94.7,
+    "recur": 70,
+    "recur_pct": 13.3
+   },
+   {
+    "period": "2019–2026",
+    "n": 621,
+    "patients": 573,
+    "success": 577,
+    "success_pct": 92.9,
+    "recur": 44,
+    "recur_pct": 7.1
+   }
+  ],
+  "energy": {
+   "RF": {
+    "n": 1545,
+    "success": 1438,
+    "success_pct": 93.1,
+    "recur": 197,
+    "recur_pct": 12.8
+   },
+   "Cryo": {
+    "n": 153,
+    "success": 143,
+    "success_pct": 93.5,
+    "recur": 22,
+    "recur_pct": 14.4
+   },
+   "RF+Cryo": {
+    "n": 22,
+    "success": 18,
+    "success_pct": 81.8,
+    "recur": 1,
+    "recur_pct": 4.5
+   }
+  }
+ },
+ "wpw": {
+  "n": 700,
+  "patients": 641,
+  "success": 690,
+  "success_pct": 98.6,
+  "recur": 67,
+  "recur_pct": 9.6,
+  "ablated": 700,
+  "noloc": 1,
+  "energy": {
+   "RF": {
+    "n": 648,
+    "success": 639,
+    "success_pct": 98.6,
+    "recur": 59,
+    "recur_pct": 9.1
+   },
+   "Cryo": {
+    "n": 43,
+    "success": 43,
+    "success_pct": 100.0,
+    "recur": 7,
+    "recur_pct": 16.3
+   },
+   "RF+Cryo": {
+    "n": 9,
+    "success": 8,
+    "success_pct": 88.9,
+    "recur": 1,
+    "recur_pct": 11.1
+   }
+  },
+  "table": [
+   {
+    "period": "2006–2012",
+    "records": {
+     "n": 227,
+     "patients": 205,
+     "success": 222,
+     "success_pct": 97.8,
+     "recur": 31,
+     "recur_pct": 13.7
+    },
+    "左側": {
+     "n": 131,
+     "success": 128,
+     "success_pct": 97.7,
+     "recur": 11,
+     "recur_pct": 8.4
+    },
+    "中隔": {
+     "n": 47,
+     "success": 46,
+     "success_pct": 97.9,
+     "recur": 9,
+     "recur_pct": 19.1
+    },
+    "右側": {
+     "n": 62,
+     "success": 61,
+     "success_pct": 98.4,
+     "recur": 12,
+     "recur_pct": 19.4
+    },
+    "3部位合計": {
+     "n": 240,
+     "success": 235,
+     "success_pct": 97.9,
+     "recur": 32,
+     "recur_pct": 13.3
+    }
+   },
+   {
+    "period": "2013–2018",
+    "records": {
+     "n": 213,
+     "patients": 202,
+     "success": 212,
+     "success_pct": 99.5,
+     "recur": 22,
+     "recur_pct": 10.3
+    },
+    "左側": {
+     "n": 106,
+     "success": 105,
+     "success_pct": 99.1,
+     "recur": 9,
+     "recur_pct": 8.5
+    },
+    "中隔": {
+     "n": 46,
+     "success": 46,
+     "success_pct": 100.0,
+     "recur": 7,
+     "recur_pct": 15.2
+    },
+    "右側": {
+     "n": 71,
+     "success": 71,
+     "success_pct": 100.0,
+     "recur": 10,
+     "recur_pct": 14.1
+    },
+    "3部位合計": {
+     "n": 223,
+     "success": 222,
+     "success_pct": 99.6,
+     "recur": 26,
+     "recur_pct": 11.7
+    }
+   },
+   {
+    "period": "2019–2026",
+    "records": {
+     "n": 260,
+     "patients": 247,
+     "success": 256,
+     "success_pct": 98.5,
+     "recur": 14,
+     "recur_pct": 5.4
+    },
+    "左側": {
+     "n": 121,
+     "success": 119,
+     "success_pct": 98.3,
+     "recur": 3,
+     "recur_pct": 2.5
+    },
+    "中隔": {
+     "n": 57,
+     "success": 56,
+     "success_pct": 98.2,
+     "recur": 7,
+     "recur_pct": 12.3
+    },
+    "右側": {
+     "n": 85,
+     "success": 84,
+     "success_pct": 98.8,
+     "recur": 5,
+     "recur_pct": 5.9
+    },
+    "3部位合計": {
+     "n": 263,
+     "success": 259,
+     "success_pct": 98.5,
+     "recur": 15,
+     "recur_pct": 5.7
+    }
+   },
+   {
+    "period": "全期間",
+    "records": {
+     "n": 700,
+     "patients": 641,
+     "success": 690,
+     "success_pct": 98.6,
+     "recur": 67,
+     "recur_pct": 9.6
+    },
+    "左側": {
+     "n": 358,
+     "success": 352,
+     "success_pct": 98.3,
+     "recur": 23,
+     "recur_pct": 6.4
+    },
+    "中隔": {
+     "n": 150,
+     "success": 148,
+     "success_pct": 98.7,
+     "recur": 23,
+     "recur_pct": 15.3
+    },
+    "右側": {
+     "n": 218,
+     "success": 216,
+     "success_pct": 99.1,
+     "recur": 27,
+     "recur_pct": 12.4
+    },
+    "3部位合計": {
+     "n": 726,
+     "success": 716,
+     "success_pct": 98.6,
+     "recur": 73,
+     "recur_pct": 10.1
+    }
+   }
+  ],
+  "by_type": [
+   {
+    "type": "顕性",
+    "n": 341,
+    "patients": 323,
+    "success": 338,
+    "success_pct": 99.1,
+    "recur": 29,
+    "recur_pct": 8.5
+   },
+   {
+    "type": "間欠性",
+    "n": 102,
+    "patients": 98,
+    "success": 101,
+    "success_pct": 99.0,
+    "recur": 13,
+    "recur_pct": 12.7
+   },
+   {
+    "type": "潜在性",
+    "n": 194,
+    "patients": 178,
+    "success": 189,
+    "success_pct": 97.4,
+    "recur": 18,
+    "recur_pct": 9.3
+   }
+  ],
+  "energy_by_period": [
+   {
+    "period": "2006–2012",
+    "RF": 227,
+    "Cryo": 0,
+    "RF+Cryo": 0
+   },
+   {
+    "period": "2013–2018",
+    "RF": 199,
+    "Cryo": 11,
+    "RF+Cryo": 3
+   },
+   {
+    "period": "2019–2026",
+    "RF": 222,
+    "Cryo": 32,
+    "RF+Cryo": 6
+   }
+  ],
+  "cryo_loc": {
+   "Cryo": {
+    "左側": 0,
+    "中隔": 32,
+    "右側": 10
+   },
+   "RF+Cryo": {
+    "左側": 1,
+    "中隔": 9,
+    "右側": 1
+   }
+  },
+  "type_loc": [
+   {
+    "type": "顕性",
+    "patients": 353,
+    "左側": 165,
+    "中隔": 79,
+    "右側": 124
+   },
+   {
+    "type": "間欠性",
+    "patients": 94,
+    "左側": 39,
+    "中隔": 21,
+    "右側": 37
+   },
+   {
+    "type": "潜在性",
+    "patients": 182,
+    "左側": 126,
+    "中隔": 32,
+    "右側": 26
+   }
+  ],
+  "type_unknown": 12,
+  "asymptomatic": {
+   "records": 101,
+   "patients": 98,
+   "apva": {
+    "あり": 74,
+    "なし": 27
+   },
+   "success": 101,
+   "recur": 8,
+   "second": 3,
+   "multi": 2,
+   "not_in_wpw": 2,
+   "by_loc": {
+    "左側": {
+     "n": 44,
+     "なし": 12,
+     "あり": 32,
+     "不明": 0
+    },
+    "中隔": {
+     "n": 25,
+     "なし": 6,
+     "あり": 19,
+     "不明": 0
+    },
+    "右側": {
+     "n": 34,
+     "なし": 9,
+     "あり": 25,
+     "不明": 0
+    }
+   }
+  }
+ },
+ "pvc": {
+  "n": 264,
+  "patients": 240,
+  "success": 241,
+  "success_pct": 91.3,
+  "recur": 33,
+  "recur_pct": 12.5,
+  "groups": [
+   {
+    "name": "RVOT",
+    "n": 150,
+    "patients": 142,
+    "success": 144,
+    "success_pct": 96.0,
+    "recur": 16,
+    "recur_pct": 10.7
+   },
+   {
+    "name": "RV inflow",
+    "n": 47,
+    "patients": 38,
+    "success": 39,
+    "success_pct": 83.0,
+    "recur": 7,
+    "recur_pct": 14.9
+   },
+   {
+    "name": "その他",
+    "n": 67,
+    "patients": 62,
+    "success": 58,
+    "success_pct": 86.6,
+    "recur": 10,
+    "recur_pct": 14.9
+   }
+  ],
+  "other_detail": {
+   "LVOT": 27,
+   "RV apex": 0,
+   "左脚後枝": 6,
+   "左脚前枝": 2,
+   "僧帽弁輪": 3,
+   "その他の部位": 11,
+   "部位の記録なし": 22
+  },
+  "energy": {
+   "RF": {
+    "n": 261,
+    "success": 238,
+    "success_pct": 91.2,
+    "recur": 32,
+    "recur_pct": 12.3
+   },
+   "Cryo": {
+    "n": 2,
+    "success": 2,
+    "success_pct": 100.0,
+    "recur": 1,
+    "recur_pct": 50.0
+   },
+   "RF+Cryo": {
+    "n": 1,
+    "success": 1,
+    "success_pct": 100.0,
+    "recur": 0,
+    "recur_pct": 0.0
+   }
+  }
+ },
+ "avnrt": {
+  "n": 331,
+  "patients": 294,
+  "success": 314,
+  "success_pct": 94.9,
+  "recur": 38,
+  "recur_pct": 11.5,
+  "energy": {
+   "RF": {
+    "n": 222,
+    "success": 215,
+    "success_pct": 96.8,
+    "recur": 25,
+    "recur_pct": 11.3
+   },
+   "Cryo": {
+    "n": 97,
+    "success": 90,
+    "success_pct": 92.8,
+    "recur": 13,
+    "recur_pct": 13.4
+   },
+   "RF+Cryo": {
+    "n": 12,
+    "success": 9,
+    "success_pct": 75.0,
+    "recur": 0,
+    "recur_pct": 0.0
+   }
+  },
+  "with_wpw": 24,
+  "eps_unclassified": 1,
+  "groups": [
+   {
+    "name": "通常型",
+    "n": 204,
+    "patients": 186,
+    "success": 202,
+    "success_pct": 99.0,
+    "recur": 21,
+    "recur_pct": 10.3,
+    "energy": {
+     "RF": {
+      "n": 131,
+      "success": 131,
+      "success_pct": 100.0,
+      "recur": 13,
+      "recur_pct": 9.9
+     },
+     "Cryo": {
+      "n": 66,
+      "success": 65,
+      "success_pct": 98.5,
+      "recur": 8,
+      "recur_pct": 12.1
+     },
+     "RF+Cryo": {
+      "n": 7,
+      "success": 6,
+      "success_pct": 85.7,
+      "recur": 0,
+      "recur_pct": 0.0
+     }
+    }
+   },
+   {
+    "name": "非通常型",
+    "n": 127,
+    "patients": 111,
+    "success": 112,
+    "success_pct": 88.2,
+    "recur": 17,
+    "recur_pct": 13.4,
+    "energy": {
+     "RF": {
+      "n": 91,
+      "success": 84,
+      "success_pct": 92.3,
+      "recur": 12,
+      "recur_pct": 13.2
+     },
+     "Cryo": {
+      "n": 31,
+      "success": 25,
+      "success_pct": 80.6,
+      "recur": 5,
+      "recur_pct": 16.1
+     },
+     "RF+Cryo": {
+      "n": 5,
+      "success": 3,
+      "success_pct": 60.0,
+      "recur": 0,
+      "recur_pct": 0.0
+     }
+    }
+   }
+  ],
+  "energy_by_period": [
+   {
+    "period": "2006–2012",
+    "RF": 100,
+    "Cryo": 0,
+    "RF+Cryo": 0
+   },
+   {
+    "period": "2013–2018",
+    "RF": 65,
+    "Cryo": 29,
+    "RF+Cryo": 5
+   },
+   {
+    "period": "2019–2026",
+    "RF": 57,
+    "Cryo": 68,
+    "RF+Cryo": 7
+   }
+  ],
+  "first_session": {
+   "通常型": {
+    "RF": {
+     "n": 109,
+     "recur": 10,
+     "recur_pct": 9.2,
+     "success": 109,
+     "success_pct": 100.0
+    },
+    "Cryo": {
+     "n": 61,
+     "recur": 6,
+     "recur_pct": 9.8,
+     "success": 61,
+     "success_pct": 100.0
+    },
+    "RF+Cryo": {
+     "n": 7,
+     "recur": 0,
+     "recur_pct": 0.0,
+     "success": 6,
+     "success_pct": 85.7
+    }
+   },
+   "非通常型": {
+    "RF": {
+     "n": 74,
+     "recur": 9,
+     "recur_pct": 12.2,
+     "success": 68,
+     "success_pct": 91.9
+    },
+    "Cryo": {
+     "n": 25,
+     "recur": 5,
+     "recur_pct": 20.0,
+     "success": 20,
+     "success_pct": 80.0
+    },
+    "RF+Cryo": {
+     "n": 3,
+     "recur": 0,
+     "recur_pct": 0.0,
+     "success": 2,
+     "success_pct": 66.7
+    }
+   }
+  },
+  "first_n": 279
+ }
+}
