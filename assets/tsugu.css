@@ -854,7 +854,7 @@ a.shot-img { cursor: pointer; }
 .nx .tile--writing .fan img:nth-child(3) { width: 44% !important; }
 .nx .tile-links { display: flex; flex-wrap: wrap; gap: 6px 0; margin-top: 12px; }
 .nx .tile-links a { color: var(--green); font-size: clamp(1.02rem, .95rem + .3vw, 1.15rem); font-weight: 700; text-decoration: none; }
-.nx .tile-links a:not(:last-child)::after { content: ",\00a0"; color: var(--ink-2); font-weight: 400; }
+.nx .tile-links a:not(:last-child)::after { content: "\00a0・\00a0"; color: var(--ink-2); font-weight: 400; }
 .nx .tile-links a:hover { color: var(--accent); }
 @media (hover: hover) {
   .nx .tile--writing:hover .fan img:nth-child(1) { transform: translateX(-132%) rotate(-10deg); }
