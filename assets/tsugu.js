@@ -221,7 +221,7 @@
         // Safari は拡大表示の枠の幅を説明文の長さで決めてしまい、写真が小さく出ることがあるため
         var w = +(img.naturalWidth || img.getAttribute('width')), h = +(img.naturalHeight || img.getAttribute('height'));
         if (w && h) {
-          var s = Math.min(1, Math.min(window.innerWidth * 0.96, 1200) / w, (window.innerHeight * 0.94 - 60) / h);
+          var s = Math.min(1, Math.min(window.innerWidth * 0.96, 1200) / w, (window.innerHeight * 0.94) / h);
           lbImg.style.width = Math.round(w * s) + 'px';
           lbImg.style.height = Math.round(h * s) + 'px';
           lbCap.style.width = Math.round(w * s) + 'px';
@@ -230,7 +230,7 @@
         }
         lbImg.src = img.currentSrc || img.src;
         lbImg.alt = img.alt;
-        lbCap.textContent = cap ? cap.textContent : '';
+        lbCap.textContent = '';   // 拡大表示は写真だけ（説明文は出さない）
         var open = function () { if (!lb.open) { lb.showModal(); } };
         if (lbImg.decode) { lbImg.decode().then(open, open); } else { open(); }
       });
