@@ -1041,3 +1041,7 @@ a.shot-img { cursor: pointer; }
   .nx .tiles .tile--ablation { padding: 32px 32px; }
 }
 @media (prefers-reduced-motion: reduce) { .nx .abl-photo img { transition: none; } }
+/* アブレーションの仕事のリンクは矢印ではなく「 , 」で区切る */
+.nx .tile--ablation .tile-links { gap: 6px 0; }
+.nx .tile--ablation .tile-links a::after { content: none; }
+.nx .tile--ablation .tile-links a:not(:last-child)::after { content: "\00a0,\00a0"; color: var(--ink-2); font-weight: 400; }
