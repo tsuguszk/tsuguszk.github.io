@@ -6,6 +6,10 @@
    - 画面幅の目安: スマホ 〜599px / iPad 600〜1099px / Mac 1100px〜
    ============================================================ */
 
+/* 文字サイズの基準を 16px に固定。ブラウザの「標準の文字サイズ」設定（Chrome の「大」など）で
+   文字だけが大きくなり、Safari とレイアウトが変わってしまうのを防ぐ */
+html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
 .nx {
   --ink: #0e3a2a;
   --ink-2: #2f5d4a;
@@ -848,9 +852,9 @@ a.shot-img { cursor: pointer; }
 .nx .tile--writing .fan { flex: 1 1 auto; min-height: 210px; }
 .nx .tile--writing .fan img { width: 38% !important; top: 30px; }
 .nx .tile--writing .fan img:nth-child(3) { width: 44% !important; }
-.nx .tile-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 12px; }
+.nx .tile-links { display: flex; flex-wrap: wrap; gap: 6px 0; margin-top: 12px; }
 .nx .tile-links a { color: var(--green); font-size: clamp(1.02rem, .95rem + .3vw, 1.15rem); font-weight: 700; text-decoration: none; }
-.nx .tile-links a::after { content: " →"; }
+.nx .tile-links a:not(:last-child)::after { content: ",\00a0"; color: var(--ink-2); font-weight: 400; }
 .nx .tile-links a:hover { color: var(--accent); }
 @media (hover: hover) {
   .nx .tile--writing:hover .fan img:nth-child(1) { transform: translateX(-132%) rotate(-10deg); }
