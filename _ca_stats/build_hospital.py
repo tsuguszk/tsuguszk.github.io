@@ -2,12 +2,15 @@
 """病院の公式サイト（小児不整脈部門「アブレーション治療の成績」）へ渡すデータセットを作る。
 個人サイトの4ページ（ablation / wpw_results / pvc_results / avnrt_results）の本文を取り出し、
 白背景・Noto Sans JP・病院の青に合わせたテンプレートに入れ直す。外部依存はフォントだけ。"""
-import re, shutil, zipfile
+import json, re, shutil, zipfile
 from pathlib import Path
 
-SITE = Path('/Users/tsugu/tsuguszk.github.io')
-OUT = Path('/Users/tsugu/Library/CloudStorage/GoogleDrive-tsugutoshi@gmail.com/マイドライブ/dropbox_Google/AI_workspace/260626website改編/病院サイト用_アブレーション治療の成績')
-UPDATED = '2026年9月26日'
+CUR = ' aria-current="page"'  # 今いるページの印（Python 3.11 でも動く書き方）
+
+HERE = Path(__file__).resolve().parent
+SITE = HERE.parent  # リポジトリ（個人サイト）そのもの
+OUT = SITE / '_hospital' / '病院サイト用_アブレーション治療の成績'  # 先頭が _ なので公開サイトには出ない
+UPDATED = json.load(open(HERE / 'results_v2.json', encoding='utf-8'))['updated']  # データ更新日
 PAGES = [  # (個人サイトのファイル, 病院用のファイル, タブ名, ページ名)
     ('ablation.html', 'index.html', '全体', 'アブレーション治療の成績'),
     ('wpw_results.html', 'wpw.html', 'WPW', 'WPWのアブレーション治療の成績'),
@@ -27,8 +30,8 @@ shutil.copy(SITE / 'assets/media/ablation-room.webp', OUT / 'images/ablation-roo
 try:
     from PIL import Image
     Image.open(SITE / 'assets/media/ablation-room.webp').convert('RGB').save(OUT / 'images/ablation-room.jpg', quality=88)
-except ImportError:
-    pass
+except ImportError:  # Pillow が無い環境では、作り置きの jpg を使う
+    shutil.copy(HERE / 'ablation-room.jpg', OUT / 'images/ablation-room.jpg')
 
 # ---------- CSS：ca.css の .nx を .ocgh-abl に置き換え、白背景の基本部品を足す
 ca = (SITE / 'assets/ca.css').read_text(encoding='utf-8')
@@ -141,7 +144,7 @@ def convert(html, src):
 for src, dst, tab, title in PAGES:
     html = (SITE / src).read_text(encoding='utf-8')
     body = convert(html, src)
-    tabs = '\n'.join(f'    <a href="{d}"{" aria-current=\"page\"" if d == dst else ""}>{t}</a>' for _, d, t, _ in PAGES)
+    tabs = '\n'.join(f'    <a href="{d}"{CUR if d == dst else ""}>{t}</a>' for _, d, t, _ in PAGES)
     frag = f'''<div class="ocgh-abl">
   <nav class="abl-tabs" aria-label="アブレーション治療の成績のページ">
 {tabs}
@@ -218,5 +221,8 @@ zp = OUT.parent / f'{OUT.name}.zip'
 with zipfile.ZipFile(zp, 'w', zipfile.ZIP_DEFLATED) as z:
     for f in sorted(OUT.rglob('*')):
         if f.is_file() and f.name != '.DS_Store':
-            z.write(f, Path(OUT.name) / f.relative_to(OUT))
-print('ok', OUT, zp)
+            # 日時を固定して、中身が同じなら zip も同じになるようにする（作り直すたびに差分が出ない）
+            info = zipfile.ZipInfo(str(Path(OUT.name) / f.relative_to(OUT)), date_time=(2026, 1, 1, 0, 0, 0))
+            info.compress_type, info.external_attr = zipfile.ZIP_DEFLATED, 0o644 << 16
+            z.writestr(info, f.read_bytes())
+print('ok', OUT.relative_to(SITE), zp.relative_to(SITE))

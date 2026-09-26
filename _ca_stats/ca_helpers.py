@@ -1,20 +1,38 @@
 #!/usr/bin/env python3
 """results_claude.json → ablation.html（全体）を生成し、wpw_results.html に成功率・治療方法・無症候性WPWを追加する"""
-import json, re
+import hashlib, json, re
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = Path('/Users/tsugu/tsuguszk.github.io')
+ROOT = HERE.parent
 R = json.load(open(HERE / 'results_v2.json'))
 O, W = R['overall'], R['wpw']
 f = lambda n: f'{n:,}'
-V_T, V_CA = '20260926r', '20260926j'
+
+
+def _ver_in_index(name):
+    """トップページ（index.html）に書かれている版番号を使う（サイト全体でそろえて上げている）"""
+    m = re.search(re.escape(name) + r'\?v=(\w+)', (ROOT / 'index.html').read_text(encoding='utf-8'))
+    return m.group(1)
+
+
+def _ver_by_content(rel):
+    """ファイルの中身から版番号を作る（中身が変われば自動で変わる）"""
+    return hashlib.sha1((ROOT / rel).read_bytes()).hexdigest()[:8]
+
+
+# 版番号は手で書かない（ブラウザに古いCSS・JSが残らないようにするための番号）
+V_T, V_TJ = _ver_in_index('tsugu.css'), _ver_in_index('tsugu.js')
+V_CA, V_CJ = _ver_by_content('assets/ca.css'), _ver_by_content('assets/ca.js')
+
+
+CUR = ' aria-current="page"'  # 今いるページの印（Python 3.11 でも動く書き方）
 
 
 def nav(cur):
     items = [('ablation.html', '<span class="long">アブレーションの仕事</span><span class="short">全体</span>'), ('wpw_results.html', 'WPW'), ('avnrt_results.html', 'AVNRT'),
              ('pvc_results.html', '<span class="long">PVC/NSVT</span><span class="short">PVC</span>')]
-    return '\n'.join(f'          <a href="{h}"{" aria-current=\"page\"" if h == cur else ""}>{t}</a>' for h, t in items)
+    return '\n'.join(f'          <a href="{h}"{CUR if h == cur else ""}>{t}</a>' for h, t in items)
 
 
 def kpi(label, value, unit, sub, cls=''):

@@ -149,8 +149,8 @@ body = f'''<body class="nx-body">
     </footer>
   </div>
 
-  <script src="assets/ca.js?v=20260926a" defer></script>
-  <script src="assets/tsugu.js?v=20260926f" defer></script>
+  <script src="assets/ca.js?v={V_CJ}" defer></script>
+  <script src="assets/tsugu.js?v={V_TJ}" defer></script>
 </body>
 </html>
 '''
