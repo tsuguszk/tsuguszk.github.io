@@ -15,11 +15,11 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Kato論文">
-  <link rel="stylesheet" href="assets/tsugu.css?v=20260926m">
+  <link rel="stylesheet" href="assets/tsugu.css?v=20260926n">
   <script>document.documentElement.classList.add('nx-js');</script>
   <style>
     /* 論文の図：横長のカードいっぱいに、原寸より小さい図は中央に置く */
-    .nx .paper-fig .shot-img img { margin: 0 auto !important; }
+    .nx .kato-fig .shot-img img { margin: 0 auto !important; }
     .nx .ref-table { margin-top: 18px; min-width: 460px; }
     .nx .ref-table caption { margin-bottom: 4px; color: var(--ink); font-weight: 800; text-align: left; }
     .nx .ref-table td { text-align: right; font-variant-numeric: tabular-nums; }
@@ -49,10 +49,10 @@
       </div>
     </header>
 
-    <main>
+    <main class="page-still">
       <div class="page-hero">
         <p class="eyebrow">Heart Rhythm · 2019</p>
-        <h1>小児不整脈アブレーション1000例の治療成績</h1>
+        <h1 class="h1-compact">小児不整脈アブレーション1000例の治療成績</h1>
         <p class="sec-lede">2006年に大阪市立総合医療センターに赴任してから12年で、小児不整脈のアブレーションが1000例を超えました。これを記念して、シニアレジデントの加藤有子先生に成績をまとめていただき、<b>Heart Rhythm</b>（アメリカ不整脈学会雑誌）に掲載されました。</p>
         <p class="doc-updated">2019年10月</p>
         <nav class="jump" aria-label="このページの目次">
@@ -64,7 +64,7 @@
         <section class="doc-card glass" id="overview" data-reveal>
           <h2>論文の概要</h2>
           <p>当院で行った小児不整脈のアブレーション治療<b>1021例</b>の治療成績の報告です。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-11.jpg" width="1200" height="824" alt="Heart Rhythm掲載論文の1ページ目" loading="lazy" decoding="async"></button><figcaption>当院の小児不整脈アブレーション1021例の治療成績（クリックで拡大）</figcaption></figure>
           </div>
           <div class="doc-actions">
@@ -75,7 +75,7 @@
         <section class="doc-card glass" id="age" data-reveal>
           <h2>年齢別・体重別</h2>
           <p>新生児・乳児・幼児でも、1歳以下・4歳以下でも、不整脈に対しては治療を行っています。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-20.jpg" width="1049" height="551" alt="年齢別・体重別の症例数" loading="lazy" decoding="async"></button><figcaption>年齢別・体重別の症例</figcaption></figure>
           </div>
         </section>
@@ -83,14 +83,14 @@
         <section class="doc-card glass" id="disease" data-reveal>
           <h2>疾患別</h2>
           <p>治療した不整脈の種類です。<b>WPW症候群が約1/3</b>を占めます。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-30.jpg" width="1003" height="773" alt="疾患別の症例数" loading="lazy" decoding="async"></button><figcaption>疾患別の内訳</figcaption></figure>
           </div>
         </section>
 
         <section class="doc-card glass" id="result" data-reveal>
           <h2>治療成績</h2>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-40.jpg" width="774" height="795" alt="治療成績の表" loading="lazy" decoding="async"></button><figcaption>治療成績</figcaption></figure>
           </div>
         </section>
@@ -104,14 +104,14 @@
             <li>潜在性WPW：左 65%、右 15%、中隔 20%</li>
           </ul>
           <p class="doc-note">潜在性は、右側が少ない、というデータです。あまり知られていないデータだと思います。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-50.jpg" width="1200" height="390" alt="Table 3 副伝導路の部位の分布" loading="lazy" decoding="async"></button><figcaption>副伝導路の部位の分布（Table 3）</figcaption></figure>
           </div>
 
           <h3>WPW症候群：部位別・年齢別の成績</h3>
           <p>透視時間が2015〜2018年で劇的に少なくなっているのは、CARTO UNIVU systemを採用したからです。透視時間が0という理想的な成績が得られています（赤線）。</p>
           <p>年代別に見ると、右側の伝導路が劇的に減っています。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-60.jpg" width="700" height="309" alt="Table 4A 副伝導路の部位別の成功率と再発率" loading="lazy" decoding="async"></button></figure>
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-70.jpg" width="700" height="595" alt="Table 4B 12年間の透視時間・成功率・再発率の推移" loading="lazy" decoding="async"></button></figure>
           </div>
@@ -146,13 +146,13 @@
           <h2>そのほかの結果</h2>
 
           <h3>心室性不整脈の分布</h3>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-80.jpg" width="600" height="425" alt="Table 5 心室性不整脈の起源" loading="lazy" decoding="async"></button><figcaption>心室性不整脈の分布（Table 5）</figcaption></figure>
           </div>
 
           <h3>15kg以下の小児・そのほかの不整脈</h3>
           <p>15kg以下の小児の成績と、心房性頻拍などの各種不整脈の治療成績です。</p>
-          <div class="gallery paper-fig">
+          <div class="gallery kato-fig">
             <figure class="shot shot--wide shot--full"><button class="shot-img" type="button" data-lightbox aria-label="画像を拡大"><img src="kato_paper/paper-90.jpg" width="800" height="222" alt="15kg以下の小児と各種不整脈の治療成績" loading="lazy" decoding="async"></button><figcaption>15kg以下の小児・各種不整脈の成績</figcaption></figure>
           </div>
 
