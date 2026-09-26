@@ -217,10 +217,14 @@
       btn.addEventListener('click', function () {
         var img = btn.querySelector('img');
         var cap = btn.parentElement.querySelector('figcaption');
+        // 読み込み前でも正しい大きさで枠が決まるように、元の写真の縦横を先に渡す（Safari対策）
+        var w = img.naturalWidth || img.getAttribute('width'), h = img.naturalHeight || img.getAttribute('height');
+        if (w && h) { lbImg.width = w; lbImg.height = h; } else { lbImg.removeAttribute('width'); lbImg.removeAttribute('height'); }
         lbImg.src = img.currentSrc || img.src;
         lbImg.alt = img.alt;
         lbCap.textContent = cap ? cap.textContent : '';
-        lb.showModal();
+        var open = function () { if (!lb.open) { lb.showModal(); } };
+        if (lbImg.decode) { lbImg.decode().then(open, open); } else { open(); }
       });
     });
     lb.querySelector('[data-lb-close]').addEventListener('click', function () { lb.close(); });
