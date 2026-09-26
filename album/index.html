@@ -30,6 +30,16 @@
     @media (max-width: 599px) {
       .nx .al-part .gallery--small { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
     }
+    /* 2枚の写真を重ねる（小さい写真を右上に1/4の大きさで） */
+    .nx .shot--combo .combo-wrap { position: relative; }
+    .nx .combo-inset {
+      position: absolute; top: -10px; right: -8px; width: 25%; min-width: 60px; padding: 0; overflow: hidden;
+      border: 3px solid #fff; border-radius: 10px; background: #fff; cursor: zoom-in;
+      box-shadow: 0 10px 20px -8px rgba(8, 58, 38, .55); transform: rotate(4deg);
+      transition: transform .35s cubic-bezier(.2, .7, .2, 1);
+    }
+    .nx .combo-inset img { display: block; width: 100% !important; }
+    @media (hover: hover) { .nx .combo-inset:hover { transform: rotate(0) scale(1.08); } }
   </style>
   <script>document.documentElement.classList.add('nx-js');</script>
   <!-- Google tag (gtag.js) -->
@@ -122,16 +132,14 @@
 </div>
 </section>
 <section class="al-part glass" id="album-doctor">
-<header class="al-head"><span class="ride-date">After Graduation</span><h2>大学卒業後<span class="al-count">8枚</span></h2></header>
+<header class="al-head"><span class="ride-date">After Graduation</span><h2>大学卒業後<span class="al-count">7枚</span></h2></header>
 <div class="gallery gallery--small">
 <figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/12.JPG" width="340" height="243" alt="PL教校時代の写真です" loading="lazy" decoding="async"></button><figcaption>PL教校時代の写真です。のどかな夕暮れ、桜つみをした時の写真で、みんな、いい顔してます。とても気に入ってる写真です。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/13.JPG" width="198" height="115" alt="PL教師の顔" loading="lazy" decoding="async"></button><figcaption>PL教師の顔。</figcaption></figure>
 <figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/14.JPG" width="227" height="147" alt="恩師・山口先生と" loading="lazy" decoding="async"></button><figcaption>恩師・山口先生と。いろいろ教えていただき、また、いっしょにばかなこともたくさんしました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/15.JPG" width="227" height="151" alt="医者になって数カ月の頃です" loading="lazy" decoding="async"></button><figcaption>医者になって数カ月の頃です。今も年数回手紙をくれる患者さんです。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/16.JPG" width="133" height="204" alt="これも同じく新米ぺーぺーの頃の写真" loading="lazy" decoding="async"></button><figcaption>これも同じく新米ぺーぺーの頃の写真。病棟は、旧市大病院、小児科病棟です。</figcaption></figure>
+<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/15.JPG?v=2" width="227" height="151" alt="医者になって数カ月の頃です" loading="lazy" decoding="async"></button><figcaption>医者になって数カ月の頃です。今も年数回手紙をくれる患者さんです。</figcaption></figure>
+<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/16.JPG?v=2" width="133" height="204" alt="これも同じく新米ぺーぺーの頃の写真" loading="lazy" decoding="async"></button><figcaption>これも同じく新米ぺーぺーの頃の写真。病棟は、旧市大病院、小児科病棟です。</figcaption></figure>
 <figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/17.JPG" width="175" height="125" alt="今は総合医療センターにおられる山田先生と" loading="lazy" decoding="async"></button><figcaption>今は総合医療センターにおられる山田先生と。山田先生には西宮市立中央病院でお世話になりました。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/18.JPG" width="174" height="154" alt="こんなことをさせられることもあります" loading="lazy" decoding="async"></button><figcaption>こんなことをさせられることもあります。これは西宮の忘年会で、むりやり女装させられた時の写真です。おぞましい。</figcaption></figure>
-<figure class="shot shot--full"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/19.JPG" width="227" height="171" alt="大うけでした" loading="lazy" decoding="async"></button><figcaption>大うけでした。</figcaption></figure>
+<figure class="shot shot--full shot--combo"><div class="combo-wrap"><button class="shot-img" type="button" data-lightbox aria-label="写真を拡大"><img src="DOCTOR/19.JPG" width="227" height="171" alt="大うけでした" loading="lazy" decoding="async"></button><button class="combo-inset" type="button" data-lightbox aria-label="女装した写真を拡大"><img src="DOCTOR/18.JPG" width="174" height="154" alt="西宮の忘年会で女装させられた時の写真" loading="lazy" decoding="async"></button></div><figcaption>こんなことをさせられることもあります。これは西宮の忘年会で、むりやり女装させられた時の写真です。おぞましい。大うけでした。</figcaption></figure>
 </div>
 </section>
 <section class="al-part glass" id="album-family">
