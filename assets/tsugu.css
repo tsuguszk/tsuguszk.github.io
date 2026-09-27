@@ -909,6 +909,9 @@ a.shot-img { cursor: pointer; }
 .nx .shelf .cover { width: clamp(46px, 5.4vw, 64px); height: auto; flex: none; transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
 .nx .shelf .cover:nth-child(2n) { transition-delay: .04s; }
 .nx .shelf .cover:nth-child(3n) { transition-delay: .08s; }
+/* 本棚の表紙（写真） */
+.nx .shelf .shelf-img { display: block; width: clamp(46px, 5.4vw, 64px); height: auto !important; flex: none; border-radius: 2px 5px 5px 2px; box-shadow: 0 14px 28px -12px rgba(0, 0, 0, .5); transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.nx .wr-door:hover .shelf .shelf-img { transform: translateY(-10px); }
 
 /* 本・雑誌の表紙（CSSで描く） */
 .nx .cover {
@@ -1015,7 +1018,7 @@ a.shot-img { cursor: pointer; }
   .nx .ms .cover .cv-title { font-size: .58rem; }
   .nx .ms .cover .cv-top, .nx .ms .cover .cv-foot { font-size: .46rem; }
   .nx .shelf { gap: 5px; padding: 0 8px; min-height: 210px; }
-  .nx .shelf .cover { width: 40px; }
+  .nx .shelf .cover, .nx .shelf .shelf-img { width: 40px; }
   .nx .wr-door .fan { min-height: 220px; }
 }
 
