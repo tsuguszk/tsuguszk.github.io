@@ -254,6 +254,13 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
 .nx .res .foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: auto; }
 .nx .res .for-dr { color: var(--red); font-size: .75rem; font-weight: 800; }
 .nx .res--wide { grid-column: span 2; }
+/* カードのどこを押しても、最初のリンク（資料を見る など）に飛ぶ。2つ目以降のリンク（「引用」など）はその上で単独で押せる */
+.nx .res { position: relative; transition: transform .25s ease, box-shadow .25s ease; }
+.nx .res .foot .more:first-of-type::before { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.nx .res .foot .more ~ .more { position: relative; z-index: 1; }
+@media (hover: hover) {
+  .nx .res:hover { transform: translateY(-3px); box-shadow: 0 18px 34px -18px rgba(8, 58, 38, .55); }
+}
 
 /* 5. よく使うリンク・検索 */
 .nx .launcher { padding: clamp(20px, 3vw, 32px); }
