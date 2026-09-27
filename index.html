@@ -144,7 +144,7 @@
       .searchbox input[type="text"],
       .searchbox input[type="search"] {
         width: 100%;
-        max-width: 260px;
+        max-width: min(260px, calc(100vw - 14em));  /* スマホでも「Search PubMed:」「Go」と1行に収まる幅 */
       }
 
       .search-panels {
