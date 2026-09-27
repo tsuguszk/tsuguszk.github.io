@@ -59,7 +59,7 @@
     .searchbox input[type="text"],
     .searchbox input[type="search"] {
       max-width: 100%;
-      width: 22em;
+      width: 14.7em;  /* 以前の22emの2/3 */
     }
 
     .pubmed-hint {
@@ -107,7 +107,8 @@
     /* --- 3列の検索パネル --- */
     .search-panels {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 240px));  /* 以前の幅（1列360px）の2/3 */
+      justify-content: center;
       gap: 10px;
       margin: 20px 0;
       text-align: left;
@@ -143,11 +144,11 @@
       .searchbox input[type="text"],
       .searchbox input[type="search"] {
         width: 100%;
-        max-width: 260px;
+        max-width: 150px;  /* 以前より小さく、Go と1行に収まる幅 */
       }
 
       .search-panels {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 240px);
       }
 
       .search-panels form input[type="search"] {
