@@ -114,7 +114,7 @@ def convert(html, src):
     main = re.sub(r' data-reveal(="\d")?', '', main)
     # 冒頭の写真（拡大ボタンをやめて、ただの写真に）
     main = re.sub(r'<figure class="ca-hero-photo">.*?</figure>',
-                  '<figure class="ca-hero-photo"><picture><source srcset="images/ablation-room.webp" type="image/webp"><img src="images/ablation-room.jpg" width="1159" height="768" alt="カテーテル室でアブレーション治療をしている様子（モニターの患者情報はぼかしています）"></picture></figure>', main, flags=re.S)
+                  '<figure class="ca-hero-photo"><picture><source srcset="images/ablation-room.webp" type="image/webp"><img src="images/ablation-room.jpg" width="1540" height="1021" alt="カテーテル室でアブレーション治療をしている様子（モニターの患者情報はぼかしています）"></picture></figure>', main, flags=re.S)
     # 個人サイト向けの書き方を病院向けに
     rep = [
         ('2006年に大阪市立総合医療センター 小児不整脈科に赴任してから2026年9月までに、当科で行った', '当科（小児不整脈部門）で2006年から2026年9月までに行った'),
