@@ -30,12 +30,12 @@
     @media (max-width: 599px) {
       .nx .al-part .gallery--small { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }
     }
-    /* 2枚の写真を重ねる（小さい写真を右上に1/4の大きさで） */
+    /* 2枚の写真を重ねる（小さい写真を左上に1/4の大きさで） */
     .nx .shot--combo .combo-wrap { position: relative; }
     .nx .combo-inset {
-      position: absolute; top: -10px; right: -8px; width: 25%; min-width: 60px; padding: 0; overflow: hidden;
+      position: absolute; top: -10px; left: -8px; width: 25%; min-width: 60px; padding: 0; overflow: hidden;
       border: 3px solid #fff; border-radius: 10px; background: #fff; cursor: zoom-in;
-      box-shadow: 0 10px 20px -8px rgba(8, 58, 38, .55); transform: rotate(4deg);
+      box-shadow: 0 10px 20px -8px rgba(8, 58, 38, .55); transform: rotate(-4deg);
       transition: transform .35s cubic-bezier(.2, .7, .2, 1);
     }
     .nx .combo-inset img { display: block; width: 100% !important; }
