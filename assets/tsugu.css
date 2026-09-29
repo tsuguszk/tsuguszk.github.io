@@ -1063,7 +1063,9 @@ a.shot-img { cursor: pointer; }
 }
 @media (max-width: 860px) {
   .nx .tile--ablation { grid-column: auto; grid-template-columns: 1fr; }
-  .nx .abl-photo { min-height: 0; margin-top: 18px; aspect-ratio: 1159 / 768; }
+  /* 1列のときは写真を普通に置き、写真の高さで枠を決める（iPhone の Safari で枠の高さが 0 になり写真が消える問題への対策） */
+  .nx .abl-photo { min-height: 0; margin-top: 18px; align-self: start; }
+  .nx .abl-photo img { position: static; height: auto !important; }
 }
 @media (min-width: 1100px) {
   .nx .tiles .tile--ablation { padding: 32px 32px; }
