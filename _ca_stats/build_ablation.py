@@ -63,7 +63,7 @@ abl_html = f'''<!DOCTYPE html>
 
     <main>
       <div class="page-hero ca-hero ca-hero--photo">
-        <figure class="ca-hero-photo"><span class="shot-img"><img src="assets/media/ablation-room.webp?v=3" width="1540" height="1021" alt="カテーテル室でアブレーション治療をしている様子"></span><figcaption hidden>カテーテル室でのアブレーション治療</figcaption></figure>
+        <figure class="ca-hero-photo"><span class="shot-img"><img src="assets/media/ablation-room.webp?v=4" width="1540" height="1021" alt="カテーテル室でアブレーション治療をしている様子"></span><figcaption hidden>カテーテル室でのアブレーション治療</figcaption></figure>
         <div class="ca-hero-text">
         <p class="eyebrow">Catheter ablation · 2006–2026</p>
         <h1><span class="nw">アブレーションの仕事</span><span class="h1-sub">全症例のデータ（2006–2026年）</span></h1>
