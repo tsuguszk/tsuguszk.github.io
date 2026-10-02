@@ -48,7 +48,10 @@ WE = W['energy']; ab = W['ablated']; CL = W['cryo_loc']
 e_rows = ''.join(f"                <tr><th scope=\"row\">{nm}</th><td>{WE[k]['n']}</td><td>{WE[k]['success_pct']}</td><td>{WE[k]['recur_pct']}</td></tr>\n" for k, nm in [('RF', '高周波（RF）'), ('Cryo', '冷凍（Cryo）'), ('RF+Cryo', '両方')])
 ebp = [(p['period'] + '年', [('高周波', p['RF'], '--c-rf'), ('冷凍', p['Cryo'], '--c-cryo'), ('両方', p['RF+Cryo'], '--c-both')]) for p in W['energy_by_period']]
 leg_e = '<ul class="ca-legend" aria-label="凡例"><li><span class="ca-sw" style="--c:var(--c-rf)" aria-hidden="true"></span>高周波</li><li><span class="ca-sw" style="--c:var(--c-cryo)" aria-hidden="true"></span>冷凍</li><li><span class="ca-sw" style="--c:var(--c-both)" aria-hidden="true"></span>両方</li></ul>'
-cryo_note = f"冷凍だけで治療した{WE['Cryo']['n']}件のうち{CL['Cryo']['中隔']}件は中隔の副伝導路" + (f"（残りは右側{CL['Cryo']['右側']}件）" if CL['Cryo']['左側'] == 0 else f"（右側{CL['Cryo']['右側']}件、左側{CL['Cryo']['左側']}件）")
+_c = CL['Cryo']; _rest = [f"右側{_c['右側']}件"] + ([f"左側{_c['左側']}件"] if _c['左側'] else [])
+_noloc = WE['Cryo']['n'] - _c['中隔'] - _c['右側'] - _c['左側']   # 複数部位は重ねて数えるので、部位の記録がない件数の目安
+if _noloc > 0: _rest.append(f"部位の記録なし{_noloc}件")
+cryo_note = f"冷凍だけで治療した{WE['Cryo']['n']}件のうち{_c['中隔']}件は中隔の副伝導路（ほかは{'、'.join(_rest)}）"
 
 # ---- 無症候性WPW
 A = W['asymptomatic']; n = A['records']; no, yes, unk = A['apva'].get('なし', 0), A['apva'].get('あり', 0), A['apva'].get('不明', 0)
