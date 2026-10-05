@@ -189,6 +189,9 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
 .nx .t-card .links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: .92rem; }
 .nx .t-card .paper { display: block; margin-top: 10px; border-radius: 8px; overflow: hidden; }
 .nx .t-card .paper img { transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
+.nx .t-card .t-papers { display: flex; gap: 10px; margin: 10px 0 0; }
+.nx .t-card .t-papers a { display: block; width: clamp(64px, 14vw, 88px); border-radius: 4px; overflow: hidden; box-shadow: 0 6px 14px -8px rgba(8, 58, 38, .55); }
+.nx .t-card .t-papers img { display: block; width: 100%; height: auto; transition: transform .45s cubic-bezier(.2, .7, .2, 1); }
 
 /* 年表カード：ホバーで少し大きく／小さな画像・イラスト */
 .nx .t-card {
@@ -231,7 +234,10 @@ html { font-size: 16px; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; 
   .nx .t-card:hover .t-thumb { transform: rotate(-3deg) scale(1.06); }
   .nx .t-card:hover .t-thumb img { transform: scale(1.14); }
   .nx .t-card:hover .t-thumb--natural img { transform: none; }
-  .nx .t-card:hover .paper img { transform: scale(1.05); }
+  .nx .t-card:hover .t-thumbs .t-thumb { transform: none; }
+  .nx .t-card .t-thumbs .t-thumb:hover { transform: rotate(-3deg) scale(1.06); }
+  .nx .t-card .t-thumbs .t-thumb:nth-child(2):hover { transform: rotate(3deg) scale(1.06); }
+  .nx .t-card:hover .paper img, .nx .t-card .t-papers a:hover img { transform: scale(1.05); }
 }
 
 /* 3. 病院 */
