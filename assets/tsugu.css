@@ -1106,5 +1106,6 @@ a.shot-img { cursor: pointer; }
   .nx .tile--ablation { grid-column: 1 / -1; }
 }
 
-/* 新聞・テレビ報道：真ん中の記事（横長）が左右の記事より小さく見えないよう、大きめにする */
-.nx .tiles .tile--press .fan img:nth-child(3) { width: 76% !important; }
+/* 新聞・テレビ報道：真ん中の記事（横長）と左の記事を少し大きくして、左右とのバランスをとる */
+.nx .tiles .tile--press .fan img:nth-child(3) { width: 66% !important; }
+.nx .tiles .tile--press .fan img:nth-child(1) { width: 50% !important; }
