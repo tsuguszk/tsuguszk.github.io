@@ -1094,3 +1094,16 @@ a.shot-img { cursor: pointer; }
 /* 新聞・テレビ報道：真ん中の記事（横長）と左の記事を少し大きくして、左右とのバランスをとる */
 .nx .tiles .tile--press .fan img:nth-child(3) { width: 66% !important; }
 .nx .tiles .tile--press .fan img:nth-child(1) { width: 50% !important; }
+
+/* iPad 縦（600〜860px、タイルが縦に1列）：横幅いっぱいのタイルでは画像が大きくなりすぎて下が大きく切れるため、
+   画像の幅を抑え、PC と同じく「下が少し切れる」程度にする */
+@media (min-width: 600px) and (max-width: 860px) {
+  .nx .tiles .fan { height: 300px; }
+  .nx .tiles .tile--press .fan img { width: 27% !important; }
+  .nx .tiles .tile--press .fan img:nth-child(1) { width: 31% !important; }
+  .nx .tiles .tile--press .fan img:nth-child(3) { width: 42% !important; }
+  .nx .tiles .tile--society .fan.fan--one { height: 300px; }
+  .nx .tiles .tile--society .fan.fan--one img { width: 32% !important; }
+  .nx .tiles .tile--writing .fan img { width: 26% !important; }
+  .nx .tiles .tile--writing .fan img:nth-child(3) { width: 30% !important; }
+}
