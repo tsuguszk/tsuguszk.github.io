@@ -134,6 +134,8 @@
       box-sizing: border-box;
     }
 
+    .search-panels .sp-center { text-align: center; }  /* PubMed・Amazon はリンクを検索窓の真ん中に揃える */
+
     .search-panels form {
       display: flex;
       gap: 4px;
@@ -191,7 +193,7 @@
 
     <!-- PubMed / Google / Amazon の検索 -->
     <div class="search-panels">
-      <section>
+      <section class="sp-center">
         <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>
         <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank">
           <input name="db" type="hidden" value="PubMed">
@@ -212,7 +214,7 @@
         </form>
       </section>
 
-      <section>
+      <section class="sp-center">
         <a href="https://www.amazon.co.jp/">Amazon</a>
         <a href="https://www.amazon.co.jp/gp/css/order-history/ref=nav_youraccount_orders">履歴</a>
         <a href="https://www.amazon.co.jp/gp/help/customer/display.html/ref=aw?ie=UTF8&amp;nodeId=201910090">追跡</a>
