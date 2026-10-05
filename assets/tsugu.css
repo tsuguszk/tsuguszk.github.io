@@ -1105,3 +1105,6 @@ a.shot-img { cursor: pointer; }
   .nx .tile--press .fan, .nx .tile--society .fan.fan--one { flex: 1 1 auto; height: auto; min-height: 190px; margin: 14px -18px 0; }
   .nx .tile--ablation { grid-column: 1 / -1; }
 }
+
+/* 新聞・テレビ報道：真ん中の記事（横長）が左右の記事より小さく見えないよう、大きめにする */
+.nx .tiles .tile--press .fan img:nth-child(3) { width: 76% !important; }
