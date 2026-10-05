@@ -104,6 +104,15 @@
       margin: 28px auto;
     }
 
+    /* --- リンク集へのボタンと、ページ下部のリンク集 --- */
+    .linkset-btn {
+      display: inline-block; margin: 0 0.5em; padding: 2px 12px; border: 1px solid #2f7d4f; border-radius: 999px;
+      background: rgba(255, 255, 255, .7); color: #1d5e37; font-size: 0.9em; text-decoration: none;
+    }
+    .linkset-btn:hover { background: #fff; }
+    .linkset { margin: 18px auto 10px; scroll-margin-top: 20px; }
+    .linkset-title { margin: 0 0 4px; font-weight: 700; }
+
     /* --- 3列の検索パネル --- */
     .search-panels {
       display: grid;
@@ -172,63 +181,21 @@
 
     <header>
       <img src="for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site" class="title-image">
-      <p class="updated">2026/9/23 更新</p>
+      <p class="updated">2026/10/5 更新</p>
       <p class="since">1997.1.1開設</p>
     </header>
 
-    <!-- PubMed 検索 -->
-    <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank" class="searchbox">
-      <label>
-        Search <a href="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=pubmed">PubMed</a>:
-        <input name="db" type="hidden" value="PubMed">
-        <input name="term" type="search" value="">
-      </label>
-      <input type="submit" value="Go">
-    </form>
-
-    <p class="pubmed-hint">&nbsp;</p>
-
-    <!-- よく使うリンク -->
-    <nav>
-      <p class="linkrow">
-        <a href="denden/index.html" target="_blank">denden</a>
-        <a href="https://self.pubfun.jp/users/mypage/" target="_blank">出版</a>
-        <a href="https://qr.quel.jp">QRcode</a><a href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>
-        <a href="pvc.html">PVC解析</a>
-        <a href="qtc/index_qtc.html">QTc解析アプリ</a><span class="note">2026/9/8更新</span><a href="index_fvp.html">FVPとWPWの鑑別資料</a>
-        <span class="note">2023/7/12更新</span>
-        <span class="for-dr">Dr向け</span>
-      </p>
-    </nav>
-
-    <img src="for_top_page/gif/line2_r.gif" width="640" height="27" alt="" class="rule">
-
-    <!-- 移動・Google・そのほかのリンク（旧版と同じレイアウト） -->
-    <nav>
-      <p class="linkrow">
-        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
-          href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急5489</a>
-        <a href="https://ekitan.com/">駅探</a>/
-        <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
-        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/<a
-          href="https://www.ikyu.com/">一休</a>/<a
-          href="https://www.agoda.com/ja-jp/trips?ds=ZAyZr6iN5E3fete%2B">Agoda</a>　<a href="https://www.jal.co.jp/5971/">JAL</a>/<a
-          href="https://ana.co.jp/">ANA</a>
-        <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
-      </p>
-      <p class="linkrow">
-        <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini
-          API管理)</a>
-        <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Cloud Billing
-          (API費用管理)</a>
-        <a href="https://me.developers.google.com/benefits">developer program (クレジット管理)</a>
-        <a href="https://analytics.google.com/analytics/web/?hl=ja">web解析</a><a href="12kokki.html">十二国記</a>
-        <a href="https://www.yodobashi.com">ヨドバシ</a>
-      </p>
-    </nav>
-
-    <!-- Google / Amazon / 楽天 -->
+    <!-- PubMed / Google / Amazon の検索 -->
     <div class="search-panels">
+      <section>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>
+        <form action="https://www.ncbi.nlm.nih.gov/entrez/query.fcgi" method="get" target="_blank">
+          <input name="db" type="hidden" value="PubMed">
+          <input name="term" type="search" placeholder="検索">
+          <input type="submit" value="Go">
+        </form>
+      </section>
+
       <section>
         <a target="_blank" href="https://www.google.com/">Google</a>
         <a href="https://maps.google.co.jp/">map</a>
@@ -251,15 +218,30 @@
           <input type="submit" value="GO">
         </form>
       </section>
-
-      <section>
-        <a href="https://www.rakuten.co.jp/">楽天市場</a>
-        <form action="https://search.rakuten.co.jp/search/mall/" method="get" id="rakutenForm">
-          <input type="search" id="rakuten_keyword" placeholder="検索" required>
-          <input type="submit" value="GO">
-        </form>
-      </section>
     </div>
+
+    <img src="for_top_page/gif/line2_r.gif" width="640" height="27" alt="" class="rule">
+
+    <!-- よく使うリンク -->
+    <nav>
+      <p class="linkrow">
+        <a href="qtc/index_qtc.html">QTc解析アプリ</a><span class="note">2026/9/8更新</span>
+        <a href="index_fvp.html">FVPとWPWの鑑別資料</a><span class="note">2023/7/12更新</span><span class="for-dr">Dr向け</span>
+        <a href="pvc.html">PVC解析</a>
+        <a class="linkset-btn" href="#linkset">リンク集</a>
+      </p>
+      <p class="linkrow">
+        <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
+          href="https://e5489.jr-odekake.net/e5489/cspc/CBTopMenuPC">特急5489</a>
+        <a href="https://ekitan.com/">駅探</a>/
+        <a href="https://www.jorudan.co.jp/index.html">電車乗換</a>
+        <a href="https://travel.rakuten.co.jp">楽天トラベル</a>/<a
+          href="https://www.ikyu.com/">一休</a>/<a
+          href="https://www.agoda.com/ja-jp/trips?ds=ZAyZr6iN5E3fete%2B">Agoda</a>　<a href="https://www.jal.co.jp/5971/">JAL</a>/<a
+          href="https://ana.co.jp/">ANA</a>
+        <a href="https://www.yodobashi.com">ヨドバシ</a>
+      </p>
+    </nav>
 
     <!-- ここから下は新しいデザイン（assets/tsugu.css・assets/tsugu.js） -->
     <div class="nx home">
@@ -272,6 +254,21 @@
           <p class="sec-lede">新聞・テレビで紹介された記事、学会･講演の仕事、論文･原稿の仕事、アブレーション治療のデータをまとめました。</p>
         </div>
         <div class="tiles">
+          <div class="tile tile--ablation glass" data-reveal="2">
+            <div class="abl-text">
+              <a class="tile-link" href="ablation.html">
+                <p class="eyebrow">Catheter Ablation</p>
+                <h3>アブレーションの仕事</h3>
+                <p>2006年から当科で行ったカテーテルアブレーション全症例のデータです。年齢と体重、成功率と再発率、不整脈ごとの成績をまとめました。</p>
+              </a>
+              <ul class="facts">
+                <li><a href="ablation.html#summary"><b>1,720件</b><span>2006〜2026年の治療<span class="nowrap">（患者さん1,488人）</span></span></a></li>
+                <li><a href="ablation.html#outcome"><b>93.0%</b><span>成功率<span class="nowrap">（再発率12.8%）</span></span></a></li>
+              </ul>
+              <p class="tile-links"><a href="ablation.html">全体のデータ</a><a href="wpw_results.html">WPW</a><a href="avnrt_results.html">AVNRT</a><a href="pvc_results.html">PVC/NSVT</a></p>
+            </div>
+            <a class="abl-photo" href="ablation.html" tabindex="-1" aria-hidden="true"><img src="assets/media/ablation-room.webp?v=4" width="1540" height="1021" alt="" loading="lazy"></a>
+          </div>
           <a class="tile tile--press glass" href="media.html" data-reveal>
             <p class="eyebrow">Press &amp; TV</p>
             <h3>新聞・テレビ報道</h3>
@@ -316,21 +313,6 @@
               <img src="assets/media/papers/2023-jspccs-crt.webp" width="640" height="841" alt="" loading="lazy">
               <img src="assets/media/papers/2020-hr-1021.webp" width="640" height="860" alt="" loading="lazy">
             </div>
-          </div>
-          <div class="tile tile--ablation glass" data-reveal="2">
-            <div class="abl-text">
-              <a class="tile-link" href="ablation.html">
-                <p class="eyebrow">Catheter Ablation</p>
-                <h3>アブレーションの仕事</h3>
-                <p>2006年から当科で行ったカテーテルアブレーション全症例のデータです。年齢と体重、成功率と再発率、不整脈ごとの成績をまとめました。</p>
-              </a>
-              <ul class="facts">
-                <li><a href="ablation.html#summary"><b>1,720件</b><span>2006〜2026年の治療<span class="nowrap">（患者さん1,488人）</span></span></a></li>
-                <li><a href="ablation.html#outcome"><b>93.0%</b><span>成功率<span class="nowrap">（再発率12.8%）</span></span></a></li>
-              </ul>
-              <p class="tile-links"><a href="ablation.html">全体のデータ</a><a href="wpw_results.html">WPW</a><a href="avnrt_results.html">AVNRT</a><a href="pvc_results.html">PVC/NSVT</a></p>
-            </div>
-            <a class="abl-photo" href="ablation.html" tabindex="-1" aria-hidden="true"><img src="assets/media/ablation-room.webp?v=4" width="1540" height="1021" alt="" loading="lazy"></a>
           </div>
         </div>
       </section>
@@ -555,6 +537,23 @@
       <footer class="foot-home">
         <p><span class="label">web adress : </span><a href="https://tsugutoshi.com">tsugutoshi.com</a></p>
         <p><a href="https://tsuguszk.github.io">tsuguszk.github.io</a></p>
+        <nav class="linkset" id="linkset" aria-label="リンク集">
+          <p class="linkset-title">リンク集</p>
+          <p class="linkrow">
+            <a href="https://www.icloud.com/notes/0cePWQHyHgK3D7mGxx5h_d5rg">icloud</a>
+            <a href="denden/index.html" target="_blank">denden</a>
+            <a href="https://self.pubfun.jp/users/mypage/" target="_blank">出版</a>
+            <a href="https://qr.quel.jp">QRcode</a>
+            <a href="https://mite.stream.co.jp/eqc731huyi/user/login.php">e-leaning</a>
+            <a href="12kokki.html">十二国記</a>
+          </p>
+          <p class="linkrow">
+            <a href="https://aistudio.google.com/spend?project=gen-lang-client-0805248334">Google AI Studio (Gemini API管理)</a>
+            <a href="https://console.cloud.google.com/billing/010A18-184910-75EC67?organizationId=0">Cloud Billing (API費用管理)</a>
+            <a href="https://me.developers.google.com/benefits">developer program (クレジット管理)</a>
+            <a href="https://analytics.google.com/analytics/web/?hl=ja">web解析</a>
+          </p>
+        </nav>
         <p><a href="index_2608version.html">旧トップページ(2608版)</a></p>
         <a class="bike" href="index_road.html"><img src="for_top_page/shougatsu/HITU_382.gif" width="170" height="142" alt="自転車・ロードバイクのページへ"></a>
         <img class="mac" src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
@@ -563,16 +562,6 @@
 
   </div>
 
-  <script>
-    // 楽天の検索は /search/mall/<キーワード>/ という形式なので送信時に組み立てる
-    document.getElementById('rakutenForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      var keyword = document.getElementById('rakuten_keyword').value.trim();
-      if (keyword) {
-        window.open('https://search.rakuten.co.jp/search/mall/' + encodeURIComponent(keyword) + '/', '_blank');
-      }
-    });
-  </script>
   <script src="assets/tsugu.js?v=20260926f" defer></script>
 </body>
 
