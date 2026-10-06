@@ -1245,7 +1245,7 @@
         <header>
             <h1>📊 ホルター心電図 PVCトレンド解析</h1>
             <p class="subtitle subtitle-update"
-                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">最終update : 2026/10/6</p>
+                style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">最終update : 2026.10.6</p>
             <p class="subtitle subtitle-model"
                 style="font-weight: 600; color: var(--accent-cyan); margin-bottom: 0.25rem;">
                 PVCが心房ペーシングで誘発できるかの予測モデル : AOP Response Index : ARI</p>
@@ -1455,6 +1455,9 @@
         </div>
 
         <!-- Results Section -->
+        <!-- 解析前に判定基準の解説を表示する場所 -->
+        <div id="criteriaPre"></div>
+
         <div id="resultsSection">
             <!-- Data count display -->
             <div class="patient-info" id="patientInfoSection">
@@ -1724,8 +1727,8 @@
                 </div>
             </div>
 
-            <!-- Judgement Criteria: 判定基準の表示 -->
-            <div class="card">
+            <!-- Judgement Criteria: 判定基準の表示（解析前は読み込み欄の下、解析後はここ＝解析データの下に移す） -->
+            <div class="card" id="criteriaCard">
                 <div class="card-header">
                     <div class="card-icon blue">📋</div>
                     <h2 class="card-title">判定基準の解説</h2>
@@ -1773,7 +1776,7 @@
 
                     <p style="font-size: 0.85rem; font-weight: 700; margin: 1rem 0 0.25rem;">A群+B群とC群の比較</p>
                     <ul style="margin-left: 1.5rem; font-size: 0.85rem;">
-                        <li>2段脈と3段脈を足した数が<strong>2,000を越えている</strong>と、A paceでPVCが誘発される、もしくはPVCが消えない可能性は<strong>92%</strong></li>
+                        <li>2段脈と3段脈を足した数が<strong>2,000を越えている</strong>と、A burstでPVCが誘発される、もしくはPVCが消えない可能性は<strong>92%</strong></li>
                         <li>2段脈と3段脈の合計 / PVC合計が<strong>4%以上</strong>だと、PVCが消えない、もしくはA burstで誘発できる可能性は<strong>87%</strong></li>
                     </ul>
                 </div>
@@ -4349,6 +4352,25 @@
             });
         </script>
     </div>
+    <script>
+        // 判定基準の解説：解析前は読み込み欄の下に表示し、解析結果が出たら解析データの下（分析結果サマリーの上）へ移す
+        (function () {
+            var card = document.getElementById('criteriaCard');
+            var pre = document.getElementById('criteriaPre');
+            var res = document.getElementById('resultsSection');
+            if (!card || !pre || !res) return;
+            var next = card.nextElementSibling;   // 分析結果サマリーのカード（解析後はこの前に置く）
+            function place() {
+                if (getComputedStyle(res).display !== 'none') {
+                    if (card.parentNode !== res) res.insertBefore(card, next);
+                } else if (card.parentNode !== pre) {
+                    pre.appendChild(card);
+                }
+            }
+            place();
+            new MutationObserver(place).observe(res, { attributes: true, attributeFilter: ['style', 'class'] });
+        })();
+    </script>
 </body>
 
 </html>
