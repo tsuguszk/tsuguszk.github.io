@@ -58,7 +58,7 @@ html = f'''<!DOCTYPE html>
       <div class="page-hero">
         <p class="eyebrow">Trainees · 2009–2026</p>
         <h1 class="h1-mid"><span style="display:inline-block">これまでに小児不整脈で</span><span style="display:inline-block">研修された先生方</span></h1>
-        <p class="sec-lede">2009年の小児不整脈科設立から、2026年までに{len(TRAINEES)}名の先生方が研修にこられました。研修後は全国で活躍されています。</p>
+        <p class="sec-lede">2009年の小児不整脈科設立から、2026年までに{len(TRAINEES)}名の先生方が研修にこられました。<br>研修後は全国で活躍されています。</p>
       </div>
 
       <div class="doc">
