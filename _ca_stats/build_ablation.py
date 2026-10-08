@@ -69,7 +69,7 @@ abl_html = f'''<!DOCTYPE html>
         <h1><span class="nw">アブレーションの仕事</span><span class="h1-sub">全症例のデータ（2006–2026年）</span></h1>
         <p class="sec-lede">2006年に大阪市立総合医療センター 小児不整脈科に赴任してから2026年9月までに、当科で行った<b>カテーテルアブレーション{f(O['n'])}件（患者さん{f(O['patients'])}人）</b>のデータです。治療したときの年齢と体重、成功率と再発率、不整脈ごとの成績をまとめました。WPW・AVNRT・PVC/NSVTは、それぞれのページで詳しく紹介しています。</p>
         <nav class="jump" aria-label="このページの目次">
-          <a href="#summary">概要</a><a href="#outcome">成功率と再発率</a><a href="#age">年齢</a><a href="#weight">体重</a><a href="#period">期間ごとの成績</a><a href="#kinds">不整脈ごとの成績</a><a href="#detail">詳しい成績</a><a class="jump-go" href="wpw_results.html">WPW</a><a class="jump-go" href="avnrt_results.html">AVNRT</a><a class="jump-go" href="pvc_results.html">PVC/NSVT</a><a class="jump-go" href="trainees.html">研修された先生方</a>
+          <a href="#summary">概要</a><a href="#outcome">成功率と再発率</a><a href="#age">年齢</a><a href="#weight">体重</a><a href="#period">期間ごとの成績</a><a href="#kinds">不整脈ごとの成績</a><a href="#detail">詳しい成績</a><a class="jump-go" href="wpw_results.html">WPW</a><a class="jump-go" href="avnrt_results.html">AVNRT</a><a class="jump-go" href="pvc_results.html">PVC/NSVT</a><span class="jump-break" aria-hidden="true"></span><a class="jump-go jump-trainee" href="trainees.html">小児不整脈で研修された先生方</a>
         </nav>
         </div>
       </div>
