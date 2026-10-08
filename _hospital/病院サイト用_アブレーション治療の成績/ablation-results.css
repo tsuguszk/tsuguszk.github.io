@@ -246,5 +246,10 @@
 /* 目次の中の、別ページ（WPW・AVNRT・PVC/NSVT）へ移るボタン */
 .ocgh-abl .jump a.jump-go::after { content: " \203A"; }
 
+/* アブレーションの仕事：目次の最後「小児不整脈で研修された先生方」は行を変え、薄い黄色のボタンにする */
+.ocgh-abl .jump .jump-break { flex-basis: 100%; height: 0; }
+.ocgh-abl .jump a.jump-trainee { background: #fff8d6; }
+.ocgh-abl .jump a.jump-trainee:hover { background: #fff2b3; }
+
 /* スマホでは見出しを1行に収める */
 @media (max-width: 480px) { .ocgh-abl .page-hero.ca-hero h1 { font-size: 1.45rem; } .ocgh-abl .page-hero.ca-hero h1 .h1-sub { font-size: .72em; } }

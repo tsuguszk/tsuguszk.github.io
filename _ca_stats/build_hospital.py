@@ -133,7 +133,7 @@ def convert(html, src):
     main = re.sub(r'\s*<li><a href="page_rfca/rfca_manual.html">.*?</a></li>', '', main, flags=re.S)
     # 研修された先生方のページは個人サイトだけに置く
     main = re.sub(r'\s*<li><a href="trainees.html">.*?</a></li>', '', main, flags=re.S)
-    main = main.replace('<a class="jump-go" href="trainees.html">研修された先生方</a>', '')
+    main = main.replace('<span class="jump-break" aria-hidden="true"></span><a class="jump-go jump-trainee" href="trainees.html">小児不整脈で研修された先生方</a>', '')
     main = main.replace('<span>アブレーションの仕事（全症例のデータ）<small>', '<span>アブレーション治療の成績（全症例のデータ）<small>')
     main = main.replace('<span>アブレーションの仕事<small>', '<span>アブレーション治療の成績<small>')
     for s, d in LINKMAP.items():
