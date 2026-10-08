@@ -1,11 +1,11 @@
 exec(open(__import__('pathlib').Path(__file__).resolve().parent.joinpath('ca_helpers.py')).read())
 # ======================================================================= trainees.html（これまでに小児不整脈で研修された先生方）
-# 卒後年数などの個人の経歴は載せない（採用年度・名前・紹介元だけ）
+# 卒後年数などの個人の経歴は載せない（採用年度・名前・研修前の所属だけ）
 TRAINEES = [
     (2009, '岸本慎太郎', '久留米大学'),
     (2012, '吉田修一朗', '名古屋大学'),
     (2015, '渡辺重朗', '横浜市立大学'),
-    (2016, '加藤有子', '京都大学'),
+    (2016, '加藤有子', '県立尼崎病院'),
     (2019, '佐藤啓', '金沢大学'),
     (2019, '福留啓祐', '香川県国立こども病院'),
     (2020, '寺師英子', '九州大学'),
@@ -66,7 +66,7 @@ html = f'''<!DOCTYPE html>
           <h2>研修された先生方（{len(TRAINEES)}名）</h2>
           <div class="doc-scroll">
             <table class="doc-table trainee-table">
-              <thead><tr><th scope="col">採用年度</th><th scope="col">お名前</th><th scope="col">紹介元</th></tr></thead>
+              <thead><tr><th scope="col">採用年度</th><th scope="col">お名前</th><th scope="col">研修前の所属</th></tr></thead>
               <tbody>
 {rows}              </tbody>
             </table>
