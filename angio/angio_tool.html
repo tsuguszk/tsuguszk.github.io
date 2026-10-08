@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アンギオ透視画像合成ツール</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-primary: #0f1117;
+      --bg-secondary: #1a1d27;
+      --bg-card: #1e2130;
+      --bg-hover: #252840;
+      --accent: #4f8ef7;
+      --accent-glow: rgba(79, 142, 247, 0.25);
+      --accent-secondary: #7c6af7;
+      --success: #34d399;
+      --text-primary: #e8eaf2;
+      --text-secondary: #8b90a7;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    header .subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .version-label {
+      color: var(--text-secondary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: pre;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1300px;
+      padding: 36px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .upload-card {
+      background: var(--bg-card);
+      border: 2px dashed var(--border);
+      border-radius: 16px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      position: relative;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .upload-card.drag-over {
+      border-color: var(--accent);
+      background: var(--bg-hover);
+      box-shadow: 0 12px 40px var(--accent-glow);
+    }
+
+    .upload-card.loaded {
+      border-style: solid;
+    }
+
+    .hidden-file {
+      display: none;
+    }
+
+    .upload-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+    }
+
+    .upload-card:nth-child(1) .upload-icon {
+      background: linear-gradient(135deg, rgba(79, 142, 247, 0.2), rgba(79, 142, 247, 0.05));
+      border: 1px solid rgba(79, 142, 247, 0.3);
+    }
+
+    .upload-card:nth-child(2) .upload-icon {
+      background: linear-gradient(135deg, rgba(124, 106, 247, 0.2), rgba(124, 106, 247, 0.05));
+      border: 1px solid rgba(124, 106, 247, 0.3);
+    }
+
+    .upload-badge {
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .badge-right {
+      background: rgba(79, 142, 247, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(79, 142, 247, 0.3);
+    }
+
+    .badge-left {
+      background: rgba(124, 106, 247, 0.15);
+      color: var(--accent-secondary);
+      border: 1px solid rgba(124, 106, 247, 0.3);
+    }
+
+    .btn-file {
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-file:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .upload-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+
+    /* ── カード内トリミング用キャンバス ── */
+    .crop-canvas {
+      display: none;
+      max-width: 100%;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .crop-canvas.visible {
+      display: block;
+    }
+
+    .file-name {
+      font-size: 12px;
+      color: var(--success);
+      font-weight: 500;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .crop-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .crop-info {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .crop-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .crop-action:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .crop-action:disabled {
+      cursor: default;
+      opacity: 0.45;
+    }
+
+    .crop-action.saved {
+      background: var(--success);
+      border-color: var(--success);
+      color: #07150d;
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.4);
+    }
+
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .settings-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .setting-item {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .setting-item label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .setting-item input[type="number"] {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 9px 13px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .setting-item input[type="number"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .color-settings {
+      margin-top: 0;
+      padding-top: 0;
+    }
+
+    .color-heading,
+    .color-actions,
+    .color-values {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .color-heading {
+      margin-bottom: 12px;
+    }
+
+    .color-heading label {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .color-heading input[type="color"] {
+      width: 52px;
+      height: 34px;
+      padding: 2px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      cursor: pointer;
+    }
+
+    .color-summary {
+      margin-left: auto;
+      color: var(--text-secondary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+    }
+
+    .color-actions {
+      align-items: flex-end;
+    }
+
+    .color-preset {
+      padding: 9px 13px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .color-preset:hover {
+      border-color: var(--accent);
+    }
+
+    .color-values {
+      flex: 1;
+      min-width: 360px;
+    }
+
+    .color-values .setting-item {
+      flex: 1;
+      min-width: 75px;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+    }
+
+    .status-text {
+      color: var(--text-secondary);
+    }
+
+    .btn-generate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 32px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-generate:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(79, 142, 247, 0.4);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .output-section {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .output-section.visible {
+      display: flex;
+    }
+
+    .output-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .output-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .output-heading-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .output-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .btn-download {
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-download:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .output-canvas-container {
+      background-color: #fff;
+      background-image:
+        linear-gradient(45deg, #d9d9d9 25%, transparent 25%),
+        linear-gradient(-45deg, #d9d9d9 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #d9d9d9 75%),
+        linear-gradient(-45deg, transparent 75%, #d9d9d9 75%);
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+      background-size: 24px 24px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    #outputCanvas {
+      border-radius: 8px;
+      max-width: 100%;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .upload-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 14px 20px;
+      }
+
+      main {
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo-icon">🫀</div>
+    <div>
+      <h1>アンギオ透視画像合成ツール</h1>
+      <div class="subtitle">RAO, LAO画像からレポート用合成画像を作成、保存</div>
+    </div>
+    <div class="version-label">version 3.6   2026/9/3 update</div>
+  </header>
+
+  <main>
+
+    <div class="upload-grid">
+      <!-- Image 1 → LEFT side (centre 300, 300) -->
+      <div class="upload-card" id="drop1" ondragover="event.preventDefault(); this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event,1)">
+        <div class="upload-icon">🩻</div>
+        <div class="upload-badge badge-right">🔵 画像 1 (RAO)</div>
+        <input type="file" id="file1" class="hidden-file" accept="image/*" onchange="handleFile(1,this.files[0]); this.value='';">
+        <button type="button" class="btn-file" onclick="document.getElementById('file1').click()">📁　ファイルを選択</button>
+        <div class="upload-hint" id="hint1">ここにドラッグ＆ドロップも可（PNG / JPEG / BMP）</div>
+        <canvas id="canvas1" class="crop-canvas"></canvas>
+        <div id="name1" class="file-name"></div>
+        <div class="crop-row">
+          <span class="crop-info" id="cropInfo1"></span>
+        </div>
+      </div>
+
+      <!-- Image 2 → RIGHT side (centre 890, 300) -->
+      <div class="upload-card" id="drop2" ondragover="event.preventDefault(); this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event,2)">
+        <div class="upload-icon">🩺</div>
+        <div class="upload-badge badge-left">🟣 画像 2 (LAO)</div>
+        <input type="file" id="file2" class="hidden-file" accept="image/*" onchange="handleFile(2,this.files[0]); this.value='';">
+        <button type="button" class="btn-file" onclick="document.getElementById('file2').click()">📁　ファイルを選択</button>
+        <div class="upload-hint" id="hint2">ここにドラッグ＆ドロップも可（PNG / JPEG / BMP）</div>
+        <canvas id="canvas2" class="crop-canvas"></canvas>
+        <div id="name2" class="file-name"></div>
+        <div class="crop-row">
+          <span class="crop-info" id="cropInfo2"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="output-section" id="outputSection">
+      <div class="output-header">
+        <div class="output-heading-group">
+          <div class="output-title">
+            <div class="dot"></div>合成結果
+          </div>
+          <button type="button" class="crop-action" id="saveCropPairBtn" onclick="saveCropPair()" disabled>クリッピング条件を保存</button>
+          <button type="button" class="crop-action" id="recallCropPairBtn" onclick="recallCropPair()" disabled>呼び出し</button>
+        </div>
+        <div class="output-actions">
+          <button type="button" class="btn-download" id="saveBtn" onclick="saveResult()">
+            ⬇️　ダウンロードに保存
+          </button>
+          <button type="button" class="btn-download" id="clearImagesBtn" onclick="clearImages()">画像をクリア</button>
+        </div>
+      </div>
+      <div class="output-canvas-container">
+        <canvas id="outputCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Canvas background -->
+    <div class="settings-card background-card">
+      <div class="settings-title">キャンパス背景</div>
+      <div class="color-settings">
+        <div class="color-heading">
+          <label for="borderPicker">カラーピッカー</label>
+          <input type="color" id="borderPicker" value="#ccffcc" oninput="onColorPickerChange()">
+          <span class="color-summary" id="borderSummary">黄緑&nbsp;&nbsp;#CCFFCC&nbsp;&nbsp;A=255</span>
+        </div>
+        <div class="color-actions">
+          <button type="button" class="color-preset" onclick="setBorderColor(0,0,0,0)">透明</button>
+          <button type="button" class="color-preset" onclick="setBorderColor(255,255,255,255)">白</button>
+          <button type="button" class="color-preset" onclick="setBorderColor(204,255,204,255)">黄緑</button>
+          <div class="color-values">
+            <div class="setting-item">
+              <label>R (0–255)</label>
+              <input type="number" id="borderR" value="204" min="0" max="255" oninput="onColorNumberChange()">
+            </div>
+            <div class="setting-item">
+              <label>G (0–255)</label>
+              <input type="number" id="borderG" value="255" min="0" max="255" oninput="onColorNumberChange()">
+            </div>
+            <div class="setting-item">
+              <label>B (0–255)</label>
+              <input type="number" id="borderB" value="204" min="0" max="255" oninput="onColorNumberChange()">
+            </div>
+            <div class="setting-item">
+              <label>A (0=透明)</label>
+              <input type="number" id="borderA" value="255" min="0" max="255" oninput="onColorNumberChange()">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div class="status-bar" id="statusBar">
+      <span id="statusIcon">ℹ️</span>
+      <span class="status-text" id="statusText">2枚の画像を選択してください</span>
+    </div>
+
+    <!-- Parameters -->
+    <div class="settings-card">
+      <div class="settings-title">⚙️　パラメータ設定</div>
+      <div class="settings-grid">
+        <div class="setting-item">
+          <label>キャンバス 幅 (px)</label>
+          <input type="number" id="canvasW" value="1190" min="100" max="4000" oninput="onParamChange()">
+        </div>
+        <div class="setting-item">
+          <label>キャンバス 高さ (px)</label>
+          <input type="number" id="canvasH" value="600" min="100" max="4000" oninput="onParamChange()">
+        </div>
+        <div class="setting-item">
+          <label>画像リサイズ (px × px)</label>
+          <input type="number" id="imgSize" value="580" min="100" max="2000" oninput="onParamChange()">
+        </div>
+        <div class="setting-item">
+          <label>画像1 (RAO) 中心X</label>
+          <input type="number" id="cx1" value="300" min="0" max="4000" oninput="onParamChange()">
+        </div>
+        <div class="setting-item">
+          <label>画像2 (LAO) 中心X</label>
+          <input type="number" id="cx2" value="890" min="0" max="4000" oninput="onParamChange()">
+        </div>
+        <div class="setting-item">
+          <label>中心Y（共通）</label>
+          <input type="number" id="cy" value="300" min="0" max="4000" oninput="onParamChange()">
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    /* ── State ──
+       imgN  : 元画像
+       cropN : ドラッグで選択した正方形（元画像ピクセル座標）／null = 画像全体
+       srcN  : 合成に使うソース {el, w, h}
+       kN    : カード内キャンバスの表示倍率（表示px ÷ 元画像px）           */
+    const state = {
+      img1: null, img2: null,
+      crop1: null, crop2: null,
+      savedCropPair: null,
+      src1: null, src2: null,
+      k1: 1, k2: 1,
+      blob: null
+    };
+
+    /* ドラッグ中の一時状態 */
+    const drag = { n: 0, mode: null, anchor: null, fixed: null, startSel: null, startPt: null };
+    const HANDLE = 11;   // 角ハンドルの当たり判定（表示px）
+
+    /* ══════ ファイル読み込み ══════ */
+    function handleFile(n, file) {
+      if (!file || !file.type.startsWith('image/')) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          state['img' + n] = img;
+          state['crop' + n] = null;
+          buildSource(n);
+          layoutCanvas(n);
+          document.getElementById('name' + n).textContent = '✓ ' + file.name;
+          document.getElementById('hint' + n).textContent =
+            '画像の上をドラッグ → 正方形で切り出し（内側ドラッグで移動／角で拡大縮小）';
+          document.getElementById('drop' + n).classList.remove('drag-over');
+          document.getElementById('drop' + n).classList.add('loaded');
+          checkReady();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleDrop(e, n) {
+      e.preventDefault();
+      document.getElementById('drop' + n).classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) handleFile(n, e.dataTransfer.files[0]);
+    }
+
+    function clearImages() {
+      [1, 2].forEach(n => {
+        state['img' + n] = null;
+        state['crop' + n] = null;
+        state['src' + n] = null;
+        state['k' + n] = 1;
+        const canvas = document.getElementById('canvas' + n);
+        canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+        canvas.classList.remove('visible');
+        document.getElementById('drop' + n).classList.remove('loaded', 'drag-over');
+        document.getElementById('file' + n).value = '';
+        document.getElementById('name' + n).textContent = '';
+        document.getElementById('cropInfo' + n).textContent = '';
+        document.getElementById('hint' + n).textContent =
+          'ここにドラッグ＆ドロップも可（PNG / JPEG / BMP）';
+      });
+      state.blob = null;
+      document.getElementById('outputSection').classList.remove('visible');
+      const outputCanvas = document.getElementById('outputCanvas');
+      outputCanvas.getContext('2d').clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+      checkReady();
+      updateCropPairButtons();
+    }
+
+    /* ══════ 合成ソース（正方形切り出し後） ══════ */
+    function buildSource(n) {
+      const img = state['img' + n];
+      if (!img) { state['src' + n] = null; return; }
+      const c = state['crop' + n];
+      if (!c) {
+        state['src' + n] = { el: img, w: img.naturalWidth, h: img.naturalHeight };
+      } else {
+        const cv = document.createElement('canvas');
+        cv.width = Math.max(1, Math.round(c.w));
+        cv.height = Math.max(1, Math.round(c.h));
+        cv.getContext('2d').drawImage(
+          img, Math.round(c.x), Math.round(c.y), cv.width, cv.height, 0, 0, cv.width, cv.height);
+        state['src' + n] = { el: cv, w: cv.width, h: cv.height };
+      }
+      const info = document.getElementById('cropInfo' + n);
+      if (c) {
+        info.textContent = '切り出し ' + Math.round(c.w) + ' × ' + Math.round(c.h) +
+          ' px（位置 ' + Math.round(c.x) + ', ' + Math.round(c.y) + '）';
+      } else {
+        info.textContent = img ? '未選択 — 画像全体を使用（' + img.naturalWidth + ' × ' + img.naturalHeight + ' px）' : '';
+      }
+      updateCropPairButtons();
+    }
+
+    /* ═════ 左右の切り出し範囲を1セットで保存・呼び出し ═════ */
+    const cropPairStorageKey = 'AngioCombineTool.savedCrops.both';
+    const backgroundStorageKey = 'AngioCombineTool.savedBackground';
+
+    function validCrop(c) {
+      return c && [c.x, c.y, c.w, c.h].every(Number.isFinite) && c.w > 0 && c.h > 0;
+    }
+
+    function validCropPair(pair) {
+      return pair && validCrop(pair.left) && validCrop(pair.right)
+        && (!pair.background || validBackground(pair.background));
+    }
+
+    function validBackground(color) {
+      return color && [color.r, color.g, color.b, color.a]
+        .every(value => Number.isInteger(value) && value >= 0 && value <= 255);
+    }
+
+    function saveBackgroundSetting(color) {
+      if (!validBackground(color)) return;
+      try { localStorage.setItem(backgroundStorageKey, JSON.stringify(color)); } catch (_) { }
+    }
+
+    function readSavedBackground() {
+      try {
+        const color = JSON.parse(localStorage.getItem(backgroundStorageKey) || 'null');
+        if (validBackground(color)) return color;
+      } catch (_) { }
+
+      /* v3.4以前はクリッピング条件の中にだけ背景色を保存していた。 */
+      const pair = readSavedCropPair();
+      if (pair && validBackground(pair.background)) {
+        saveBackgroundSetting(pair.background);
+        return pair.background;
+      }
+      return null;
+    }
+
+    function cloneSavedCropPair(pair) {
+      return JSON.parse(JSON.stringify(pair));
+    }
+
+    function normalizedCrop(c) {
+      return {
+        x: Math.round(c.x), y: Math.round(c.y),
+        w: Math.max(1, Math.round(c.w)), h: Math.max(1, Math.round(c.h))
+      };
+    }
+
+    function readSavedCropPair() {
+      if (validCropPair(state.savedCropPair)) {
+        return cloneSavedCropPair(state.savedCropPair);
+      }
+      try {
+        const pair = JSON.parse(localStorage.getItem(cropPairStorageKey) || 'null');
+        if (validCropPair(pair)) {
+          state.savedCropPair = pair;
+          return cloneSavedCropPair(pair);
+        }
+
+        /* v3.0の左右別保存が両方あれば、新形式へ自動移行。 */
+        const left = JSON.parse(localStorage.getItem('AngioCombineTool.savedCrop.left') || 'null');
+        const right = JSON.parse(localStorage.getItem('AngioCombineTool.savedCrop.right') || 'null');
+        if (validCrop(left) && validCrop(right)) {
+          const migrated = { left: normalizedCrop(left), right: normalizedCrop(right) };
+          state.savedCropPair = migrated;
+          localStorage.setItem(cropPairStorageKey, JSON.stringify(migrated));
+          return cloneSavedCropPair(migrated);
+        }
+      } catch (_) { /* file:// 環境で localStorage が使えない場合はページ内の保存のみ */ }
+      return null;
+    }
+
+    function updateCropPairButtons() {
+      const pair = readSavedCropPair();
+      const saved = !!pair;
+      const save = document.getElementById('saveCropPairBtn');
+      const recall = document.getElementById('recallCropPairBtn');
+      save.disabled = !(validCrop(state.crop1) && validCrop(state.crop2));
+      recall.disabled = !(state.img1 && state.img2 && saved);
+      recall.classList.toggle('saved', saved);
+      recall.textContent = saved ? recallButtonLabel(pair) : '呼び出し';
+    }
+
+    function recallButtonLabel(pair) {
+      if (!pair || !pair.savedAt) return '呼び出し（保存データ）';
+      const date = new Date(pair.savedAt);
+      if (Number.isNaN(date.getTime())) return '呼び出し（保存データ）';
+      const p2 = value => String(value).padStart(2, '0');
+      return '呼び出し（' + (date.getMonth() + 1) + '/' + date.getDate()
+        + ' ' + p2(date.getHours()) + ':' + p2(date.getMinutes()) + ' 保存データ）';
+    }
+
+    function saveCropPair() {
+      if (!validCrop(state.crop1) || !validCrop(state.crop2)) return;
+      const background = currentBorderColor();
+      if (!validBackground(background)) return;
+      const pair = {
+        left: normalizedCrop(state.crop1),
+        right: normalizedCrop(state.crop2),
+        background: background,
+        savedAt: new Date().toISOString()
+      };
+      state.savedCropPair = pair;
+      try { localStorage.setItem(cropPairStorageKey, JSON.stringify(pair)); } catch (_) { }
+      saveBackgroundSetting(background);
+      updateCropPairButtons();
+    }
+
+    function clampedSavedCrop(saved, img) {
+      const side = Math.floor(Math.min(saved.w, saved.h, img.naturalWidth, img.naturalHeight));
+      if (side < 1) return null;
+      const x = Math.min(Math.max(0, Math.round(saved.x)), Math.max(0, img.naturalWidth - side));
+      const y = Math.min(Math.max(0, Math.round(saved.y)), Math.max(0, img.naturalHeight - side));
+      return { x: x, y: y, w: side, h: side };
+    }
+
+    function recallCropPair() {
+      const pair = readSavedCropPair();
+      if (!state.img1 || !state.img2 || !pair) return;
+      const left = clampedSavedCrop(pair.left, state.img1);
+      const right = clampedSavedCrop(pair.right, state.img2);
+      if (!left || !right) return;
+      state.crop1 = left;
+      state.crop2 = right;
+      [1, 2].forEach(n => { buildSource(n); drawCard(n); });
+      reflect();
+    }
+
+    function loadSavedSettings() {
+      const background = readSavedBackground();
+      if (validBackground(background)) {
+        setBorderColor(background.r, background.g, background.b, background.a, false);
+      } else {
+        updateBorderColorUI(currentBorderColor() || { r: 204, g: 255, b: 204, a: 255 });
+      }
+      updateCropPairButtons();
+    }
+
+    /* ══════ カード内キャンバス ══════ */
+    function layoutCanvas(n) {
+      const img = state['img' + n];
+      const cv = document.getElementById('canvas' + n);
+      if (!img) { cv.classList.remove('visible'); return; }
+      const card = document.getElementById('drop' + n);
+      const availW = Math.max(160, card.clientWidth - 40);
+      const availH = 360;
+      const k = Math.min(availW / img.naturalWidth, availH / img.naturalHeight);
+      state['k' + n] = k;
+      cv.width = Math.max(1, Math.round(img.naturalWidth * k));
+      cv.height = Math.max(1, Math.round(img.naturalHeight * k));
+      cv.classList.add('visible');
+      drawCard(n);
+    }
+
+    function drawCard(n) {
+      const img = state['img' + n];
+      const cv = document.getElementById('canvas' + n);
+      if (!img) return;
+      const ctx = cv.getContext('2d');
+      const k = state['k' + n];
+      const s = state['crop' + n];
+
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      if (!s) return;
+
+      const x = s.x * k, y = s.y * k, w = s.w * k, h = s.h * k;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(0, 0, cv.width, y);
+      ctx.fillRect(0, y + h, cv.width, cv.height - (y + h));
+      ctx.fillRect(0, y, x, h);
+      ctx.fillRect(x + w, y, cv.width - (x + w), h);
+
+      const col = n === 1 ? '#4f8ef7' : '#7c6af7';
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y, w, h);
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 1; i < 3; i++) {
+        ctx.moveTo(x + w * i / 3, y); ctx.lineTo(x + w * i / 3, y + h);
+        ctx.moveTo(x, y + h * i / 3); ctx.lineTo(x + w, y + h * i / 3);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = col;
+      const hs = 5;
+      [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].forEach(p => {
+        ctx.fillRect(p[0] - hs, p[1] - hs, hs * 2, hs * 2);
+      });
+    }
+
+    /* ══════ ドラッグで正方形を選択 ══════ */
+    /* 基点(ax,ay) から (x,y) 方向へ、画像内に収まる正方形を作る */
+    function squareFrom(n, ax, ay, x, y) {
+      const img = state['img' + n];
+      const W = img.naturalWidth, H = img.naturalHeight;
+      const dx = x - ax, dy = y - ay;
+      const sx = dx < 0 ? -1 : 1, sy = dy < 0 ? -1 : 1;
+      const maxS = Math.min(sx > 0 ? W - ax : ax, sy > 0 ? H - ay : ay);
+      const s = Math.max(1, Math.min(Math.max(Math.abs(dx), Math.abs(dy)), maxS));
+      return { x: sx > 0 ? ax : ax - s, y: sy > 0 ? ay : ay - s, w: s, h: s };
+    }
+
+    function pointOf(n, e) {
+      const cv = document.getElementById('canvas' + n);
+      const r = cv.getBoundingClientRect();
+      const dx = (e.clientX - r.left) * (cv.width / r.width);
+      const dy = (e.clientY - r.top) * (cv.height / r.height);
+      const k = state['k' + n];
+      const img = state['img' + n];
+      return {
+        dx: dx, dy: dy,
+        x: Math.min(Math.max(0, dx / k), img.naturalWidth),
+        y: Math.min(Math.max(0, dy / k), img.naturalHeight)
+      };
+    }
+
+    /* 角ハンドルに当たれば、対角の固定点を返す */
+    function hitHandle(n, pt) {
+      const s = state['crop' + n], k = state['k' + n];
+      if (!s) return null;
+      const corners = [
+        [s.x, s.y, s.x + s.w, s.y + s.h],
+        [s.x + s.w, s.y, s.x, s.y + s.h],
+        [s.x, s.y + s.h, s.x + s.w, s.y],
+        [s.x + s.w, s.y + s.h, s.x, s.y]
+      ];
+      for (const c of corners) {
+        if (Math.abs(c[0] * k - pt.dx) <= HANDLE && Math.abs(c[1] * k - pt.dy) <= HANDLE) {
+          return { x: c[2], y: c[3] };
+        }
+      }
+      return null;
+    }
+
+    function onDown(n, e) {
+      if (!state['img' + n]) return;
+      e.preventDefault();
+      const pt = pointOf(n, e);
+      const h = hitHandle(n, pt);
+      const s = state['crop' + n];
+      drag.n = n;
+      if (h) {
+        drag.mode = 'resize';
+        drag.fixed = h;
+      } else if (s && pt.x >= s.x && pt.x <= s.x + s.w && pt.y >= s.y && pt.y <= s.y + s.h) {
+        drag.mode = 'move';                       // 正方形の内側 → 移動
+        drag.startSel = Object.assign({}, s);
+        drag.startPt = { x: pt.x, y: pt.y };
+      } else {
+        drag.mode = 'new';
+        drag.anchor = { x: pt.x, y: pt.y };
+        state['crop' + n] = squareFrom(n, pt.x, pt.y, pt.x, pt.y);
+      }
+      document.getElementById('canvas' + n).setPointerCapture(e.pointerId);
+      drawCard(n);
+    }
+
+    function onHover(n, e) {
+      if (drag.mode !== null) return;
+      const cv = document.getElementById('canvas' + n);
+      const s = state['crop' + n];
+      if (!s) { cv.style.cursor = 'crosshair'; return; }
+      const pt = pointOf(n, e);
+      if (hitHandle(n, pt)) cv.style.cursor = 'nwse-resize';
+      else if (pt.x >= s.x && pt.x <= s.x + s.w && pt.y >= s.y && pt.y <= s.y + s.h) cv.style.cursor = 'move';
+      else cv.style.cursor = 'crosshair';
+    }
+
+    function onMove(n, e) {
+      if (drag.mode === null || drag.n !== n) { onHover(n, e); return; }
+      e.preventDefault();
+      const pt = pointOf(n, e);
+      if (drag.mode === 'move') {
+        const img = state['img' + n], s0 = drag.startSel;
+        const nx = Math.min(Math.max(0, s0.x + (pt.x - drag.startPt.x)), img.naturalWidth - s0.w);
+        const ny = Math.min(Math.max(0, s0.y + (pt.y - drag.startPt.y)), img.naturalHeight - s0.h);
+        state['crop' + n] = { x: nx, y: ny, w: s0.w, h: s0.h };
+      } else {
+        const base = drag.mode === 'resize' ? drag.fixed : drag.anchor;
+        state['crop' + n] = squareFrom(n, base.x, base.y, pt.x, pt.y);
+      }
+      drawCard(n);
+      buildSource(n);
+      reflect();                    // ドラッグ中もリアルタイム反映
+    }
+
+    function onUp(n, e) {
+      if (drag.mode === null || drag.n !== n) return;
+      const mode = drag.mode;
+      drag.mode = null;
+      try { document.getElementById('canvas' + n).releasePointerCapture(e.pointerId); } catch (_) { }
+      const s = state['crop' + n];
+      if (s && mode === 'new' && s.w < 8) {   // 選択範囲の外をクリックしただけ → 選択解除
+        state['crop' + n] = null;
+      } else if (s) {
+        state['crop' + n] = {
+          x: Math.round(s.x), y: Math.round(s.y),
+          w: Math.max(1, Math.round(s.w)), h: Math.max(1, Math.round(s.h))
+        };
+      }
+      buildSource(n);
+      drawCard(n);
+      reflect();
+    }
+
+    (function bindCanvases() {
+      [1, 2].forEach(n => {
+        const cv = document.getElementById('canvas' + n);
+        cv.addEventListener('pointerdown', e => onDown(n, e));
+        cv.addEventListener('pointermove', e => onMove(n, e));
+        cv.addEventListener('pointerup', e => onUp(n, e));
+        cv.addEventListener('pointercancel', e => onUp(n, e));
+        cv.addEventListener('dragstart', e => e.preventDefault());
+      });
+      let t = null;
+      window.addEventListener('resize', () => {
+        clearTimeout(t);
+        t = setTimeout(() => { [1, 2].forEach(n => { if (state['img' + n]) layoutCanvas(n); }); if (state.src1 && state.src2) drawDiagram(); }, 150);
+      });
+    })();
+
+    /* ══════ 反映 ══════ */
+    /* レイアウト図と、すでに生成済みの合成結果を即時更新 */
+    function reflect() {
+      if (!state.src1 || !state.src2) return;
+      document.getElementById('outputSection').classList.add('visible');
+      renderOutput();
+    }
+
+    function checkReady() {
+      const ok = !!(state.src1 && state.src2);
+      /* 2枚そろったらステータス行は隠す（合成結果の下に文字を出さない） */
+      document.getElementById('statusBar').style.display = ok ? 'none' : 'flex';
+      document.getElementById('statusIcon').textContent = 'ℹ️';
+      document.getElementById('statusText').textContent =
+        !state.src1 ? '画像1を選択してください' : '画像2を選択してください';
+      if (ok) reflect();
+    }
+
+    function onParamChange() { reflect(); }
+
+    /* ══════ 縁取り色（RGBA 各 0〜255） ══════ */
+    function clampByte(value) {
+      return Math.min(255, Math.max(0, Math.round(value)));
+    }
+
+    function byteValue(id) {
+      const value = document.getElementById(id).value;
+      if (value === '') return null;
+      const number = Number(value);
+      return Number.isFinite(number) ? clampByte(number) : null;
+    }
+
+    function hexByte(value) {
+      return value.toString(16).padStart(2, '0').toUpperCase();
+    }
+
+    function currentBorderColor() {
+      const r = byteValue('borderR');
+      const g = byteValue('borderG');
+      const b = byteValue('borderB');
+      const a = byteValue('borderA');
+      if ([r, g, b, a].some(value => value === null)) return null;
+      return { r, g, b, a };
+    }
+
+    function updateBorderColorUI(color) {
+      const hex = '#' + hexByte(color.r) + hexByte(color.g) + hexByte(color.b);
+      document.getElementById('borderPicker').value = hex.toLowerCase();
+      const yellowGreen = color.r === 204 && color.g === 255 && color.b === 204 && color.a === 255;
+      document.getElementById('borderSummary').textContent =
+        (yellowGreen ? '黄緑  ' : '') + hex + '  A=' + color.a;
+    }
+
+    function setBorderColor(r, g, b, a, persist = true) {
+      const color = { r: clampByte(r), g: clampByte(g), b: clampByte(b), a: clampByte(a) };
+      document.getElementById('borderR').value = color.r;
+      document.getElementById('borderG').value = color.g;
+      document.getElementById('borderB').value = color.b;
+      document.getElementById('borderA').value = color.a;
+      updateBorderColorUI(color);
+      if (persist) saveBackgroundSetting(color);
+      reflect();
+    }
+
+    function onColorPickerChange() {
+      const hex = document.getElementById('borderPicker').value.slice(1);
+      const a = byteValue('borderA') ?? 255;
+      setBorderColor(
+        parseInt(hex.slice(0, 2), 16),
+        parseInt(hex.slice(2, 4), 16),
+        parseInt(hex.slice(4, 6), 16),
+        a
+      );
+    }
+
+    function onColorNumberChange() {
+      const color = currentBorderColor();
+      if (!color) return;
+      document.getElementById('borderR').value = color.r;
+      document.getElementById('borderG').value = color.g;
+      document.getElementById('borderB').value = color.b;
+      document.getElementById('borderA').value = color.a;
+      updateBorderColorUI(color);
+      saveBackgroundSetting(color);
+      reflect();
+    }
+
+    /* ══════ 合成 ══════ */
+    function renderOutput() {
+      if (!state.src1 || !state.src2) return;
+      const CW = +document.getElementById('canvasW').value || 1190;
+      const CH = +document.getElementById('canvasH').value || 600;
+      const IS = +document.getElementById('imgSize').value || 580;
+      const cx1 = +document.getElementById('cx1').value || 300;
+      const cx2 = +document.getElementById('cx2').value || 890;
+      const cy = +document.getElementById('cy').value || 300;
+
+      const canvas = document.getElementById('outputCanvas');
+      canvas.width = CW;
+      canvas.height = CH;
+      const ctx = canvas.getContext('2d');
+
+      /* Step 1: 選択された縁取り色（黄緑 = #CCFFCC、不透明） */
+      const border = currentBorderColor() || { r: 204, g: 255, b: 204, a: 255 };
+      ctx.clearRect(0, 0, CW, CH);
+      ctx.fillStyle = `rgba(${border.r},${border.g},${border.b},${border.a / 255})`;
+      ctx.fillRect(0, 0, CW, CH);
+
+      /* Step 2-3: 各ソースを IS×IS に収めて中心配置 */
+      function drawImg(src, cx, cy) {
+        const sc = Math.min(IS / src.w, IS / src.h);
+        ctx.drawImage(src.el, cx - src.w * sc / 2, cy - src.h * sc / 2, src.w * sc, src.h * sc);
+      }
+      drawImg(state.src1, cx1, cy);
+      drawImg(state.src2, cx2, cy);
+
+      /* Step 4: PNG を保持（保存はボタン押下時） */
+      canvas.toBlob(blob => { state.blob = blob; }, 'image/png');
+    }
+
+    /* ══════ PNG保存 ══════ */
+    function isSafariBrowser() {
+      const ua = navigator.userAgent;
+      return /Safari\//.test(ua) && !/(Chrome|Chromium|CriOS|Edg|OPR|Android)/.test(ua);
+    }
+
+    function canChooseSaveLocation() {
+      return !isSafariBrowser() && typeof window.showSaveFilePicker === 'function';
+    }
+
+    function saveButtonLabel() {
+      return canChooseSaveLocation() ? '⬇️　PNG で保存' : '⬇️　ダウンロードに保存';
+    }
+
+    function updateSaveButtonLabel() {
+      const button = document.getElementById('saveBtn');
+      button.textContent = saveButtonLabel();
+    }
+
+    function outputName() {
+      const t = new Date();
+      const p2 = n => String(n).padStart(2, '0');
+      return `アンギオ合成_${t.getFullYear()}${p2(t.getMonth() + 1)}${p2(t.getDate())}`
+        + `_${p2(t.getHours())}${p2(t.getMinutes())}${p2(t.getSeconds())}.png`;
+    }
+
+    function flashBtn(text) {
+      const b = document.getElementById('saveBtn');
+      b.textContent = text;
+      setTimeout(updateSaveButtonLabel, 2500);
+    }
+
+    async function saveResult() {
+      if (!state.blob) return;
+      const name = outputName();
+
+      /* 保存ダイアログをデスクトップ起点で開く（Chrome / Edge） */
+      if (canChooseSaveLocation()) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: name,
+            startIn: 'desktop',
+            types: [{ description: 'PNG画像', accept: { 'image/png': ['.png'] } }]
+          });
+          const w = await handle.createWritable();
+          await w.write(state.blob);
+          await w.close();
+          flashBtn('✅　保存しました');
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;   /* ユーザーがキャンセル */
+          /* 非対応・失敗時は通常ダウンロードへ */
+        }
+      }
+
+      /* フォールバック: ブラウザのダウンロード先へ保存（Safari 等） */
+      const url = URL.createObjectURL(state.blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      flashBtn('✅　ダウンロードしました');
+    }
+
+    updateSaveButtonLabel();
+    loadSavedSettings();
+
+  </script>
+</body>
+
+</html>

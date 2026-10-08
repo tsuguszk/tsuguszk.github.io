@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="カテーテル位置のRAO・LAO透視画像をドラッグするだけで1枚に合成し、PNGで保存できるhtmlアプリ。Mac用のアプリ版も同梱しています。">
+  <meta name="keywords" content="アンギオ,透視画像,RAO,LAO,カテーテルアブレーション,画像合成,htmlアプリ">
+  <title>アンギオ透視画像合成ツール | つぐとしのweb site</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20261005f">
+  <style>
+    .nx .angio-shot .shot-img { max-width: 420px; }
+    .nx .angio-shot .shot-img img { width: 100%; height: auto; }
+    .nx .angio-dl { grid-template-columns: 1.3fr 1fr 1fr; }
+    .nx .angio-launch { max-width: 860px; margin: 0 auto; padding: 22px 26px; }
+    .nx .angio-launch ol { margin: 0; padding-left: 1.5em; color: var(--ink-2); }
+    .nx .angio-launch li + li { margin-top: 6px; }
+    .nx .angio-launch .qtc-point { margin: 16px 0 0; color: var(--ink-2); font-size: .95rem; }
+  </style>
+  <script>document.documentElement.classList.add('nx-js');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+</head>
+
+<body class="nx-body">
+  <div class="nx">
+
+    <header class="localnav">
+      <div class="in">
+        <a class="logo" href="../index.html" aria-label="トップページへ"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="鈴木嗣敏のホームページ"></a>
+        <nav aria-label="サイト内">
+          <a href="../index.html">トップ</a>
+          <a href="../index.html#anchor78285"><span class="long">資料・アプリ</span><span class="short">資料</span></a>
+          <a href="index_angio.html" aria-current="page"><span class="long">アンギオ画像合成ツール</span><span class="short">アンギオ</span></a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- はじめに -->
+      <div class="qtc-hero">
+        <div class="qtc-hero-text">
+          <p class="eyebrow">Web App · Mac App</p>
+          <h1>アンギオ透視画像合成ツール</h1>
+          <p class="qtc-lede">カテ位置のRAO・LAO透視画像を1枚にまとめるツールです。サンプルのLAO・RAO画像を<b>ドラッグすると、下に合成写真ができて</b>、そのまま保存できる、htmlアプリです。Mac用のアプリ版も入っています。</p>
+          <!-- 更新日（リリースのたびに書き換える） -->
+          <p class="qtc-badge"><span>最新版 ver.3.6</span>2026.9.3 update</p>
+          <div class="qtc-cta">
+            <a class="btn" href="アンギオ透視画像合成ツール_v3.6.zip">zipをダウンロード</a>
+            <a class="btn ghost" href="angio_tool.html">ブラウザで試す</a>
+          </div>
+        </div>
+        <figure class="qtc-hero-shot angio-shot">
+          <button class="shot-img" type="button" data-lightbox aria-label="画面の例を拡大"><img src="angio_screen.webp" width="1200" height="1600" alt="アンギオ透視画像合成ツールの画面。上にRAO画像とLAO画像を並べて読み込み、それぞれを正方形で切り出すと、下に2枚を並べた合成画像ができる"></button>
+          <figcaption>画面の例（クリックで拡大）</figcaption>
+        </figure>
+      </div>
+
+      <nav class="jump qtc-jump" aria-label="このページの目次">
+        <a href="#features">できること</a><a href="#download">ダウンロード</a><a href="#howto">使い方</a><a href="#mac">Mac版の初回起動</a>
+      </nav>
+
+      <!-- できること -->
+      <section class="sec qtc-sec" id="features" aria-labelledby="features-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Features</p>
+          <h2 class="sec-title" id="features-title">できること</h2>
+        </div>
+        <ul class="qtc-features">
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="8" rx="1.5"/><rect x="13" y="5" width="8" height="8" rx="1.5"/><path d="M7 15v2h10v-2M12 17v3"/></svg></span>
+            <h3>ドラッグするだけで合成</h3>
+            <p>RAO画像（左）とLAO画像（右）をドラッグ＆ドロップすると、2枚そろった時点で下に合成画像が自動でできます。</p>
+          </li>
+          <li class="glass" data-reveal="2">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3v15h15"/><path d="M3 6h15v15"/></svg></span>
+            <h3>正方形で切り出す</h3>
+            <p>画像の上をドラッグすると正方形で切り出せます。内側のドラッグで移動、角で拡大・縮小でき、合成画像にすぐ反映されます。</p>
+          </li>
+          <li class="glass" data-reveal="3">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg></span>
+            <h3>切り出し条件を保存</h3>
+            <p>「クリッピング条件を保存」で、左右の切り出しの大きさ・位置と背景色を保存できます。次の症例でも同じ画角で呼び出せます。</p>
+          </li>
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span>
+            <h3>PNGで保存</h3>
+            <p>合成画像はPNGで保存できます。背景色・キャンバスの大きさ・配置も変えられます。html版はインストール不要です。</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ダウンロード -->
+      <section class="sec qtc-sec" id="download" aria-labelledby="download-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Download</p>
+          <h2 class="sec-title" id="download-title">ダウンロード</h2>
+          <p class="sec-lede">zipには、html版・Mac用のアプリ版・すぐに試せるサンプル画像（RAO・LAO）・初回起動方法の説明が入っています。</p>
+        </div>
+        <div class="qtc-dl angio-dl">
+          <article class="qtc-dl-card qtc-dl-card--main glass" data-reveal>
+            <p class="chip clinic">zip · おすすめ</p>
+            <h3>アンギオ透視画像合成ツール</h3>
+            <p>zipを解凍して、「透視画像_合成ツール.html」をブラウザで開くか、Macでは「透視画像_合成ツール.app」を起動して使います。</p>
+            <div class="qtc-dl-actions">
+              <!-- zipリンク（リリースのたびに書き換える） -->
+              <a class="btn" href="アンギオ透視画像合成ツール_v3.6.zip">zipファイル (ver.3.6・11MB)</a>
+            </div>
+            <p class="date-note">2026.9.3更新</p>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="2">
+            <p class="chip">html版</p>
+            <h3>ブラウザで使う</h3>
+            <p>htmlファイル1つで動き、インストールは要りません。Windowsでも使えます。このサイト上でそのまま試すこともできます。</p>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="angio_tool.html">ブラウザで開く</a></div>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="3">
+            <p class="chip research">Mac版</p>
+            <h3>Macのアプリ版</h3>
+            <p>Apple Silicon（M1以降）のMac用で、macOS 14（Sonoma）以降が必要です。Appleの公証を受けていないため、初回だけ起動の手順があります。</p>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="#mac">初回起動の手順</a></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 使い方 -->
+      <section class="sec qtc-sec" id="howto" aria-labelledby="howto-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">How to use</p>
+          <h2 class="sec-title" id="howto-title">使い方</h2>
+        </div>
+        <ol class="qtc-steps">
+          <li class="glass" data-reveal>
+            <h3>ツールを開く</h3>
+            <p>zipを解凍し、「透視画像_合成ツール.html」をブラウザで開きます。Macでは「透視画像_合成ツール.app」も使えます。</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>RAOとLAOの画像をドラッグする</h3>
+            <p>左の枠にRAO画像、右の枠にLAO画像をドラッグ＆ドロップします（「ファイルを選択」ボタンでも読み込めます）。2枚そろうと、下に合成画像ができます。まずは、zipの「サンプル画像」フォルダのサンプルRAO・サンプルLAOで試してみてください。</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>切り出す範囲を決める</h3>
+            <p>画像の上をドラッグして、正方形で切り出します。内側をドラッグすると移動、角をドラッグすると拡大・縮小、外側をクリックすると選択を解除します。</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>条件を保存しておく</h3>
+            <p>「合成結果」の右の「クリッピング条件を保存」で、左右の切り出しと背景色を保存します。保存後は緑色の「呼び出し」ボタンに変わり、押すと左右の画角・位置を復元します。</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>PNGで保存する</h3>
+            <p>合成結果の右上のボタンで保存します。アプリ版とhtml版（保存先を選べるブラウザ）では「PNG で保存」、Safariでは「ダウンロードに保存」と表示されます。「画像をクリア」で、読み込んだ2枚をまとめて消せます。</p>
+            <p class="qtc-point">背景色は「キャンバス背景」、キャンバスの大きさや配置は画面下の「パラメータ設定」で変えられます。</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Mac版の初回起動 -->
+      <section class="sec qtc-sec" id="mac" aria-labelledby="mac-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Mac App</p>
+          <h2 class="sec-title" id="mac-title">Mac版の初回起動</h2>
+          <p class="sec-lede">アプリはAppleの公証を受けていないため、初めて起動するときにmacOSの警告が出ます。次の手順で開いてください。</p>
+        </div>
+        <div class="angio-launch glass" data-reveal>
+          <ol>
+            <li>zipをダブルクリックして解凍し、「透視画像_合成ツール.app」を「アプリケーション」フォルダへ移します。</li>
+            <li>アプリをダブルクリックします。「マルウェアが含まれていないことを検証できませんでした」と出たら「完了」を押します。</li>
+            <li>アップルメニューの「システム設定」→「プライバシーとセキュリティ」を開き、右側を下へスクロールします。</li>
+            <li>「透視画像_合成ツール.appは使用をブロックされました」の横の「このまま開く」を押し、ログインパスワードかTouch IDで許可します。</li>
+            <li>確認画面で「開く」を押します。次からはふつうにダブルクリックで起動できます。</li>
+          </ol>
+          <p class="qtc-point">「このまま開く」は、起動を試してから約1時間だけ表示されます。見つからないときは、もう一度アプリをダブルクリックするところからやり直してください。Intel Macでは起動できないので、html版を使ってください。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <div class="links"><a href="../index.html">トップページ</a><a href="../index.html#anchor78285">資料・アプリ</a><a href="../index.html">tsugutoshi.com</a></div>
+      <p>つぐとしのweb site · 1997.1.1 開設</p>
+      <img src="../for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
+    </footer>
+  </div>
+
+  <dialog class="nx-lightbox" id="nx-lightbox" aria-label="画像の拡大表示">
+    <button type="button" class="lb-close" data-lb-close aria-label="閉じる">×</button>
+    <figure><img alt=""><figcaption></figcaption></figure>
+  </dialog>
+
+  <script src="../assets/tsugu.js?v=20260926f" defer></script>
+</body>
+</html>
