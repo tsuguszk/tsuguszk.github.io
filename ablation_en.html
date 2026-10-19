@@ -19,6 +19,9 @@
       .nx .localnav nav { min-width: 0; overflow-x: auto; scrollbar-width: none; }
       .nx .localnav nav a { padding: 5px 7px; }
       .nx .localnav nav a.nav-top { display: none; }
+      /* 英語の長い凡例（Radiofrequency など）で円グラフのカードがはみ出さないように */
+      .nx .pie-card { grid-template-columns: 120px minmax(0, 1fr); }
+      .nx .pie-legend li { overflow-wrap: anywhere; }
     }
   </style>
   <!-- Google tag (gtag.js) -->
@@ -39,10 +42,10 @@
         <a class="logo" href="index_en.html" aria-label="To the top page"><img src="for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
         <nav aria-label="Site">
           <a href="index_en.html" class="nav-top">Top</a>
-          <a href="media_en.html"><span class="long">Press &amp; TV</span><span class="short">Press</span></a>
-          <a href="society_en.html"><span class="long">Societies &amp; Talks</span><span class="short">Talks</span></a>
-          <a href="papers_en.html">Papers</a>
-          <a href="ablation_en.html" aria-current="page"><span class="long">Catheter Ablation</span><span class="short">Ablation</span></a>
+          <a href="ablation_en.html" aria-current="page"><span class="long">Catheter Ablation</span><span class="short">All</span></a>
+          <a href="wpw_results_en.html">WPW</a>
+          <a href="avnrt_results_en.html">AVNRT</a>
+          <a href="pvc_results_en.html"><span class="long">PVC/NSVT</span><span class="short">PVC</span></a>
           <a href="ablation.html" hreflang="ja" lang="ja">日本語</a>
         </nav>
       </div>
@@ -56,7 +59,7 @@
         <h1><span class="nw">Catheter Ablation</span><span class="h1-sub">All procedures, 2006–2026</span></h1>
         <p class="sec-lede">Data from all <b>1,723 catheter ablation procedures (1,491 patients)</b> performed in our department from my arrival at Osaka City General Hospital in 2006 to September 2026: age and body weight at treatment, success and recurrence rates, and outcomes by arrhythmia.</p>
         <nav class="jump" aria-label="On this page">
-          <a href="#summary">Summary</a><a href="#outcome">Success and recurrence</a><a href="#age">Age</a><a href="#weight">Weight</a><a href="#period">By period</a><a href="#kinds">By arrhythmia</a><a href="#detail">Detailed results</a>
+          <a href="#summary">Summary</a><a href="#outcome">Success and recurrence</a><a href="#age">Age</a><a href="#weight">Weight</a><a href="#period">By period</a><a href="#kinds">By arrhythmia</a><a href="#detail">Detailed results</a><a class="jump-go" href="wpw_results_en.html">WPW</a><a class="jump-go" href="avnrt_results_en.html">AVNRT</a><a class="jump-go" href="pvc_results_en.html">PVC/NSVT</a>
         </nav>
         </div>
       </div>
@@ -328,12 +331,12 @@
         </section>
 
         <section class="doc-card glass" id="detail" data-reveal>
-          <h2>Detailed results (in Japanese)</h2>
-          <p>The three most common arrhythmias are described in detail on separate pages, currently available in Japanese only.</p>
+          <h2>Detailed results</h2>
+          <p>The three most common arrhythmias are described in detail on separate pages.</p>
           <div class="ca-subs">
-            <a class="ca-sub" href="wpw_results.html" hreflang="ja"><b>WPW</b><span>Recurrence by accessory pathway location and period, radiofrequency vs. cryoablation, and asymptomatic WPW. 702 procedures, success rate 98.6%</span><em>WPW results</em></a>
-            <a class="ca-sub" href="avnrt_results.html" hreflang="ja"><b>AVNRT</b><span>Atrioventricular nodal reentrant tachycardia: common vs. other types, radiofrequency vs. cryoablation. 332 procedures</span><em>AVNRT results</em></a>
-            <a class="ca-sub" href="pvc_results.html" hreflang="ja"><b>PVC/NSVT</b><span>Premature ventricular contractions and non-sustained VT: results by site (RVOT, RV inflow and others). 265 procedures</span><em>PVC/NSVT results</em></a>
+            <a class="ca-sub" href="wpw_results_en.html"><b>WPW</b><span>Recurrence by accessory pathway location and period, radiofrequency vs. cryoablation, and asymptomatic WPW. 702 procedures, success rate 98.6%</span><em>WPW results</em></a>
+            <a class="ca-sub" href="avnrt_results_en.html"><b>AVNRT</b><span>Atrioventricular nodal reentrant tachycardia: common vs. other types, radiofrequency vs. cryoablation. 332 procedures</span><em>AVNRT results</em></a>
+            <a class="ca-sub" href="pvc_results_en.html"><b>PVC/NSVT</b><span>Premature ventricular contractions and non-sustained VT: results by site (RVOT, RV inflow and others). 265 procedures</span><em>PVC/NSVT results</em></a>
           </div>
           <p class="doc-note">Methods: from our department's ablation database, we counted all 1,723 records (1,491 patients) in which radiofrequency or cryo energy was delivered for an arrhythmia between January 1, 2006 and September 26, 2026. Repeat procedures in the same patient were each counted as one procedure. Recurrence is the number recorded as recurrence in the database (the length of follow-up was not standardized).</p>
         </section>
@@ -349,7 +352,7 @@
     </main>
 
     <footer class="page-foot">
-      <div class="links"><a href="index_en.html">Top page</a><a href="papers_en.html">Papers</a><a href="ablation.html" hreflang="ja">日本語</a></div>
+      <div class="links"><a href="index_en.html">Top page</a><a href="wpw_results_en.html">WPW</a><a href="avnrt_results_en.html">AVNRT</a><a href="pvc_results_en.html">PVC/NSVT</a><a href="ablation.html" hreflang="ja">日本語</a></div>
       <p>Tsugutoshi Suzuki's website · since 1997</p>
       <img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
     </footer>

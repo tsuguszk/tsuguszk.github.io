@@ -1,4 +1,5 @@
-exec(open(__import__('pathlib').Path(__file__).resolve().parent.joinpath('ca_helpers.py')).read())
+_here = __import__('pathlib').Path(__file__).resolve().parent
+exec(open(_here / 'ca_helpers.py').read()); exec(open(_here / 'ca_helpers_en.py').read())
 # ======================================================================= ablation_en.html（アブレーションの仕事の英語版。数字は日本語版と同じ results_v2.json から）
 import math
 def ticks_for(mx, step):
@@ -46,13 +47,6 @@ def pie2_en(title, small, pct_, color, label_on, n_on, label_off, n_off):
             </figure>
 '''
 
-TOPCLS = ' class="nav-top"'
-def nav_en():
-    items = [('index_en.html', 'Top'), ('media_en.html', '<span class="long">Press &amp; TV</span><span class="short">Press</span>'),
-             ('society_en.html', '<span class="long">Societies &amp; Talks</span><span class="short">Talks</span>'), ('papers_en.html', 'Papers'),
-             ('ablation_en.html', '<span class="long">Catheter Ablation</span><span class="short">Ablation</span>')]
-    out = '\n'.join(f'          <a href="{h}"{CUR if h == "ablation_en.html" else ""}{TOPCLS if h == "index_en.html" else ""}>{t}</a>' for h, t in items)
-    return out + '\n          <a href="ablation.html" hreflang="ja" lang="ja">日本語</a>'
 
 html = f'''<!DOCTYPE html>
 <html lang="en">
@@ -69,15 +63,7 @@ html = f'''<!DOCTYPE html>
   <link rel="stylesheet" href="assets/tsugu.css?v={V_T}">
   <script>document.documentElement.classList.add('nx-js');</script>
   <link rel="stylesheet" href="assets/ca.css?v={V_CA}">
-  <style>
-    /* 英語版：スマホではメニューの「Top」を隠し（ロゴでトップへ戻れる）、入りきらないときは横にスクロールさせる */
-    @media (max-width: 599px) {{
-      .nx .localnav nav {{ min-width: 0; overflow-x: auto; scrollbar-width: none; }}
-      .nx .localnav nav a {{ padding: 5px 7px; }}
-      .nx .localnav nav a.nav-top {{ display: none; }}
-    }}
-  </style>
-  <!-- Google tag (gtag.js) -->
+{EN_STYLE}  <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -90,15 +76,7 @@ html = f'''<!DOCTYPE html>
 <body class="nx-body">
   <div class="nx">
 
-    <header class="localnav">
-      <div class="in">
-        <a class="logo" href="index_en.html" aria-label="To the top page"><img src="for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
-        <nav aria-label="Site">
-{nav_en()}
-        </nav>
-      </div>
-    </header>
-
+{nav_en('ablation_en.html', 'ablation.html')}
     <main>
       <div class="page-hero ca-hero ca-hero--photo">
         <figure class="ca-hero-photo"><span class="shot-img"><img src="assets/media/ablation-room.webp?v=4" width="1540" height="1021" alt="Catheter ablation in the catheterization laboratory"></span></figure>
@@ -107,7 +85,7 @@ html = f'''<!DOCTYPE html>
         <h1><span class="nw">Catheter Ablation</span><span class="h1-sub">All procedures, 2006–2026</span></h1>
         <p class="sec-lede">Data from all <b>{f(O['n'])} catheter ablation procedures ({f(O['patients'])} patients)</b> performed in our department from my arrival at Osaka City General Hospital in 2006 to {LAST}: age and body weight at treatment, success and recurrence rates, and outcomes by arrhythmia.</p>
         <nav class="jump" aria-label="On this page">
-          <a href="#summary">Summary</a><a href="#outcome">Success and recurrence</a><a href="#age">Age</a><a href="#weight">Weight</a><a href="#period">By period</a><a href="#kinds">By arrhythmia</a><a href="#detail">Detailed results</a>
+          <a href="#summary">Summary</a><a href="#outcome">Success and recurrence</a><a href="#age">Age</a><a href="#weight">Weight</a><a href="#period">By period</a><a href="#kinds">By arrhythmia</a><a href="#detail">Detailed results</a><a class="jump-go" href="wpw_results_en.html">WPW</a><a class="jump-go" href="avnrt_results_en.html">AVNRT</a><a class="jump-go" href="pvc_results_en.html">PVC/NSVT</a>
         </nav>
         </div>
       </div>
@@ -167,12 +145,12 @@ html = f'''<!DOCTYPE html>
         </section>
 
         <section class="doc-card glass" id="detail" data-reveal>
-          <h2>Detailed results (in Japanese)</h2>
-          <p>The three most common arrhythmias are described in detail on separate pages, currently available in Japanese only.</p>
+          <h2>Detailed results</h2>
+          <p>The three most common arrhythmias are described in detail on separate pages.</p>
           <div class="ca-subs">
-            <a class="ca-sub" href="wpw_results.html" hreflang="ja"><b>WPW</b><span>Recurrence by accessory pathway location and period, radiofrequency vs. cryoablation, and asymptomatic WPW. {f(W['n'])} procedures, success rate {W['success_pct']}%</span><em>WPW results</em></a>
-            <a class="ca-sub" href="avnrt_results.html" hreflang="ja"><b>AVNRT</b><span>Atrioventricular nodal reentrant tachycardia: common vs. other types, radiofrequency vs. cryoablation. {f(R['avnrt']['n'])} procedures</span><em>AVNRT results</em></a>
-            <a class="ca-sub" href="pvc_results.html" hreflang="ja"><b>PVC/NSVT</b><span>Premature ventricular contractions and non-sustained VT: results by site (RVOT, RV inflow and others). {f(R['pvc']['n'])} procedures</span><em>PVC/NSVT results</em></a>
+            <a class="ca-sub" href="wpw_results_en.html"><b>WPW</b><span>Recurrence by accessory pathway location and period, radiofrequency vs. cryoablation, and asymptomatic WPW. {f(W['n'])} procedures, success rate {W['success_pct']}%</span><em>WPW results</em></a>
+            <a class="ca-sub" href="avnrt_results_en.html"><b>AVNRT</b><span>Atrioventricular nodal reentrant tachycardia: common vs. other types, radiofrequency vs. cryoablation. {f(R['avnrt']['n'])} procedures</span><em>AVNRT results</em></a>
+            <a class="ca-sub" href="pvc_results_en.html"><b>PVC/NSVT</b><span>Premature ventricular contractions and non-sustained VT: results by site (RVOT, RV inflow and others). {f(R['pvc']['n'])} procedures</span><em>PVC/NSVT results</em></a>
           </div>
           <p class="doc-note">Methods: from our department's ablation database, we counted all {f(O['n'])} records ({f(O['patients'])} patients) in which radiofrequency or cryo energy was delivered for an arrhythmia between January 1, 2006 and September 26, 2026. Repeat procedures in the same patient were each counted as one procedure. Recurrence is the number recorded as recurrence in the database (the length of follow-up was not standardized).</p>
         </section>
@@ -188,7 +166,7 @@ html = f'''<!DOCTYPE html>
     </main>
 
     <footer class="page-foot">
-      <div class="links"><a href="index_en.html">Top page</a><a href="papers_en.html">Papers</a><a href="ablation.html" hreflang="ja">日本語</a></div>
+      <div class="links"><a href="index_en.html">Top page</a><a href="wpw_results_en.html">WPW</a><a href="avnrt_results_en.html">AVNRT</a><a href="pvc_results_en.html">PVC/NSVT</a><a href="ablation.html" hreflang="ja">日本語</a></div>
       <p>Tsugutoshi Suzuki's website · since 1997</p>
       <img src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
     </footer>

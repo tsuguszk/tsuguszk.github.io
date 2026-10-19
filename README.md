@@ -106,7 +106,7 @@ python3 -m http.server 8000
 | `_ca_stats/ca_helpers.py` | 共通部品（グラフ・表・円グラフ）。CSS・JS の版番号も自動で決める |
 | `_ca_stats/build_ablation.py` ほか3つ | 4ページそれぞれの文章と構成 |
 | `_ca_stats/build_hospital.py` | 病院サイト用のデータセット → `_hospital/病院サイト用_アブレーション治療の成績/` と `.zip` |
-| `_ca_stats/build_ablation_en.py` | `ablation.html` の英語版 `ablation_en.html` |
+| `_ca_stats/build_*_en.py`・`ca_helpers_en.py` | 4ページの英語版（`ablation_en.html`・`wpw_results_en.html`・`avnrt_results_en.html`・`pvc_results_en.html`）とその共通部品 |
 | `_ca_stats/build_trainees.py` | 研修された先生方のページ `trainees.html` |
 | `_ca_stats/build_all.py` | 上をまとめて実行 |
 | `_ca_stats/mac_update_data.sh` | 年1回のデータ更新（Mac 専用） |
