@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="Tsugutoshi Suzuki,pediatric arrhythmia,pediatric electrophysiology,catheter ablation,WPW syndrome,Osaka City General Hospital">
+  <meta name="description" content="Website of Tsugutoshi Suzuki, MD, PhD, a pediatric electrophysiologist at Osaka City General Hospital, Japan. Catheter ablation outcomes, papers, lectures, press coverage, and web apps for QTc and PVC analysis.">
+  <link rel="alternate" hreflang="ja" href="https://www.tsugutoshi.com/">
+  <link rel="alternate" hreflang="en" href="https://www.tsugutoshi.com/index_en.html">
+  <title>Tsugutoshi Suzuki, MD, PhD | Pediatric Electrophysiology</title>
+  <link rel="shortcut icon" href="assets/icons/profile.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/profile-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/profile-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/profile-180.png">
+  <link rel="manifest" href="assets/icons/profile-index.webmanifest">
+  <meta name="theme-color" content="#222222">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tsugu HP">
+  <link rel="stylesheet" href="assets/site.css">
+  <link rel="stylesheet" href="assets/tsugu.css?v=20261005f">
+  <script>document.documentElement.classList.add('nx-js');</script>
+  <style>
+    body {
+      background-image: url("for_top_page/gif/back.gif");
+      text-align: center;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 4px;
+    }
+
+    .title-image {
+      display: block;
+      margin: 0 auto;
+      max-width: 273px;
+    }
+
+    .updated {
+      color: #990000;
+      font-weight: bold;
+      margin: 10px 0 0;
+    }
+
+    /* 日本語版・英語版の切り替え */
+    .lang-switch { margin: 6px 0 0; font-size: .9em; }
+    .lang-switch a { display: inline-block; padding: 2px 12px; border: 1px solid #2f7d4f; border-radius: 999px; background: rgba(255, 255, 255, .7); color: #1d5e37; text-decoration: none; }
+    .lang-switch a:hover { background: #fff; }
+    .note-ja { font-size: .85em; color: #555; }
+
+    .since {
+      color: #999900;
+      font-weight: bold;
+      font-size: 0.85em;
+      margin: 2px 0 16px;
+    }
+
+    /* --- 検索フォーム --- */
+    .searchbox {
+      margin: 12px 0;
+    }
+
+    .searchbox input[type="text"],
+    .searchbox input[type="search"] {
+      max-width: 100%;
+      width: 22em;
+    }
+
+    .pubmed-hint {
+      color: #666666;
+      font-size: 0.8em;
+      line-height: 1.6;
+      max-width: 60em;
+      margin: 4px auto 20px;
+    }
+
+    .dim {
+      color: #999999;
+    }
+
+    /* --- リンク行 --- */
+    .linkrow {
+      margin: 8px 0;
+      line-height: 2.2;
+    }
+
+    .linkrow a {
+      margin: 0 0.5em;
+      white-space: nowrap;
+    }
+
+    .note {
+      color: #ff0000;
+      font-size: 0.75em;
+      white-space: nowrap;
+    }
+
+    .for-dr {
+      color: #ff0000;
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+
+    .rule {
+      display: block;
+      width: 640px;
+      max-width: 100%;
+      margin: 28px auto;
+    }
+
+    /* --- リンク集へのボタンと、ページ下部のリンク集 --- */
+    .linkset-btn {
+      display: inline-block; margin: 0 0.5em; padding: 2px 12px; border: 1px solid #2f7d4f; border-radius: 999px;
+      background: rgba(255, 255, 255, .7); color: #1d5e37; font-size: 0.9em; text-decoration: none;
+    }
+    .linkset-btn:hover { background: #fff; }
+    .linkset { margin: 18px auto 10px; scroll-margin-top: 20px; }
+    .linkset-title { margin: 0 0 4px; font-weight: 700; }
+    .linkset-title .linkset-btn { font-weight: 400; }
+
+    /* ページ下部のフクロウの横棒（.nx の中では画像の余白が消されるため、外側の箱で中央に置く） */
+    .foot-rule { margin: 26px auto; text-align: center; }
+    .nw { white-space: nowrap; }  /* 見出しを語の途中で折り返さない */
+    .foot-rule img { display: inline-block; width: 640px; max-width: 100%; }
+
+    /* --- 3列の検索パネル --- */
+    .search-panels {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 240px));  /* 以前の幅（1列360px）の2/3 */
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .search-panels section {
+      border: 1px solid #99ffcc;
+      padding: 8px 10px;
+      font-size: 0.85em;
+      box-sizing: border-box;
+    }
+
+    .search-panels form {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0 0;
+    }
+
+    .search-panels form input[type="search"],
+    .search-panels form input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      box-sizing: border-box;
+    }
+
+    .search-panels form input[type="submit"] {
+      flex: none;
+      padding: 2px 8px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .searchbox input[type="text"],
+      .searchbox input[type="search"] {
+        width: 100%;
+        max-width: min(260px, calc(100vw - 14em));  /* スマホでも「Search PubMed:」「Go」と1行に収まる幅 */
+      }
+
+      .search-panels {
+        grid-template-columns: minmax(0, 240px);
+      }
+
+      .search-panels form input[type="search"] {
+        max-width: none;
+      }
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header>
+      <img src="for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's homepage" class="title-image">
+      <p class="lang-switch"><a href="index.html" hreflang="ja" lang="ja">日本語</a></p>
+      <p class="updated">Updated 2026.10.19</p>
+      <p class="since">Since 1997.1.1</p>
+    </header>
+
+    <!-- PubMed / Google の検索 -->
+    <div class="search-panels" style="grid-template-columns: repeat(2, minmax(0, 240px))">
+      <section>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/">PubMed</a>
+        <form action="https://pubmed.ncbi.nlm.nih.gov/" method="get" target="_blank">
+          <input name="term" type="search" placeholder="Search">
+          <input type="submit" value="Go">
+        </form>
+      </section>
+      <section>
+        <a target="_blank" href="https://www.google.com/">Google</a>
+        <form action="https://www.google.com/search" method="get">
+          <input type="search" name="q" maxlength="255" placeholder="Search">
+          <input type="hidden" name="hl" value="en">
+          <input type="submit" name="btnG" value="Go">
+        </form>
+      </section>
+    </div>
+
+    <nav style="margin-top:22px">
+      <p class="linkrow">
+        <a href="qtc/index_qtc.html">QTc analysis app</a><span class="note">updated 2026.9.8</span>
+        <a href="index_fvp.html">FVP vs. WPW</a><span class="note">updated 2026.10.5</span>
+        <a href="pvc.html">PVC analysis app</a><span class="note">updated 2026.10.6</span>
+      </p>
+      <p class="note-ja">Most linked pages are written in Japanese.</p>
+    </nav>
+
+    <div class="nx home">
+
+      <!-- 活動の記録 -->
+      <section class="sec" style="margin-top:0" aria-labelledby="explore-title">
+        <div class="sec-head sec-head--wide" data-reveal>
+          <p class="eyebrow">Explore</p>
+          <h2 class="sec-title" id="explore-title">Tsugutoshi Suzuki, MD, PhD<br>Pediatric Electrophysiologist</h2>
+          <p class="sec-lede">I am a pediatrician specializing in arrhythmias in children at Osaka City General Hospital in Osaka, Japan.<br>This site collects my press coverage, academic activities, papers and other writing, and catheter ablation work.</p>
+        </div>
+        <div class="tiles">
+          <a class="tile tile--press glass" href="media.html" data-reveal>
+            <p class="eyebrow">Press &amp; TV</p>
+            <h3>Press &amp; TV</h3>
+            <p>Articles in the Yomiuri Shimbun (2014, 2016, 2020) and news coverage of a 2010 press conference. The articles can be enlarged to read.</p>
+            <span class="more">See the articles</span>
+            <div class="fan" aria-hidden="true">
+              <img src="assets/media/yomiuri-2016-1-thumb.webp" width="520" height="596" alt="" loading="lazy">
+              <img src="assets/media/yomiuri-2014-article-thumb.webp" width="520" height="875" alt="" loading="lazy">
+              <img src="assets/media/yomiuri-2020-article-thumb.webp" width="520" height="391" alt="" loading="lazy">
+            </div>
+          </a>
+          <div class="tile tile--society glass" data-reveal="2">
+            <a class="tile-link" href="society.html">
+              <p class="eyebrow">Academic</p>
+              <h3>Societies &amp; Talks</h3>
+              <p>Work for the Japanese Society of Pediatric Electrocardiology and a record of lectures and seminars since 2012.</p>
+            </a>
+            <ul class="facts">
+              <li><a href="society.html#greeting"><b>2025</b><span>Representative Director, Japanese Society of Pediatric Electrocardiology</span></a></li>
+              <li><a href="society.html#chair"><b>26th</b><span>President of the 26th Annual Meeting <span class="nowrap">(2022)</span></span></a></li>
+              <li><a href="society.html#lectures"><b>60+</b><span>Lectures and seminars since 2012</span></a></li>
+            </ul>
+            <a class="more" href="society.html">See the activities</a>
+            <div class="fan fan--one" aria-hidden="true">
+              <img src="assets/media/jspec2022-chair-thumb.webp" width="480" height="668" alt="" loading="lazy">
+            </div>
+          </div>
+          <div class="tile tile--writing glass" data-reveal="3">
+            <a class="tile-link" href="writing.html">
+              <p class="eyebrow">Papers &amp; Writing</p>
+              <h3>Papers &amp; Writing</h3>
+              <p>Papers in journals such as Heart Rhythm, and chapters in textbooks and medical journals.</p>
+            </a>
+            <ul class="facts">
+              <li><a href="papers.html#p2020-hr"><b>1,021</b><span>Pediatric ablation procedures reviewed <span class="nowrap">(2020)</span></span></a></li>
+              <li><a href="papers.html"><b>11</b><span>Selected papers <span class="nowrap">(7 as first or sole author)</span></span></a></li>
+              <li><a href="manuscripts.html"><b>12</b><span>Textbook chapters and articles</span></a></li>
+            </ul>
+            <p class="tile-links"><a href="writing.html">Overview</a><a href="papers.html">Papers</a><a href="manuscripts.html">Writing</a></p>
+            <div class="fan" aria-hidden="true">
+              <img src="assets/media/papers/2014-hr-fvp.webp" width="640" height="860" alt="" loading="lazy">
+              <img src="assets/media/papers/2023-jspccs-crt.webp" width="640" height="841" alt="" loading="lazy">
+              <img src="assets/media/papers/2020-hr-1021.webp" width="640" height="860" alt="" loading="lazy">
+            </div>
+          </div>
+          <div class="tile tile--ablation glass" data-reveal="2">
+            <div class="abl-text">
+              <a class="tile-link" href="ablation.html">
+                <p class="eyebrow">Catheter Ablation</p>
+                <h3>Catheter Ablation</h3>
+                <p>Data from all catheter ablation procedures performed in our department since 2006: age and body weight, success and recurrence rates, and outcomes by arrhythmia type.</p>
+              </a>
+              <ul class="facts">
+                <li><a href="ablation.html#summary"><b>1,720</b><span>Procedures, 2006–2026 <span class="nowrap">(1,488 patients)</span></span></a></li>
+                <li><a href="ablation.html#outcome"><b>93.0%</b><span>Success rate <span class="nowrap">(recurrence 12.8%)</span></span></a></li>
+              </ul>
+              <p class="tile-links"><a href="ablation.html">All data</a><a href="wpw_results.html">WPW</a><a href="avnrt_results.html">AVNRT</a><a href="pvc_results.html">PVC/NSVT</a></p>
+            </div>
+            <a class="abl-photo" href="ablation.html" tabindex="-1" aria-hidden="true"><img src="assets/media/ablation-room.webp?v=4" width="1540" height="1021" alt="" loading="lazy"></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 資料・アプリ -->
+      <section class="sec" id="resources" aria-labelledby="resources-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Resources</p>
+          <h2 class="sec-title" id="resources-title">Resources &amp; Apps</h2>
+          <p class="sec-lede">Materials and web apps for patients, families, and medical professionals (mostly in Japanese).</p>
+        </div>
+        <ul class="res-grid">
+          <li data-reveal><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Catheter ablation and electrophysiology study (PDF)</h3>
+            <p>An explanation of the procedures for patients and families.</p>
+            <div class="foot"><a class="more" href="page_rfca/rfca_manual.html">Open</a><span class="date-note">updated 2021.1.6</span></div>
+          </div></li>
+          <li data-reveal="2"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Arrhythmia animations</h3>
+            <p>Animations showing how arrhythmias work.</p>
+            <div class="foot"><a class="more" href="page/flash/flash.html">Watch</a><span class="date-note">updated 2015.1.18</span></div>
+          </div></li>
+          <li data-reveal="3"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>ECG electrode placement</h3>
+            <p>Where to place the electrodes (PDF).</p>
+            <div class="foot"><a class="more" href="page/ECG.pdf">Open the PDF</a></div>
+          </div></li>
+          <li data-reveal><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Differentiating FVP from WPW</h3>
+            <p>Materials for differentiating fasciculoventricular pathways from WPW syndrome, including slides.</p>
+            <div class="foot"><a class="more" href="index_fvp.html">Open</a><span class="date-note">updated 2026.10.5</span></div>
+          </div></li>
+          <li data-reveal="2"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>QTc analysis app</h3>
+            <p>A web app for measuring QTc from an ECG.</p>
+            <div class="foot"><a class="more" href="qtc/index_qtc.html">About the app</a><span class="date-note">updated 2026.9.8</span></div>
+          </div></li>
+          <li data-reveal="3"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>PVC induction by atrial pacing</h3>
+            <p>A web app for judging whether atrial pacing induces PVCs.</p>
+            <div class="foot"><a class="more" href="pvc.html">Open the app</a><span class="date-note">updated 2026.10.6</span></div>
+          </div></li>
+          <li data-reveal><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Angiography image composer</h3>
+            <p>An HTML and Mac app that combines RAO and LAO fluoroscopy images of catheter positions. The HTML version also works on Windows.</p>
+            <div class="foot"><a class="more" href="angio/index_angio.html">Details and download</a><span class="date-note">updated 2026.10.8</span></div>
+          </div></li>
+          <li data-reveal="2"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Admission and accommodation</h3>
+            <p>Information on admission to Osaka City General Hospital and nearby accommodation for families.</p>
+            <div class="foot"><a class="more" href="page_rfca/rfca_admission.html">Open</a><span class="date-note">updated 2021.1.6</span></div>
+          </div></li>
+          <li data-reveal="3"><div class="res glass">
+            <img class="pin" src="for_top_page/gif/pin02.gif" width="25" height="25" alt="">
+            <h3>Publications</h3>
+            <p>My papers on PubMed and citations on Google Scholar.</p>
+            <div class="foot"><a class="more" href="https://www.ncbi.nlm.nih.gov/pubmed/?term=tsugutoshi+suzuki+[fau]">PubMed</a><a class="more" href="https://scholar.google.com/citations?hl=en&amp;user=wbILea0AAAAJ">Google Scholar</a></div>
+          </div></li>
+        </ul>
+      </section>
+
+      <!-- これまでの歩み -->
+      <section class="sec" aria-labelledby="history-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Milestones</p>
+          <h2 class="sec-title sec-title--long" id="history-title">My career in<br>pediatric arrhythmia and<br>catheter ablation</h2>
+        </div>
+        <ol class="timeline">
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb t-thumb--natural"><img src="assets/media/jspec-representative-2025.webp" width="339" height="446" alt="Tsugutoshi Suzuki" loading="lazy"></figure><div class="t-body">
+            <span class="chip society">Society</span><time datetime="2025-04-01">April 1, 2025</time>
+            <h3>Appointed Representative Director of the Japanese Society of Pediatric Electrocardiology</h3>
+            <p class="links"><a href="society.html#greeting">Greeting (Japanese)</a><a href="https://jspec.jp">Society website</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/jspec2022.webp" width="240" height="240" alt="Opening address at the 26th Annual Meeting" loading="lazy"></figure><div class="t-body">
+            <span class="chip society">Society</span><time datetime="2022-11-11">November 11–12, 2022</time>
+            <h3>Hosted the 26th Annual Meeting of the Japanese Society of Pediatric Electrocardiology as President</h3>
+            <p>Held at Osaka City Central Public Hall.</p>
+            <p class="links"><a href="https://e-stepinc.com/shinden26/index.html">Meeting website</a><a href="pdf_download/shinden26_poster.pdf">Poster (PDF)</a><a href="https://youtu.be/ShHFJinMWUU">Video</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/yomiuri2020.webp" width="240" height="240" alt="Yomiuri Shimbun article, 2020" loading="lazy"></figure><div class="t-body">
+            <span class="chip press">Press</span><time datetime="2020-12-25">December 25, 2020</time>
+            <h3>Article in the Yomiuri Shimbun (Kansai, Chugoku and Shikoku editions)</h3>
+            <p class="links"><a href="media.html#y2020">Read the article</a><a href="for_top_page/20201225yomiuri-2.pdf">Newspaper page (PDF)</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass">
+            <span class="chip research">Research</span><time datetime="2020-01">January 2020</time>
+            <h3>Review of 1,000 ablation procedures published in Heart Rhythm</h3>
+            <p>To mark more than 1,000 ablation procedures in the 12 years since I moved to Osaka in 2006, our senior resident Dr. Yuko Kato summarized our experience in a paper published in Heart Rhythm, the journal of the Heart Rhythm Society.</p>
+            <a class="paper" href="index_kato_paper.html"><img src="kato_paper/kato_paper.jpg" width="500" height="146" alt="The paper published in Heart Rhythm" loading="lazy"></a>
+          </div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/rhythmia.webp" width="240" height="240" alt="Rhythmia mapping catheter" loading="lazy"></figure><div class="t-body">
+            <span class="chip clinic">Clinical</span><time datetime="2019-04">April 2019</time>
+            <h3>Introduced the Rhythmia 3D mapping system</h3>
+            <p>A new 3D mapping system for ablation that allows even more precise treatment.</p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/yomiuri2016.webp" width="240" height="240" alt="Yomiuri Shimbun article, 2016" loading="lazy"></figure><div class="t-body">
+            <span class="chip press">Press</span><time datetime="2016-05-15">May 15, 2016</time>
+            <h3>Article in the Yomiuri Shimbun (Kansai, Chugoku and Shikoku editions)</h3>
+            <p class="links"><a href="media.html#y2016">Read the article</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/univu.webp" width="240" height="240" alt="CARTO UNIVU screen" loading="lazy"></figure><div class="t-body">
+            <span class="chip clinic">Clinical</span><time datetime="2015-10">October 2015</time>
+            <h3>First in western Japan to introduce the CARTO UNIVU system</h3>
+            <p>Radiation exposure during catheter treatment of arrhythmias in children was dramatically reduced.</p>
+            <p class="links"><a href="pdf_download/univu.pdf">Reduced radiation exposure with UNIVU (Japanese)</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><div class="t-thumbs"><figure class="t-thumb"><img src="assets/media/tl/degree2014-sq1.webp" width="240" height="240" alt="Receiving the doctoral degree" loading="lazy"></figure><figure class="t-thumb"><img src="assets/media/tl/degree2014-sq2.webp" width="240" height="240" alt="My parents looking at the diploma" loading="lazy"></figure></div><div class="t-body">
+            <span class="chip research">Research</span><time datetime="2014">2014</time>
+            <h3>PhD for the paper on differentiating fasciculoventricular pathways</h3>
+            <p>I received my PhD for one of my three papers, on the differential diagnosis of fasciculoventricular pathways. I was very happy that my family and my parents were so pleased.</p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/yomiuri2014.webp" width="240" height="240" alt="Yomiuri Shimbun article, 2014" loading="lazy"></figure><div class="t-body">
+            <span class="chip press">Press</span><time datetime="2014-04-20">April 20, 2014</time>
+            <h3>Our Department of Pediatric Electrophysiology featured in the Yomiuri Shimbun</h3>
+            <p class="links"><a href="media.html#y2014">Read the article</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass">
+            <span class="chip research">Research</span><time datetime="2013">2013</time>
+            <h3>Two papers accepted in Heart Rhythm and one in Circulation Journal</h3>
+            <p>A rewarding year in which three English papers were accepted.</p>
+            <p class="t-papers"><a href="papers.html#p2014-ilvt"><img src="assets/media/tl/paper2013-ilvt.webp" width="200" height="270" alt="First page of the 2014 Heart Rhythm paper" loading="lazy"></a><a href="papers.html#p2014-circj"><img src="assets/media/tl/paper2013-circj.webp" width="200" height="267" alt="First page of the 2014 Circulation Journal paper" loading="lazy"></a><a href="papers.html#p2014-fvp"><img src="assets/media/tl/paper2013-fvp.webp" width="200" height="269" alt="First page of the 2014 Heart Rhythm paper" loading="lazy"></a></p>
+          </div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/room5.webp" width="240" height="240" alt="The catheterization laboratory dedicated to ablation" loading="lazy"></figure><div class="t-body">
+            <span class="chip clinic">Clinical</span><time datetime="2012-04">April 2012</time>
+            <h3>A catheterization laboratory dedicated to ablation was completed</h3>
+            <p class="links"><a href="page_rfca/rfca_room_5.html">About "Cath Lab No. 5" (Japanese)</a><a href="page_rfca/rfca_room_5_2.html">How it was built (Japanese)</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/jet2010.webp" width="240" height="240" alt="From the TV news" loading="lazy"></figure><div class="t-body">
+            <span class="chip press">Press</span><time datetime="2010-12-18">December 18, 2010</time>
+            <h3>Press conference on ablation for congenital junctional ectopic tachycardia in an infant</h3>
+            <p>It was reported by many news outlets.</p>
+            <p class="links"><a href="media.html#y2010">Articles</a><a href="media.html#tv">TV news</a></p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><div class="t-thumbs"><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/dept2009-1.webp" width="199" height="300" alt="Catheter treatment in the Department of Pediatric Electrophysiology" loading="lazy"></figure><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/dept2009-2.webp" width="240" height="159" alt="Monitors in the catheterization laboratory" loading="lazy"></figure></div><div class="t-body">
+            <span class="chip clinic">Clinical</span><time datetime="2009-07">July 2009</time>
+            <h3>Japan's first Department of Pediatric Electrophysiology was founded</h3>
+            <p>Founded with Dr. Yoshihide Nakamura, who joined us from Japanese Red Cross Wakayama Medical Center.</p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><figure class="t-thumb"><img src="assets/media/tl/twmu.webp" width="240" height="240" alt="Tokyo Women's Medical University" loading="lazy"></figure><div class="t-body">
+            <span class="chip">Career</span><time datetime="2006-04">April 2006</time>
+            <h3>Moved from Tokyo Women's Medical University to Osaka City General Hospital</h3>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><div class="t-thumbs"><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/oklahoma2003-1.webp" width="240" height="180" alt="The control room of the catheterization laboratory" loading="lazy"></figure><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/oklahoma2003-2.webp" width="240" height="180" alt="Holding the certificate of the training" loading="lazy"></figure></div><div class="t-body">
+            <span class="chip">Career</span><time datetime="2003-11">November 2003</time>
+            <h3>Short-term training at the University of Oklahoma, USA</h3>
+            <p>I experienced the latest in ablation. Only ten days, but a precious experience, including the people I met.</p>
+          </div></div></li>
+          <li data-reveal><div class="t-card glass has-thumb"><div class="t-thumbs"><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/nisseki2003-1.webp" width="240" height="180" alt="Japanese Red Cross Wakayama Medical Center" loading="lazy"></figure><figure class="t-thumb t-thumb--natural"><img src="assets/media/tl/nisseki2003-2.webp" width="180" height="240" alt="Walking in Wakayama" loading="lazy"></figure></div><div class="t-body">
+            <span class="chip">Career</span><time datetime="2003-05">May 2003</time>
+            <h3>Entered the world of pediatric ablation at Japanese Red Cross Wakayama Medical Center</h3>
+            <p>In my eleventh year as a pediatrician, a major turning point in my life.</p>
+          </div></div></li>
+        </ol>
+      </section>
+
+      <!-- 病院 -->
+      <section class="sec" aria-labelledby="hospital-title">
+        <div class="hospital glass" data-reveal>
+          <figure>
+            <a href="https://www.osakacity-hp.or.jp/ocgh/"><img src="for_top_page/OCGH_pict.jpg" width="506" height="333" alt="Osaka City General Hospital" loading="lazy"></a>
+          </figure>
+          <div class="body">
+            <p class="eyebrow">Hospital</p>
+            <h3 id="hospital-title">Osaka City General Hospital</h3>
+            <p>Pediatric Cardiology and Arrhythmia</p>
+            <ul class="link-list">
+              <li><a href="https://www.osakacity-hp.or.jp/ocgh/dep/child/jj_n/index.html">Department page on the hospital website (Japanese)</a></li>
+              <li><a href="page_rfca/rfca_admission.html">Admission and accommodation (Japanese)</a></li>
+              <li><a href="page_rfca/rfca_room_5.html">"Cath Lab No. 5" (Japanese)</a><small>The catheterization laboratory dedicated to ablation</small></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 個人的なこと -->
+      <section class="sec" aria-labelledby="personal-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Personal</p>
+          <h2 class="sec-title" id="personal-title">A little personal</h2>
+        </div>
+        <div class="road" data-reveal>
+          <a href="index_road.html"><img src="for_top_page/road_pic/road.png" width="500" height="750" alt="My road bike (to the cycling page)" loading="lazy"></a>
+          <div class="ride glass">
+            <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="index_road.html">Cycling page</a></span>
+            <span><img src="for_top_page/gif/pin02.gif" width="25" height="25" alt=""> <a href="https://www.youtube.com/@tsugu_szk/videos">Cycling movies (YouTube)</a></span>
+          </div>
+        </div>
+        <div class="personal">
+          <div class="personal-col">
+            <figure class="photo glass rox-col" data-reveal>
+              <a href="rox.html"><img src="assets/media/rox/rox-choju-2026.webp" width="914" height="914" alt="Our dog Rox (to Rox's page)" loading="lazy"></a>
+              <figcaption><a href="rox.html">Our dog Rox</a><br>On September 26, 2026, Rox was honored for his longevity at age 17 at Osaka City Central Public Hall.</figcaption>
+            </figure>
+            <figure class="photo glass" data-reveal>
+              <img src="for_top_page/jpg/110-1098_IMG.JPG" width="283" height="208" alt="Outpatient clinic, Heart Center, Hyogo Prefectural Amagasaki Hospital" loading="lazy">
+              <figcaption>At the Heart Center outpatient clinic, Hyogo Prefectural Amagasaki Hospital (October 2001)</figcaption>
+            </figure>
+          </div>
+          <div class="personal-col">
+            <figure class="photo glass" data-reveal="2">
+              <img src="poem.png" width="496" height="321" alt="A poem written by my daughter" loading="lazy">
+              <figcaption>December 28, 2008. My daughter, then in second grade, wrote her first poem at school.<br>However many times I read it, it is a wonderful poem.<br>She is said to have inherited the talent from her mother <small>(a doting parent...)</small></figcaption>
+            </figure>
+            <div class="link-pair" data-reveal="2"><a class="photo glass link-box" href="album/index.html">Album</a><a class="photo glass link-box" href="private/index.html">Essays<small>Password required</small></a></div>
+          </div>
+          <figure class="photo glass" data-reveal="3">
+            <img src="for_top_page/jpg/IMG_8841.png" width="283" height="340" alt="A flag my daughter made at kindergarten" loading="lazy">
+            <figcaption>May 2004. A flag my daughter made at kindergarten on her fourth birthday.</figcaption>
+          </figure>
+        </div>
+
+      </section>
+
+      <footer class="foot-home">
+        <p class="lang-switch"><a href="index.html" hreflang="ja" lang="ja">日本語のトップページ</a>　<a href="#">Back to top</a></p>
+        <div class="foot-rule"><img src="for_top_page/gif/line2_r.gif" width="640" height="27" alt=""></div>
+        <p><span class="label">Web address: </span><a href="https://tsugutoshi.com">tsugutoshi.com</a></p>
+        <a class="bike" href="index_road.html"><img src="for_top_page/shougatsu/HITU_382.gif" width="170" height="142" alt="To the cycling page"></a>
+        <img class="mac" src="for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
+      </footer>
+    </div>
+
+  </div>
+
+  <script src="assets/tsugu.js?v=20260926f" defer></script>
+</body>
+
+</html>
