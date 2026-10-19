@@ -46,6 +46,13 @@
       margin: 10px 0 0;
     }
 
+    /* 更新日・開設日の2段と、その右の言語切り替えボタン（2段は今までどおりページの真ん中） */
+    .head-meta { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 14px; margin: 10px 0 16px; }
+    .head-meta .dates { grid-column: 2; }
+    .head-meta .dates .updated { margin: 0; }
+    .head-meta .dates .since { margin: 2px 0 0; }
+    .head-meta .linkset-btn { grid-column: 3; justify-self: start; margin: 0; }
+
     /* 日本語版・英語版の切り替え */
     .lang-switch { margin: 6px 0 0; font-size: .9em; }
     .lang-switch a { display: inline-block; padding: 2px 12px; border: 1px solid #2f7d4f; border-radius: 999px; background: rgba(255, 255, 255, .7); color: #1d5e37; text-decoration: none; }
@@ -195,8 +202,13 @@
 
     <header>
       <img src="for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's homepage" class="title-image">
-      <p class="updated">Updated 2026.10.19</p>
-      <p class="since">Since 1997.1.1</p>
+      <div class="head-meta">
+        <div class="dates">
+          <p class="updated">Updated 2026.10.19</p>
+          <p class="since">Since 1997.1.1</p>
+        </div>
+        <a class="linkset-btn" href="index.html" hreflang="ja" lang="ja">日本語</a>
+      </div>
     </header>
 
     <!-- PubMed / Google の検索 -->
@@ -223,7 +235,6 @@
         <a href="qtc/index_qtc_en.html">QTc analysis app</a><span class="note">updated 2026.9.8</span>
         <a href="index_fvp_en.html">FVP vs. WPW</a><span class="note">updated 2026.10.5</span>
         <a href="pvc.html">PVC analysis app</a><span class="note">updated 2026.10.6</span>
-        <a class="linkset-btn" href="index.html" hreflang="ja" lang="ja">日本語</a>
       </p>
       <p class="note-ja">Some linked pages are available in Japanese only.</p>
     </nav>

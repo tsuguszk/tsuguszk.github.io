@@ -46,6 +46,13 @@
       margin: 10px 0 0;
     }
 
+    /* 更新日・開設日の2段と、その右の言語切り替えボタン（2段は今までどおりページの真ん中） */
+    .head-meta { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; column-gap: 14px; margin: 10px 0 16px; }
+    .head-meta .dates { grid-column: 2; }
+    .head-meta .dates .updated { margin: 0; }
+    .head-meta .dates .since { margin: 2px 0 0; }
+    .head-meta .linkset-btn { grid-column: 3; justify-self: start; margin: 0; }
+
     /* 日本語版・英語版の切り替え */
     .lang-switch { margin: 6px 0 0; font-size: .9em; }
     .lang-switch a { display: inline-block; padding: 2px 12px; border: 1px solid #2f7d4f; border-radius: 999px; background: rgba(255, 255, 255, .7); color: #1d5e37; text-decoration: none; }
@@ -194,8 +201,13 @@
 
     <header>
       <img src="for_top_page/gif/title.gif" width="273" height="84" alt="つぐとしのweb site" class="title-image">
-      <p class="updated">2026.10.6 更新</p>
-      <p class="since">1997.1.1開設</p>
+      <div class="head-meta">
+        <div class="dates">
+          <p class="updated">2026.10.19 更新</p>
+          <p class="since">1997.1.1開設</p>
+        </div>
+        <a class="linkset-btn" href="index_en.html" hreflang="en" lang="en">English</a>
+      </div>
     </header>
 
     <!-- PubMed / Google / Amazon の検索 -->
@@ -240,7 +252,6 @@
         <a href="index_fvp.html">FVPとWPWの鑑別資料</a><span class="note">2026.10.5更新</span>
         <a href="pvc.html">PVC解析</a><span class="note">2026.10.6更新</span>
         <a class="linkset-btn" href="#linkset">リンク集</a>
-        <a class="linkset-btn" href="index_en.html" hreflang="en" lang="en">English</a>
       </p>
       <p class="linkrow">
         <a href="https://shinkansen1.jr-central.co.jp/RSV_P/west_index.htm">新幹線</a>/<a
