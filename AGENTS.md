@@ -9,5 +9,5 @@
 
 ## 英語版のページ
 
-- `index_en.html`・`media_en.html`・`society_en.html`・`papers_en.html`・`index_road_en.html`・`rox_en.html` は日本語版を英訳した手書きのページ。日本語版を直したときは英語版も同じように直す。
+- `index_en.html`・`media_en.html`・`society_en.html`・`papers_en.html`・`index_road_en.html`・`rox_en.html`、資料・アプリの `page_rfca/rfca_manual_en.html`・`page_rfca/rfca_admission_en.html`・`page/flash/flash*_en.html`・`index_fvp_en.html`・`qtc/index_qtc_en.html`・`angio/index_angio_en.html` は日本語版を英訳した手書きのページ（アプリ本体の qtc.html・pvc.html・angio_tool.html は日本語のまま）。日本語版を直したときは英語版も同じように直す。
 - `ablation_en.html` だけは `_ca_stats/build_ablation_en.py` で作る生成物（数字は日本語版と同じ集計値）。集計に新しい不整脈の名前が増えたら、スクリプトの `CAT_EN` に英語名を足す。

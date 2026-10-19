@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&display=swap">
-  <link rel="stylesheet" href="assets/tsugu.css?v=20261005f">
+  <link rel="stylesheet" href="assets/tsugu.css?v=20261019a">
   <link rel="stylesheet" href="assets/rox.css?v=20260929a">
   <script>document.documentElement.classList.add('nx-js');</script>
   <!-- Google tag (gtag.js) -->
@@ -24,6 +24,14 @@
     gtag('js', new Date());
     gtag('config', 'G-R0BG9XQGE4');
   </script>
+  <style>
+    /* 英語版：スマホではメニューの「Top」を隠し（ロゴでトップへ戻れる）、入りきらないときは横にスクロールさせる */
+    @media (max-width: 599px) {
+      .nx .localnav nav { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+      .nx .localnav nav a { padding: 5px 7px; }
+      .nx .localnav nav a.nav-top { display: none; }
+    }
+  </style>
 </head>
 
 <body class="nx-body">
@@ -33,7 +41,7 @@
       <div class="in">
         <a class="logo" href="index_en.html" aria-label="To the top page"><img src="for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
         <nav aria-label="Site">
-          <a href="index_en.html">Top</a>
+          <a href="index_en.html" class="nav-top">Top</a>
           <a href="rox_en.html" aria-current="page">Rox</a>
           <a href="rox.html" hreflang="ja" lang="ja">日本語</a>
         </nav>

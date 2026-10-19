@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="An HTML app that combines RAO and LAO fluoroscopy images of catheter positions into one picture just by dragging them in, and saves it as a PNG. A Mac app version is included.">
+  <meta name="keywords" content="angiography,fluoroscopy,RAO,LAO,catheter ablation,image composition,HTML app">
+  <title>Angiography image composer | Tsugutoshi Suzuki</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20261019a">
+  <style>
+    .nx .angio-shot .shot-img { max-width: 420px; }
+    .nx .angio-shot .shot-img img { width: 100%; height: auto; }
+    .nx .angio-dl { grid-template-columns: 1.3fr 1fr 1fr; }
+    .nx .angio-launch { max-width: 860px; margin: 0 auto; padding: 22px 26px; }
+    .nx .angio-launch ol { margin: 0; padding-left: 1.5em; color: var(--ink-2); }
+    .nx .angio-launch li + li { margin-top: 6px; }
+    .nx .angio-launch .qtc-point { margin: 16px 0 0; color: var(--ink-2); font-size: .95rem; }
+  </style>
+  <script>document.documentElement.classList.add('nx-js');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+  <style>
+    /* 英語版：スマホではメニューの「Top」を隠し（ロゴでトップへ戻れる）、入りきらないときは横にスクロールさせる */
+    @media (max-width: 599px) {
+      .nx .localnav nav { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+      .nx .localnav nav a { padding: 5px 7px; }
+      .nx .localnav nav a.nav-top { display: none; }
+    }
+  </style>
+</head>
+
+<body class="nx-body">
+  <div class="nx">
+
+    <header class="localnav">
+      <div class="in">
+        <a class="logo" href="../index_en.html" aria-label="To the top page"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
+        <nav aria-label="Site">
+          <a href="../index_en.html" class="nav-top">Top</a>
+          <a href="../index_en.html#resources"><span class="long">Resources &amp; Apps</span><span class="short">Resources</span></a>
+          <a href="index_angio_en.html" aria-current="page"><span class="long">Angio composer</span><span class="short">Angio</span></a>
+          <a href="index_angio.html" hreflang="ja" lang="ja">日本語</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- はじめに -->
+      <div class="qtc-hero">
+        <div class="qtc-hero-text">
+          <p class="eyebrow">Web App · Mac App</p>
+          <h1>Angiography image composer</h1>
+          <p class="qtc-lede">A tool that combines RAO and LAO fluoroscopy images of catheter positions into one picture. <b>Drag in the sample LAO and RAO images and the combined picture appears below</b>, ready to save. It is an HTML app, and a Mac app version is included. The interface is in Japanese.</p>
+          <!-- 更新日（リリースのたびに書き換える） -->
+          <p class="qtc-badge"><span>Latest version 3.6</span>2026.9.3 update</p>
+          <div class="qtc-cta">
+            <a class="btn" href="アンギオ透視画像合成ツール_v3.6.zip">Download the zip</a>
+            <a class="btn ghost" href="angio_tool.html">Try it in the browser</a>
+          </div>
+        </div>
+        <figure class="qtc-hero-shot angio-shot">
+          <button class="shot-img" type="button" data-lightbox aria-label="Enlarge the example screen"><img src="angio_screen.webp" width="1200" height="1600" alt="Screen of the angiography image composer. RAO and LAO images are loaded side by side at the top, each is cropped to a square, and the combined image appears below"></button>
+          <figcaption>Example screen (click to enlarge)</figcaption>
+        </figure>
+      </div>
+
+      <nav class="jump qtc-jump" aria-label="On this page">
+        <a href="#features">Features</a><a href="#download">Download</a><a href="#howto">How to use</a><a href="#mac">First launch on a Mac</a>
+      </nav>
+
+      <!-- できること -->
+      <section class="sec qtc-sec" id="features" aria-labelledby="features-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Features</p>
+          <h2 class="sec-title" id="features-title">Features</h2>
+        </div>
+        <ul class="qtc-features">
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="8" height="8" rx="1.5"/><rect x="13" y="5" width="8" height="8" rx="1.5"/><path d="M7 15v2h10v-2M12 17v3"/></svg></span>
+            <h3>Just drag to combine</h3>
+            <p>Drag and drop the RAO image (left) and the LAO image (right). Once both are loaded, the combined image is created automatically below.</p>
+          </li>
+          <li class="glass" data-reveal="2">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3v15h15"/><path d="M3 6h15v15"/></svg></span>
+            <h3>Square cropping</h3>
+            <p>Drag over an image to crop a square. Drag inside to move it and drag a corner to resize; the combined image updates immediately.</p>
+          </li>
+          <li class="glass" data-reveal="3">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg></span>
+            <h3>Save the crop settings</h3>
+            <p>Save Clipping Settings (クリッピング条件を保存) stores the size and position of both crops and the background color, so you can recall the same framing for the next case.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 17v3h16v-3"/></svg></span>
+            <h3>Save as PNG</h3>
+            <p>The combined image can be saved as a PNG. In Chrome, Edge and the app version you can choose where to save. You can also change the background color, canvas size and layout. The HTML version needs no installation.</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ダウンロード -->
+      <section class="sec qtc-sec" id="download" aria-labelledby="download-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Download</p>
+          <h2 class="sec-title" id="download-title">Download</h2>
+          <p class="sec-lede">The zip contains the HTML version, the Mac app version, sample images to try (RAO and LAO), and instructions for the first launch.</p>
+        </div>
+        <div class="qtc-dl angio-dl">
+          <article class="qtc-dl-card qtc-dl-card--main glass" data-reveal>
+            <p class="chip clinic">zip · recommended</p>
+            <h3>Angiography image composer</h3>
+            <p>Unzip it and open 「透視画像_合成ツール.html」 in a browser, or on a Mac launch 「透視画像_合成ツール.app」.</p>
+            <div class="qtc-dl-actions">
+              <!-- zipリンク（リリースのたびに書き換える） -->
+              <a class="btn" href="アンギオ透視画像合成ツール_v3.6.zip">zip file (ver. 3.6, 11 MB)</a>
+            </div>
+            <p class="date-note">Updated 2026.9.3</p>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="2">
+            <p class="chip">HTML version</p>
+            <h3>Use it in the browser</h3>
+            <p>It runs from a single HTML file with no installation, and also works on Windows. In Safari you cannot choose where to save; files go to Safari's download folder (Downloads by default). You can also try it right on this site.</p>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="angio_tool.html">Open in the browser</a></div>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="3">
+            <p class="chip research">Mac version</p>
+            <h3>Mac app</h3>
+            <p>For Apple silicon Macs (M1 or later), requires macOS 14 (Sonoma) or later. Because the app is not notarized by Apple, the first launch needs a few extra steps.</p>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="#mac">First-launch steps</a></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 使い方 -->
+      <section class="sec qtc-sec" id="howto" aria-labelledby="howto-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">How to use</p>
+          <h2 class="sec-title" id="howto-title">How to use</h2>
+        </div>
+        <ol class="qtc-steps">
+          <li class="glass" data-reveal>
+            <h3>Open the tool</h3>
+            <p>Unzip the file and open 「透視画像_合成ツール.html」 in a browser. On a Mac you can also use 「透視画像_合成ツール.app」.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Drag in the RAO and LAO images</h3>
+            <p>Drag and drop the RAO image into the left box and the LAO image into the right box (or load them with the file button). When both are loaded, the combined image appears below. Start by trying the sample RAO and LAO in the sample images folder in the zip.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Choose the crop</h3>
+            <p>Drag over an image to crop a square. Drag inside to move, drag a corner to resize, and click outside to clear the selection.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Save the settings</h3>
+            <p>Use Save Clipping Settings (クリッピング条件を保存) to the right of the result to store both crops and the background color. The button then turns into a green Recall (呼び出し) button that restores the framing.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Save as PNG</h3>
+            <p>Save with the button at the top right of the result. In the app version, and in the HTML version opened in a browser that lets you choose a location (such as Chrome or Edge), you can choose where to save. In Safari you cannot choose; the file goes to Safari's download folder (Downloads by default). You can change it in Safari Settings > General > File download location, and choosing "Ask for each download" lets you choose every time. The clear button removes both loaded images.</p>
+            <p class="qtc-point">Change the background color with the canvas background setting, and the canvas size and layout with the parameter settings at the bottom of the screen.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Mac版の初回起動 -->
+      <section class="sec qtc-sec" id="mac" aria-labelledby="mac-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Mac App</p>
+          <h2 class="sec-title" id="mac-title">First launch on a Mac</h2>
+          <p class="sec-lede">Because the app is not notarized by Apple, macOS shows a warning the first time you open it. Open it as follows.</p>
+        </div>
+        <div class="angio-launch glass" data-reveal>
+          <ol>
+            <li>Double-click the zip to unzip it and move 「透視画像_合成ツール.app」 to the Applications folder.</li>
+            <li>Double-click the app. If macOS says it could not verify that the app is free of malware, click Done.</li>
+            <li>Open Apple menu > System Settings > Privacy & Security and scroll down on the right.</li>
+            <li>Next to the message that the app was blocked, click Open Anyway and allow it with your login password or Touch ID.</li>
+            <li>Click Open in the confirmation. From then on you can launch it with a double-click as usual.</li>
+          </ol>
+          <p class="qtc-point">Open Anyway appears for only about an hour after you try to launch the app. If you can't find it, start again by double-clicking the app. The app does not run on Intel Macs; use the HTML version instead.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <div class="links"><a href="../index_en.html">Top page</a><a href="../index_en.html#resources">Resources &amp; Apps</a><a href="../index_en.html">tsugutoshi.com</a></div>
+      <p>Tsugutoshi Suzuki's website · since 1997</p>
+      <img src="../for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
+    </footer>
+  </div>
+
+  <dialog class="nx-lightbox" id="nx-lightbox" aria-label="Enlarged image">
+    <button type="button" class="lb-close" data-lb-close aria-label="Close">×</button>
+    <figure><img alt=""><figcaption></figcaption></figure>
+  </dialog>
+
+  <script src="../assets/tsugu.js?v=20260926f" defer></script>
+</body>
+</html>

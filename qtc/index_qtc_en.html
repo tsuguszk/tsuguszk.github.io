@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="A web app that measures the QT interval by the tangent method and calculates QTc just by pasting an ECG image. Works with 12-lead and Holter ECGs and on offline electronic medical record terminals.">
+  <meta name="keywords" content="QTc,QT interval,tangent method,ECG,Holter,pediatric arrhythmia,web app">
+  <title>QTc measurement app | Tsugutoshi Suzuki</title>
+  <link rel="shortcut icon" href="../assets/icons/qtc.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/qtc-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/qtc-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/qtc-180.png">
+  <link rel="manifest" href="../assets/icons/qtc-index.webmanifest">
+  <meta name="theme-color" content="#8bf5c5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="QTc app">
+  <link rel="stylesheet" href="../assets/tsugu.css?v=20261019a">
+  <script>document.documentElement.classList.add('nx-js');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R0BG9XQGE4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R0BG9XQGE4');
+  </script>
+  <style>
+    /* 英語版：スマホではメニューの「Top」を隠し（ロゴでトップへ戻れる）、入りきらないときは横にスクロールさせる */
+    @media (max-width: 599px) {
+      .nx .localnav nav { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+      .nx .localnav nav a { padding: 5px 7px; }
+      .nx .localnav nav a.nav-top { display: none; }
+    }
+  </style>
+</head>
+
+<body class="nx-body">
+  <div class="nx">
+
+    <header class="localnav">
+      <div class="in">
+        <a class="logo" href="../index_en.html" aria-label="To the top page"><img src="../for_top_page/gif/title.gif" width="273" height="84" alt="Tsugutoshi's HomePage"></a>
+        <nav aria-label="Site">
+          <a href="../index_en.html" class="nav-top">Top</a>
+          <a href="../index_en.html#resources"><span class="long">Resources &amp; Apps</span><span class="short">Resources</span></a>
+          <a href="index_qtc_en.html" aria-current="page"><span class="long">QTc measurement app</span><span class="short">QTc</span></a>
+          <a href="index_qtc.html" hreflang="ja" lang="ja">日本語</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- はじめに -->
+      <div class="qtc-hero">
+        <div class="qtc-hero-text">
+          <p class="eyebrow">Web app · tangent method</p>
+          <h1>QTc measurement app</h1>
+          <p class="qtc-lede">Just <b>paste an ECG image</b> and the app measures the QT interval by the tangent method and calculates QTc (Bazett and Fridericia). The results come out as text you can paste straight into an electronic medical record. The interface is in Japanese.</p>
+          <!-- 更新日（リリースのたびに書き換える） -->
+          <p class="qtc-badge"><span>Latest version 2.5</span>2026/9/8 update</p>
+          <div class="qtc-cta">
+            <a class="btn" href="qtc.html">Try it in the browser</a>
+            <a class="btn ghost" href="QTc_v2.5.zip">Download the zip</a>
+          </div>
+        </div>
+        <figure class="qtc-hero-shot">
+          <button class="shot-img" type="button" data-lightbox aria-label="Enlarge the example screen"><img src="qtc_sumple-1.png" width="1074" height="1007" alt="Screen of the QTc app. Markers for the R wave, QRS onset, tangent and T-wave end are shown on each beat, with QT and QTc for each beat in a table"></button>
+          <figcaption>Example analysis screen (click to enlarge)</figcaption>
+        </figure>
+      </div>
+
+      <nav class="jump qtc-jump" aria-label="On this page">
+        <a href="#features">Features</a><a href="#download">Download</a><a href="#howto">How to use</a><a href="#movie">Video</a><a href="#calibration">Calibration</a><a href="#trouble">Troubleshooting</a><a href="#history">Version history</a>
+      </nav>
+
+      <!-- できること -->
+      <section class="sec qtc-sec" id="features" aria-labelledby="features-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Features</p>
+          <h2 class="sec-title" id="features-title">Features</h2>
+        </div>
+        <ul class="qtc-features">
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9zM8 12h8M8 16h5"/></svg></span>
+            <h3>Measure just by pasting</h3>
+            <p>Paste (or drag in) an ECG image and the app measures QT for each beat in the image and shows the average. It is designed for images of about seven beats.</p>
+          </li>
+          <li class="glass" data-reveal="2">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 17h18"/><path d="M4 17c2 0 2-9 4-9s2 9 4 9c1.5 0 2-4 3.5-4"/><path d="M13 7l7 12"/></svg></span>
+            <h3>T-wave end by the tangent method</h3>
+            <p>The end of the T wave is where a tangent drawn on the downslope of the T wave meets the baseline. All markers are shown on screen and can be corrected by hand.</p>
+          </li>
+          <li class="glass" data-reveal="3">
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.3-7-9.4A3.9 3.9 0 0 1 12 8.4a3.9 3.9 0 0 1 7 2.2C19 15.7 12 20 12 20z"/><path d="M3 13h5l1.5-3 2 6 1.5-3H21"/></svg></span>
+            <h3>Works with Holter ECGs too</h3>
+            <p>In addition to 12-lead ECGs at 100% and 200%, there is a setting for Holter ECGs. It can also read Holter images with gray grids.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v5M16 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></svg></span>
+            <h3>Works offline</h3>
+            <p>It runs from a single HTML file and does not use the internet. Copy it to an electronic medical record terminal and open it in Edge to use it inside the hospital system.</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ダウンロード -->
+      <section class="sec qtc-sec" id="download" aria-labelledby="download-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Download</p>
+          <h2 class="sec-title" id="download-title">Download</h2>
+          <p class="sec-lede">qtc.html is the app itself. The zip contains the app and nine sample ECGs to try right away.</p>
+        </div>
+        <div class="qtc-dl">
+          <article class="qtc-dl-card qtc-dl-card--main glass" data-reveal>
+            <p class="chip clinic">PC version · recommended</p>
+            <h3>The QTc measurement app</h3>
+            <p>Unzip the file and open qtc.html in a browser. You can also try it right on this site without downloading (on a phone you can see what the screen looks like).</p>
+            <div class="qtc-dl-actions">
+              <!-- zipリンク（リリースのたびに書き換える） -->
+              <a class="btn" href="QTc_v2.5.zip">zip file (ver. 2.5)</a>
+              <a class="btn ghost" href="qtc.html">Open in the browser</a>
+            </div>
+            <p class="date-note">Updated 2026.9.8</p>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="2">
+            <p class="chip">Phone version</p>
+            <h3>Analyze from a photo</h3>
+            <p>Take a photo of a paper ECG with your phone, drag a box around the two beats you want to analyze, and confirm. Accuracy is still not great.</p>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_mobile.html">Open qtc_mobile.html</a></div>
+          </article>
+          <article class="qtc-dl-card glass" data-reveal="3">
+            <p class="chip research">PDF</p>
+            <h3>Algorithm specification</h3>
+            <p>A specification of how the analysis works, written by AI. To be honest, I can't make sense of it myself. (In Japanese.)</p>
+            <!-- 仕様書リンク（仕様書を更新したときだけ書き換える） -->
+            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">Specification ver. 2.5 (updated 2026.9.8)</a></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- 使い方 -->
+      <section class="sec qtc-sec" id="howto" aria-labelledby="howto-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">How to use</p>
+          <h2 class="sec-title" id="howto-title">How to use</h2>
+        </div>
+        <ol class="qtc-steps">
+          <li class="glass" data-reveal>
+            <h3>Open qtc.html in a browser</h3>
+            <p>Unzip the file and open qtc.html in Edge or Chrome.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Paste an ECG image</h3>
+            <p>For a 12-lead ECG, the basic use is to cut out leads II and V5 and paste them, but any lead can be measured. Start by dragging a sample ECG from the zip into the drop area.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Choose the display scale</h3>
+            <p>Choose the scale at which the ECG is displayed: 100%, 200% or Holter (ホルター). At 100% accuracy is a little uncertain; at 200% my impression is that it stays within about ±5 ms.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Check the markers</h3>
+            <p>Check the markers on each beat. If they are off, you can correct them by hand.</p>
+            <ul class="qtc-markers">
+              <li><i class="m-r" aria-hidden="true"></i>R wave (blue ×)</li>
+              <li><i class="m-q" aria-hidden="true"></i>QRS onset (green)</li>
+              <li><i class="m-t" aria-hidden="true"></i>Tangent (red line)</li>
+              <li><i class="m-b" aria-hidden="true"></i>Baseline (blue line)</li>
+            </ul>
+            <p class="qtc-point"><b>The baseline and tangent can be moved by dragging.</b> Add an R wave with Shift + click.</p>
+          </li>
+          <li class="glass" data-reveal>
+            <h3>Paste the results into the medical record</h3>
+            <p>Press Copy results (解析結果をコピー) and text like the following is copied to the clipboard, ready to paste into an electronic medical record (the lead labels are in Japanese).</p>
+            <pre class="qtc-output">2誘導 : HR 66, QT 344, QTcB 362, QTcF 356 (3beats)
+V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
+          </li>
+        </ol>
+        <figure class="qtc-shot" data-reveal>
+          <button class="shot-img" type="button" data-lightbox aria-label="Enlarge the example results screen"><img src="qtc_sumple-2.png" width="1134" height="1044" alt="Example results screen of the QTc app" loading="lazy"></button>
+          <figcaption>Example results screen (click to enlarge)</figcaption>
+        </figure>
+      </section>
+
+      <!-- 紹介動画 -->
+      <section class="sec qtc-sec" id="movie" aria-labelledby="movie-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Movie</p>
+          <h2 class="sec-title" id="movie-title">Video</h2>
+        </div>
+        <figure class="qtc-shot" data-reveal>
+          <video controls playsinline preload="metadata" style="display:block;width:100%;height:auto;border-radius:18px;background:#000" aria-label="Introduction video of the QTc app (in Japanese)">
+            <source src="QTc_intro.mov">
+          </video>
+          <figcaption>Introduction video of the QTc app (in Japanese)</figcaption>
+        </figure>
+      </section>
+
+      <!-- キャリブレーション -->
+      <section class="sec qtc-sec" id="calibration" aria-labelledby="calibration-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Calibration</p>
+          <h2 class="sec-title" id="calibration-title">Calibration</h2>
+          <p class="sec-lede">Calibration sets how many pixels in the image correspond to how many seconds. Normally it is read automatically.</p>
+        </div>
+        <div class="qtc-cards">
+          <article class="glass" data-reveal>
+            <h3>Automatic</h3>
+            <p>Each time you paste an image, calibration is read automatically from the grid. It used to be manual because automatic reading was not accurate enough, but the algorithm was rebuilt in ver. 2.4 and now reads within ±0.5% at 100%, 200% and Holter.</p>
+          </article>
+          <article class="glass" data-reveal="2">
+            <h3>Manual</h3>
+            <p>For images without a grid, when automatic reading fails, or when the value looks wrong, you can still adjust it manually.</p>
+          </article>
+          <article class="glass" data-reveal="3">
+            <h3>Save once per computer</h3>
+            <p>After adjusting manually, press Reset (再設定) to save the value on the computer. From then on, the saved value is used whenever you press the 100%, 200% or Holter button. The value depends on the display, so set it once on each computer.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- うまく測れないとき -->
+      <section class="sec qtc-sec" id="trouble" aria-labelledby="trouble-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Troubleshooting</p>
+          <h2 class="sec-title" id="trouble-title">Troubleshooting</h2>
+        </div>
+        <div class="qtc-tips glass" data-reveal>
+          <dl>
+            <dt>The waveform is recognized wrongly</dt>
+            <dd>Choose Signal view (信号表示) to see the ECG waveform and QT range the app recognizes. If it looks wrong, check the calibration value and make sure Holter is not selected. A problem where normal ECGs were misjudged as Holter was fixed in ver. 2.3.</dd>
+            <dt>Still not fixed</dt>
+            <dd>Pressing the 100% or 200% button again can greatly improve recognition.</dd>
+          </dl>
+        </div>
+      </section>
+
+      <!-- このアプリについて -->
+      <section class="sec qtc-sec" aria-labelledby="about-title">
+        <div class="qtc-about glass" data-reveal>
+          <p class="eyebrow">About</p>
+          <h2 id="about-title">About this app</h2>
+          <p>I have been hooked on AI lately and made an app that measures QTc by the tangent method. I started building it with Claude Opus 4.6, but I kept hitting the usage limit, so I also use Google Antigravity.</p>
+          <p>It is something like a toy made by an amateur, and its accuracy has issues, but please give it a try. I would be glad to hear what you think.</p>
+          <p class="qtc-aside">When I heard that Dr. Yoshinaga measures QT in three beats at each of five points in a Holter ECG, 15 beats in all, I thought I could never do that. With this tool, 15 beats can be measured with five drags.</p>
+        </div>
+      </section>
+
+      <!-- 更新履歴（新しい版を先頭に追加する） -->
+      <section class="sec qtc-sec" id="history" aria-labelledby="history-title">
+        <div class="sec-head" data-reveal>
+          <p class="eyebrow">Release notes</p>
+          <h2 class="sec-title" id="history-title">Version history</h2>
+        </div>
+        <ol class="qtc-history glass" data-reveal>
+          <li><time>2026/9/8</time><b>ver.2.5</b><span>Fixed the baseline floating above the waveform. Also fixed the Q marker being set on the downslope of the P wave and the last beat sometimes not being measured.</span></li>
+          <li><time>2026/9/3</time><b>ver.2.4</b><span>Rebuilt automatic calibration. It also handles the gray grids of Holter ECGs.</span></li>
+          <li><time>2026/9/3</time><b>ver.2.3</b><span>Fixed a bug where normal ECGs were misjudged as Holter and QT could not be measured at all. Also fixed the tangent being drawn at the T-wave peak, lengthening QT, and the Q marker moving back to the P wave.</span></li>
+          <li><time>2026/8/17</time><b>ver.2.2</b><span>Fixed the Q marker sometimes being placed too late.</span></li>
+          <li><time>2026/7/28</time><b>ver.2.1</b><span>Fixed the T-end label.</span></li>
+          <li><time>2026/6/18</time><b>ver.2.0</b><span>Fixed a bug where the tangent was drawn on an atrial pacing spike.</span></li>
+          <li><time>2026/5/21</time><b>ver.1.8</b><span>Fixed the baseline tending to drift down.</span></li>
+          <li><time>2026/4/9</time><b>ver.1.7</b><span>Fixed the baseline tending to drift up.</span></li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <div class="links"><a href="../index_en.html">Top page</a><a href="../index_en.html#resources">Resources &amp; Apps</a><a href="../index_en.html">tsugutoshi.com</a></div>
+      <p>Tsugutoshi Suzuki's website · since 1997</p>
+      <img src="../for_top_page/gif/PoweredByMac_tang.gif" width="88" height="31" alt="Powered by Mac">
+    </footer>
+  </div>
+
+  <dialog class="nx-lightbox" id="nx-lightbox" aria-label="Enlarged image">
+    <button type="button" class="lb-close" data-lb-close aria-label="Close">×</button>
+    <figure><img alt=""><figcaption></figcaption></figure>
+  </dialog>
+
+  <script src="../assets/tsugu.js?v=20260926f" defer></script>
+</body>
+</html>
