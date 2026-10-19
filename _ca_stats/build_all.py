@@ -6,7 +6,7 @@ import subprocess, sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-for name in ['build_ablation', 'build_wpw', 'build_pvc', 'build_avnrt', 'build_trainees', 'build_hospital']:
+for name in ['build_ablation', 'build_ablation_en', 'build_wpw', 'build_pvc', 'build_avnrt', 'build_trainees', 'build_hospital']:
     print(f'--- {name}.py')
     subprocess.run([sys.executable, str(HERE / f'{name}.py')], check=True, cwd=HERE)
 print('完了。git diff で確認してから commit / push してください。')
