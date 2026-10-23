@@ -60,10 +60,11 @@ async function main() {
   let pw1 = process.env.ROX_PASSWORD;
   if (pw1 === undefined) {
     pw1 = await askHidden('パスワード: ');
-    if (pw1.length < 6) { throw new Error('パスワードは6文字以上にしてください'); }
+    if (pw1.length < 4) { throw new Error('パスワードは4文字以上にしてください'); }
     const pw2 = await askHidden('もう一度: ');
     if (pw1 !== pw2) { throw new Error('2回の入力が一致しません'); }
-  } else if (pw1.length < 6) { throw new Error('パスワードは6文字以上にしてください'); }
+  } else if (pw1.length < 4) { throw new Error('パスワードは4文字以上にしてください'); }
+  if (pw1.length < 10) { console.warn('注意: パスワードが短いので、総当たりで破られやすくなります（10文字以上を推奨）。'); }
 
   const enc = new TextEncoder();
   const salt = crypto.getRandomValues(new Uint8Array(16));
