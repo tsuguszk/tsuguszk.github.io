@@ -848,7 +848,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.5 : 2026/9/8
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.6 : 2026/10/23
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -900,11 +900,20 @@
                 <span style="display:inline-block;width:12px;"></span>
 
                 <button class="cal-preset-btn" id="presetBtn_holter" onclick="selectPreset('holter')">
-                    <span class="preset-name">ホルター <span id="presetValHolter"
+                    <span class="preset-name">ホルター(フクダ) <span id="presetValHolter"
                             style="font-size:0.8em;color:#8899aa;"></span></span>
                 </button>
                 <button class="btn-cal-settings" onclick="saveCurrentAsPreset('holter')"
-                    title="現在のpx値をホルターに保存">再設定</button>
+                    title="現在のpx値をホルター(フクダ)に保存">再設定</button>
+
+                <span style="display:inline-block;width:12px;"></span>
+
+                <button class="cal-preset-btn" id="presetBtn_nihonkohden" onclick="selectPreset('nihonkohden')">
+                    <span class="preset-name">ホルター(日本光電) <span id="presetValNihonkohden"
+                            style="font-size:0.8em;color:#8899aa;"></span></span>
+                </button>
+                <button class="btn-cal-settings" onclick="saveCurrentAsPreset('nihonkohden')"
+                    title="現在のpx値をホルター(日本光電)に保存">再設定</button>
 
                 <span id="detectedCalValue" style="margin-left:14px; color:#aaa; font-size:0.85em;"></span>
             </div>
@@ -943,7 +952,11 @@
 
         // --- Calibration Preset System ---
         const STORAGE_KEY = 'qtc_cal_presets';
-        const DEFAULT_PRESETS = { '100': 94, '200': 190, 'holter': 125 };
+        // 'holter' はフクダ製（灰色格子・カラー波形）。
+        // 'nihonkohden' は日本光電製（赤の5mm実線＋1mm点・黒波形）で、抽出は standard を使う。
+        const DEFAULT_PRESETS = { '100': 94, '200': 190, 'holter': 125, 'nihonkohden': 106 };
+        const PRESET_KEYS = ['100', '200', 'holter', 'nihonkohden'];
+        const PRESET_NAMES = { '100': '100%', '200': '200%', 'holter': 'ホルター(フクダ)', 'nihonkohden': 'ホルター(日本光電)' };
         let calPresets = { ...DEFAULT_PRESETS };
 
         function loadPresets() {
@@ -954,6 +967,7 @@
                     calPresets['100'] = parsed['100'] || DEFAULT_PRESETS['100'];
                     calPresets['200'] = parsed['200'] || DEFAULT_PRESETS['200'];
                     calPresets['holter'] = parsed['holter'] || DEFAULT_PRESETS['holter'];
+                    calPresets['nihonkohden'] = parsed['nihonkohden'] || DEFAULT_PRESETS['nihonkohden'];
                 }
             } catch (e) { }
         }
@@ -967,7 +981,7 @@
         function findClosestPreset(detectedPx) {
             let bestKey = null;
             let bestDiff = Infinity;
-            for (let key of ['100', '200', 'holter']) {
+            for (let key of PRESET_KEYS) {
                 const diff = Math.abs(calPresets[key] - detectedPx);
                 if (diff < bestDiff) {
                     bestDiff = diff;
@@ -982,6 +996,7 @@
             if (presetKey === '100') document.getElementById('presetBtn100').classList.add('active');
             else if (presetKey === '200') document.getElementById('presetBtn200').classList.add('active');
             else if (presetKey === 'holter') document.getElementById('presetBtn_holter').classList.add('active');
+            else if (presetKey === 'nihonkohden') document.getElementById('presetBtn_nihonkohden').classList.add('active');
         }
 
         // プリセット選択時に、モード(standard vs holter)も切り替える
@@ -989,7 +1004,8 @@
             const pxPerSec = calPresets[mode];
             highlightPresetButton(mode);
 
-            // モード決定: holterなら'holter' (qtc_10 algo), それ以外は 'standard' (qtc_9 algo)
+            // モード決定: holter(フクダ)なら'holter' (qtc_10 algo), それ以外は 'standard' (qtc_9 algo)
+            // 日本光電は黒波形なので 'standard'
             const extractionMode = (mode === 'holter') ? 'holter' : 'standard';
 
             for (let idx of [1, 2]) {
@@ -1014,9 +1030,11 @@
             const el100 = document.getElementById('presetVal100');
             const el200 = document.getElementById('presetVal200');
             const elH = document.getElementById('presetValHolter');
+            const elNK = document.getElementById('presetValNihonkohden');
             if (el100) el100.textContent = `(${calPresets['100']}px)`;
             if (el200) el200.textContent = `(${calPresets['200']}px)`;
             if (elH) elH.textContent = `(${calPresets['holter']}px)`;
+            if (elNK) elNK.textContent = `(${calPresets['nihonkohden']}px)`;
         }
 
         // 現在のpx値をプリセットとして保存
@@ -1037,9 +1055,8 @@
             calPresets[mode] = currentPx;
             savePresetsToStorage();
             updatePresetLabels();
-            const nameMap = { '100': '100%', '200': '200%', 'holter': 'ホルター' };
             const label = document.getElementById('detectedCalValue');
-            if (label) label.textContent = `${nameMap[mode]}に ${currentPx} px/s を保存しました`;
+            if (label) label.textContent = `${PRESET_NAMES[mode]}に ${currentPx} px/s を保存しました`;
             setTimeout(() => { if (label) label.textContent = ''; }, 3000);
         }
         loadPresets();
@@ -1444,7 +1461,7 @@
                     pxPerSec = calPresets[matchedPreset];
                     highlightPresetButton(matchedPreset);
                     extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
-                    if (detectedLabel) detectedLabel.textContent = `検出失敗 → ${matchedPreset === 'holter' ? 'ホルター' : matchedPreset + '%'}を適用（手動で調整して下さい）`;
+                    if (detectedLabel) detectedLabel.textContent = `検出失敗 → ${PRESET_NAMES[matchedPreset]}を適用（手動で調整して下さい）`;
                 }
             }
 
@@ -1985,7 +2002,7 @@
             const inter = (sx - slope * sk) / n;
             let ss = 0;
             for (let i = 0; i < n; i++) { const e = pos[i] - (inter + slope * ks[i]); ss += e * e; }
-            return { p: slope, resid: Math.sqrt(ss / n) };
+            return { p: slope, resid: Math.sqrt(ss / n), x0: inter };
         }
 
         // 周期候補を細かく走査し、割り当て残差が最小の解を選ぶ（エイリアシング回避）
@@ -2010,15 +2027,56 @@
         //   ホルター印刷の灰色格子は 5mm ボックス（25mmごとに強線）で描かれるのが通例。
         //   「5本に1本が強い」パターンは 1mm/5mm でも 5mm/25mm でも現れるため
         //   判別には使えず、格子色と絶対スケールで判断する。
-        function resolveGridMm(p, kind) {
+        //   ver 2.6: 赤格子でも、1mm 目盛が「線」ではなく「点」で印刷される機種がある
+        //   （日本光電ホルター: 5mm 実線＋1mm 点）。点は列プロファイルで細く低いため
+        //   線検出の閾値を下回り、5mm 実線だけが拾われて「1mm=21px（532px/s）」と
+        //   5倍に誤認していた。そこで p/5 が 1mm として解像できる大きさ(≥2.2px)のとき、
+        //   p/5 刻みの位置に独立した局所ピーク（点の列）が並んでいるかを調べ、
+        //   並んでいれば p は 5mm とみなす。
+        //   実測: 日本光電(原寸) 87〜92% / 標準心電図を拡大して p=1mm にしたもの ≤13%。
+        function resolveGridMm(p, kind, minorGrid) {
             const inRange = v => v >= 2.2 && v <= 30;        // 1mm=2.2〜30px（55〜750 px/sec）
             if (kind === 'gray') {
                 if (p >= 10 && inRange(p / 5)) return p / 5;
                 return inRange(p) ? p : null;
             }
+            if (minorGrid && inRange(p / 5)) return p / 5;   // 5mm線＋1mm点（日本光電）
             if (inRange(p)) return p;
             if (inRange(p / 5)) return p / 5;                // 1mm線が薄く5mm線だけ拾えた場合
             return null;
+        }
+
+        // 格子間隔 p の 1/5 位置（0.2p, 0.4p, 0.6p, 0.8p）に、独立した局所ピークが
+        // 並んでいる割合を返す。1mm 点が印刷された 5mm 格子なら高く、p 自体が 1mm 線の
+        // 格子なら（線の裾がなだらかに落ちるだけなので）低い。
+        function minorGridRatio(col, x0, p) {
+            const W = col.length;
+            let lineSum = 0, ln = 0;
+            for (let k = 0; ; k++) {
+                const b = x0 + k * p;
+                if (b >= W) break;
+                if (b >= 0) { lineSum += col[Math.round(b)]; ln++; }
+            }
+            if (!ln) return 0;
+            const prom = 0.1 * (lineSum / ln);               // 突出の下限＝線の高さの1割
+            const tol = Math.max(0.6, 0.04 * p);
+            let hit = 0, tot = 0;
+            for (let k = -1; ; k++) {
+                const b = x0 + k * p;
+                if (b > W) break;
+                for (const fr of [0.2, 0.4, 0.6, 0.8]) {
+                    const c = b + fr * p;
+                    if (c < 3 || c > W - 4) continue;
+                    tot++;
+                    for (let x = Math.ceil(c - tol); x <= Math.floor(c + tol); x++) {
+                        if (col[x] > col[x - 1] && col[x] >= col[x + 1] &&
+                            col[x] - Math.min(col[x - 2], col[x - 1], col[x + 1], col[x + 2]) >= prom) {
+                            hit++; break;
+                        }
+                    }
+                }
+            }
+            return tot ? hit / tot : 0;
         }
 
         function detectCalibration(imgData, width, height) {
@@ -2036,14 +2094,16 @@
                 if (!pk) continue;
                 const fit = searchGridPeriod(pk.pos);
                 if (!fit) continue;
-                const mm = resolveGridMm(fit.p, kind);
+                const minorGrid = (kind === 'red' && fit.p / 5 >= 2.2)
+                    ? minorGridRatio(col, fit.x0, fit.p) >= 0.5 : false;
+                const mm = resolveGridMm(fit.p, kind, minorGrid);
                 if (mm === null) continue;
                 const pxPerSec = Math.round(mm * 25);
                 const rr = fit.resid / fit.p;                // 格子の当てはまり具合
                 if (pxPerSec < 55 || pxPerSec > 750 || pk.pos.length < 10 || rr >= 0.12) continue;
                 return {
                     pxPerSec, method: 'auto-grid', confident: true,
-                    debug: `${kind === 'red' ? '赤方眼' : '灰格子'} 間隔${fit.p.toFixed(2)}px(=${Math.round(fit.p / mm)}mm) 線${pk.pos.length}本 ` +
+                    debug: `${kind === 'red' ? (minorGrid ? '赤方眼(5mm線+1mm点)' : '赤方眼') : '灰格子'} 間隔${fit.p.toFixed(2)}px(=${Math.round(fit.p / mm)}mm) 線${pk.pos.length}本 ` +
                         `残差${(rr * 100).toFixed(1)}% → 1mm=${mm.toFixed(3)}px → 25mm(1s)=${pxPerSec}px`
                 };
             }
@@ -2074,8 +2134,7 @@
                 calMethodEl.classList.add('drag');
             } else if (method && method.startsWith('preset-')) {
                 const presetName = method.replace('preset-', '');
-                const nameMap = { '100': '100%', '200': '200%', 'holter': 'ホルター' };
-                calMethodEl.textContent = 'プリセット: ' + (nameMap[presetName] || presetName);
+                calMethodEl.textContent = 'プリセット: ' + (PRESET_NAMES[presetName] || presetName);
                 calMethodEl.classList.add('manual');
             }
         }
@@ -2321,9 +2380,15 @@
                 }
             }
             // フォールバック1: 平坦条件のみ（基線推定のずれ・PQ低下・P波融合時）
+            // ver 2.6: 基線から QRS振幅の25%以上離れた点は除外する。
+            //   rS型で rLoc がS波の谷のとき、後方走査はまずR波頂点の平坦部を通る。
+            //   勾配だけで判定するとそこで止まり、マーカーがR波の頂上に立っていた
+            //   （日本光電ホルター 1mm=4.25px の例。PR部が基線より4px低く平坦run不成立）。
             if (coarse < 0) {
+                const farTol = Math.max(ampTol, 0.25 * A);
                 for (let k = rLoc - 1; k >= qLimit; k--) {
-                    if (Math.abs(smoothedSlope(smooth, k, width)) <= 0.20 * maxSlope) { coarse = k; break; }
+                    if (Math.abs(smoothedSlope(smooth, k, width)) <= 0.20 * maxSlope &&
+                        Math.abs(smooth[k] - localRef) <= farTol) { coarse = k; break; }
                 }
             }
             // フォールバック2: 窓の下限

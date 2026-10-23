@@ -60,10 +60,10 @@
           <h1>QTc measurement app</h1>
           <p class="qtc-lede">Just <b>paste an ECG image</b> and the app measures the QT interval by the tangent method and calculates QTc (Bazett and Fridericia). The results come out as text you can paste straight into an electronic medical record. The interface is in Japanese.</p>
           <!-- 更新日（リリースのたびに書き換える） -->
-          <p class="qtc-badge"><span>Latest version 2.5</span>2026/9/8 update</p>
+          <p class="qtc-badge"><span>Latest version 2.6</span>2026/10/23 update</p>
           <div class="qtc-cta">
             <a class="btn" href="qtc.html">Try it in the browser</a>
-            <a class="btn ghost" href="QTc_v2.5.zip">Download the zip</a>
+            <a class="btn ghost" href="QTc_v2.6.zip">Download the zip</a>
           </div>
         </div>
         <figure class="qtc-hero-shot">
@@ -96,7 +96,7 @@
           <li class="glass" data-reveal="3">
             <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.3-7-9.4A3.9 3.9 0 0 1 12 8.4a3.9 3.9 0 0 1 7 2.2C19 15.7 12 20 12 20z"/><path d="M3 13h5l1.5-3 2 6 1.5-3H21"/></svg></span>
             <h3>Works with Holter ECGs too</h3>
-            <p>In addition to 12-lead ECGs at 100% and 200%, there is a setting for Holter ECGs. It can also read Holter images with gray grids.</p>
+            <p>In addition to 12-lead ECGs at 100% and 200%, there are settings for Holter ECGs. It reads Holter images from Fukuda Denshi (gray grid) and Nihon Kohden (red 5 mm lines with 1 mm dots).</p>
           </li>
           <li class="glass" data-reveal>
             <span class="qtc-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v5M16 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/></svg></span>
@@ -120,7 +120,7 @@
             <p>Unzip the file and open qtc.html in a browser. You can also try it right on this site without downloading (on a phone you can see what the screen looks like).</p>
             <div class="qtc-dl-actions">
               <!-- zipリンク（リリースのたびに書き換える） -->
-              <a class="btn" href="QTc_v2.5.zip">zip file (ver. 2.5)</a>
+              <a class="btn" href="QTc_v2.6.zip">zip file (ver. 2.6)</a>
               <a class="btn ghost" href="qtc.html">Open in the browser</a>
             </div>
             <p class="date-note">Updated 2026.9.8</p>
@@ -136,7 +136,7 @@
             <h3>Algorithm specification</h3>
             <p>A specification of how the analysis works, written by AI. To be honest, I can't make sense of it myself. (In Japanese.)</p>
             <!-- 仕様書リンク（仕様書を更新したときだけ書き換える） -->
-            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">Specification ver. 2.5 (updated 2026.9.8)</a></div>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">Specification ver. 2.6 (updated 2026.10.23)</a></div>
           </article>
         </div>
       </section>
@@ -158,7 +158,7 @@
           </li>
           <li class="glass" data-reveal>
             <h3>Choose the display scale</h3>
-            <p>Choose the scale at which the ECG is displayed: 100%, 200% or Holter (ホルター). At 100% accuracy is a little uncertain; at 200% my impression is that it stays within about ±5 ms.</p>
+            <p>Choose the scale at which the ECG is displayed: 100%, 200%, Holter Fukuda (ホルター(フクダ)) or Holter Nihon Kohden (ホルター(日本光電)). At 100% accuracy is a little uncertain; at 200% my impression is that it stays within about ±5 ms.</p>
           </li>
           <li class="glass" data-reveal>
             <h3>Check the markers</h3>
@@ -208,7 +208,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
         <div class="qtc-cards">
           <article class="glass" data-reveal>
             <h3>Automatic</h3>
-            <p>Each time you paste an image, calibration is read automatically from the grid. It used to be manual because automatic reading was not accurate enough, but the algorithm was rebuilt in ver. 2.4 and now reads within ±0.5% at 100%, 200% and Holter.</p>
+            <p>Each time you paste an image, calibration is read automatically from the grid. It used to be manual because automatic reading was not accurate enough, but the algorithm was rebuilt in ver. 2.4 and now reads within ±0.5% at 100%, 200% and Holter. Since ver. 2.6 it also reads the grid of Nihon Kohden Holter ECGs.</p>
           </article>
           <article class="glass" data-reveal="2">
             <h3>Manual</h3>
@@ -216,7 +216,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
           </article>
           <article class="glass" data-reveal="3">
             <h3>Save once per computer</h3>
-            <p>After adjusting manually, press Reset (再設定) to save the value on the computer. From then on, the saved value is used whenever you press the 100%, 200% or Holter button. The value depends on the display, so set it once on each computer.</p>
+            <p>After adjusting manually, press Reset (再設定) to save the value on the computer. From then on, the saved value is used whenever you press the 100%, 200%, Holter (Fukuda) or Holter (Nihon Kohden) button. The value depends on the display, so set it once on each computer.</p>
           </article>
         </div>
       </section>
@@ -230,7 +230,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
         <div class="qtc-tips glass" data-reveal>
           <dl>
             <dt>The waveform is recognized wrongly</dt>
-            <dd>Choose Signal view (信号表示) to see the ECG waveform and QT range the app recognizes. If it looks wrong, check the calibration value and make sure Holter is not selected. A problem where normal ECGs were misjudged as Holter was fixed in ver. 2.3.</dd>
+            <dd>Choose Signal view (信号表示) to see the ECG waveform and QT range the app recognizes. If it looks wrong, check the calibration value and make sure Holter (Fukuda) is not selected for an ordinary ECG. A problem where normal ECGs were misjudged as Holter was fixed in ver. 2.3.</dd>
             <dt>Still not fixed</dt>
             <dd>Pressing the 100% or 200% button again can greatly improve recognition.</dd>
           </dl>
@@ -255,6 +255,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
           <h2 class="sec-title" id="history-title">Version history</h2>
         </div>
         <ol class="qtc-history glass" data-reveal>
+          <li><time>2026/10/23</time><b>ver.2.6</b><span>Fixed Nihon Kohden Holter ECGs failing to measure because calibration was off by a factor of five. Renamed the Holter button to Holter (Fukuda) and added a Holter (Nihon Kohden) button. Also fixed the Q marker sometimes being set at the top of the R wave.</span></li>
           <li><time>2026/9/8</time><b>ver.2.5</b><span>Fixed the baseline floating above the waveform. Also fixed the Q marker being set on the downslope of the P wave and the last beat sometimes not being measured.</span></li>
           <li><time>2026/9/3</time><b>ver.2.4</b><span>Rebuilt automatic calibration. It also handles the gray grids of Holter ECGs.</span></li>
           <li><time>2026/9/3</time><b>ver.2.3</b><span>Fixed a bug where normal ECGs were misjudged as Holter and QT could not be measured at all. Also fixed the tangent being drawn at the T-wave peak, lengthening QT, and the Q marker moving back to the P wave.</span></li>
