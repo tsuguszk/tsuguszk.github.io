@@ -832,7 +832,81 @@
     }
    }
   },
-  "first_n": 280
+  "first_n": 280,
+  "energy_recur_by_period": [
+   {
+    "period": "2006–2012",
+    "RF": {
+     "n": 100,
+     "success": 98,
+     "success_pct": 98.0,
+     "recur": 16,
+     "recur_pct": 16.0
+    },
+    "Cryo": {
+     "n": 0,
+     "success": 0,
+     "success_pct": null,
+     "recur": 0,
+     "recur_pct": null
+    },
+    "RF+Cryo": {
+     "n": 0,
+     "success": 0,
+     "success_pct": null,
+     "recur": 0,
+     "recur_pct": null
+    }
+   },
+   {
+    "period": "2013–2018",
+    "RF": {
+     "n": 65,
+     "success": 61,
+     "success_pct": 93.8,
+     "recur": 7,
+     "recur_pct": 10.8
+    },
+    "Cryo": {
+     "n": 29,
+     "success": 27,
+     "success_pct": 93.1,
+     "recur": 3,
+     "recur_pct": 10.3
+    },
+    "RF+Cryo": {
+     "n": 5,
+     "success": 4,
+     "success_pct": 80.0,
+     "recur": 0,
+     "recur_pct": 0.0
+    }
+   },
+   {
+    "period": "2019–2026",
+    "RF": {
+     "n": 57,
+     "success": 56,
+     "success_pct": 98.2,
+     "recur": 2,
+     "recur_pct": 3.5
+    },
+    "Cryo": {
+     "n": 69,
+     "success": 64,
+     "success_pct": 92.8,
+     "recur": 13,
+     "recur_pct": 18.8
+    },
+    "RF+Cryo": {
+     "n": 7,
+     "success": 5,
+     "success_pct": 71.4,
+     "recur": 1,
+     "recur_pct": 14.3
+    }
+   }
+  ]
  },
  "updated": "2026年10月2日"
 }
