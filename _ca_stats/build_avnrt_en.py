@@ -41,6 +41,46 @@ for k in ['通常型', '非通常型']:
         all_rows += f'<tr><th scope="row">{LAB[k]}<br>{nm}</th><td>{d["n"]}</td><td>{d["success"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
 E = AVR['energy']; fn = AVR['first_n']
 
+# ---- 直近5年の高周波と冷凍（集計値に recent5 があるときだけ出す）
+recent_html = ''
+recent_jump = ''
+RC = AVR.get('recent5')
+if RC:
+    _MON = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    _d = lambda s: f"{_MON[int(s[5:7])]} {s[:4]}"
+    _per = f"{_d(RC['from'])} to {_d(RC['to'])}"
+    _rg = []
+    for key, nm in [('energy', 'All procedures'), ('first', 'First procedures')]:
+        _g = []
+        for e, enm, c in [('RF', 'Radiofrequency', 'var(--c-rf)'), ('Cryo', 'Cryo', 'var(--c-cryo)')]:
+            d = RC[key][e]
+            _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f'{nm} · {enm}', f"{d['recur']} recurrences / {d['n']} procedures",
+                       f"{nm}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", d['recur_pct']))
+        _rg.append(_g)
+    _rchart = bars_chart('Bar chart of recurrence rate for radiofrequency and cryo in the last five years', 'Recurrence rate (%)', [0, 5, 10, 15, 20], None, _rg, ['All procedures', 'First procedures'],
+                         legend=legend_en([('Radiofrequency (RF)', '--c-rf'), ('Cryo', '--c-cryo')]),
+                         hint='Hover over a bar (tap on a phone) to see the numbers of recurrences and procedures.')
+    _rrows = ''
+    for key, nm in [('energy', 'All procedures'), ('first', 'First procedures')]:
+        for e, enm in [('RF', 'radiofrequency'), ('Cryo', 'cryo'), ('RF+Cryo', 'both')]:
+            d = RC[key][e]
+            _rrows += f'<tr><th scope="row">{nm}<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
+    recent_jump = '<a href="#recent">Last 5 years</a>'
+    recent_html = f'''        <section class="doc-card glass" id="recent" data-reveal>
+          <h2>Recurrence in the last five years (radiofrequency vs. cryo)</h2>
+          <p>We compared recurrence rates for radiofrequency and cryo in AVNRT procedures (typical and atypical combined) performed from {_per}. "All procedures" includes repeat procedures; "First procedures" counts only each patient's first AVNRT procedure.</p>
+{_rchart}          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead><tr><th scope="col">Group / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>
+              <tbody>
+{_rrows}              </tbody>
+            </table>
+          </div>
+          <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. The period is short, and follow-up is shorter for more recent procedures, so recurrence rates may look lower. In small groups, a difference of one or two procedures changes the rate a lot.</p>
+        </section>
+
+'''
+
 html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atrioventricular nodal reentrant tachycardia) in the Department of Pediatric Electrophysiology, Osaka City General Hospital: success and recurrence rates for typical and atypical AVNRT, and radiofrequency vs. cryo, including recurrence in first procedures.', 'avnrt_results.html') + f'''
 <body class="nx-body">
   <div class="nx">
@@ -52,7 +92,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
         <h1><span class="nw">Catheter Ablation</span> <span class="nw">(AVNRT)</span><span class="h1-sub">Results over 20 years, to 2026</span></h1>
         <p class="sec-lede">Results of <b>catheter ablation for AVNRT (atrioventricular nodal reentrant tachycardia)</b> in our department from 2006 to 2026. AVNRT is a tachycardia in which electricity circles around the AV node (the electrical pathway connecting the atria and ventricles). Results are shown separately for <b>typical</b> and <b>atypical</b> AVNRT, and by energy source (radiofrequency and cryo).</p>
         <nav class="jump" aria-label="On this page">
-          <a href="#summary">Summary</a><a href="#type">Typical and atypical</a><a href="#energy">RF and cryo</a><a href="#first">Recurrence in first procedures</a><a href="#tables">Tables</a><a href="#related">Related pages</a>
+          <a href="#summary">Summary</a><a href="#type">Typical and atypical</a><a href="#energy">RF and cryo</a><a href="#first">Recurrence in first procedures</a>{recent_jump}<a href="#tables">Tables</a><a href="#related">Related pages</a>
         </nav>
       </div>
 
@@ -96,7 +136,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
           <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. In small groups, a difference of one or two procedures changes the rate a lot.</p>
         </section>
 
-        <section class="doc-card glass" id="tables" data-reveal>
+{recent_html}        <section class="doc-card glass" id="tables" data-reveal>
           <h2>Tables (all procedures)</h2>
           <div class="doc-scroll">
             <table class="doc-table ca-table">

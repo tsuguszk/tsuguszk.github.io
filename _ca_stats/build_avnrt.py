@@ -56,6 +56,45 @@ for k in ['通常型', '非通常型']:
 E = AVR['energy']
 fn = AVR['first_n']
 
+# ---- 直近5年の高周波と冷凍（集計値に recent5 があるときだけ出す。数字は Mac の analyze_v2.py が作る）
+recent_html = ''
+recent_jump = ''
+RC = AVR.get('recent5')
+if RC:
+    _d = lambda s: f"{s[:4]}年{int(s[5:7])}月"
+    _per = f"{_d(RC['from'])}〜{_d(RC['to'])}"
+    _rg = []
+    for key, nm in [('energy', '全治療'), ('first', '初回治療')]:
+        _g = []
+        for e, enm, c in [('RF', '高周波', 'var(--c-rf)'), ('Cryo', '冷凍', 'var(--c-cryo)')]:
+            d = RC[key][e]
+            _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f'{nm} · {enm}', f"再発 {d['recur']}件 / 治療 {d['n']}件",
+                       f"{nm}、{enm}：再発率{d['recur_pct']}%（再発{d['recur']}件、治療{d['n']}件）", d['recur_pct']))
+        _rg.append(_g)
+    _rchart = bars_chart('直近5年の高周波と冷凍の再発率の棒グラフ', '再発率（%）', [0, 5, 10, 15, 20], None, _rg, ['全治療', '初回治療'],
+                         legend=legend([('高周波（RF）', '--c-rf'), ('冷凍（Cryo）', '--c-cryo')]),
+                         hint='棒にマウスを合わせる（スマホではタップする）と、再発件数と治療件数も表示されます。')
+    _rrows = ''
+    for key, nm in [('energy', '全治療'), ('first', '初回治療')]:
+        for e, enm in [('RF', '高周波'), ('Cryo', '冷凍'), ('RF+Cryo', '両方')]:
+            d = RC[key][e]
+            _rrows += f'<tr><th scope="row">{nm}<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
+    recent_jump = '<a href="#recent">直近5年</a>'
+    recent_html = f'''        <section class="doc-card glass" id="recent" data-reveal>
+          <h2>直近5年の再発率（高周波と冷凍）</h2>
+          <p>{_per}に行ったAVNRT（通常型・非通常型を合わせて）で、高周波と冷凍の再発率を比べました。「全治療」は2回目以降の治療も含み、「初回治療」はその患者さんの1回目のAVNRTの治療だけです。</p>
+{_rchart}          <div class="doc-scroll">
+            <table class="doc-table ca-table">
+              <thead><tr><th scope="col">対象・治療方法</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発件数</th><th scope="col" class="num">再発率（%）</th></tr></thead>
+              <tbody>
+{_rrows}              </tbody>
+            </table>
+          </div>
+          <p class="ca-note-small">「両方」は件数が少ないため、グラフには入れていません。直近5年は期間が短く、最近の治療ほど経過観察の期間が短いため、再発率は低めに出ることがあります。件数の少ない群は、1〜2件の違いで率が大きく動きます。</p>
+        </section>
+
+'''
+
 body = f'''<body class="nx-body">
   <div class="nx">
 
@@ -75,7 +114,7 @@ body = f'''<body class="nx-body">
         <h1><span class="nw">アブレーション治療</span><span class="nw">（AVNRT）</span><span class="h1-sub">2026年までの20年間の成績</span></h1>
         <p class="sec-lede">2006年から2026年までに当科で行った<b>AVNRT（房室結節リエントリー性頻拍）のアブレーション治療</b>の成績です。AVNRTは、房室結節（心房と心室をつなぐ電気の通り道）のまわりを電気がぐるぐる回って起こる頻拍です。<b>通常型（typical）</b>と<b>非通常型（atypical）</b>に分け、高周波と冷凍の治療方法ごとにもまとめました。</p>
         <nav class="jump" aria-label="このページの目次">
-          <a href="#summary">概要</a><a href="#type">通常型と非通常型</a><a href="#energy">高周波と冷凍</a><a href="#first">初回治療の再発率</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
+          <a href="#summary">概要</a><a href="#type">通常型と非通常型</a><a href="#energy">高周波と冷凍</a><a href="#first">初回治療の再発率</a>{recent_jump}<a href="#tables">集計表</a><a href="#related">関連ページ</a>
         </nav>
       </div>
 
@@ -119,7 +158,7 @@ body = f'''<body class="nx-body">
           <p class="ca-note-small">「両方」は件数が少ないため、グラフには入れていません。件数の少ない群は、1〜2件の違いで率が大きく動きます。</p>
         </section>
 
-        <section class="doc-card glass" id="tables" data-reveal>
+{recent_html}        <section class="doc-card glass" id="tables" data-reveal>
           <h2>集計表（すべての治療）</h2>
           <div class="doc-scroll">
             <table class="doc-table ca-table">
