@@ -41,42 +41,40 @@ for k in ['通常型', '非通常型']:
         all_rows += f'<tr><th scope="row">{LAB[k]}<br>{nm}</th><td>{d["n"]}</td><td>{d["success"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
 E = AVR['energy']; fn = AVR['first_n']
 
-# ---- 直近5年の高周波と冷凍（集計値に recent5 があるときだけ出す）
+# ---- 時期ごとの高周波と冷凍の再発率（集計値に energy_recur_by_period があるときだけ出す）
 recent_html = ''
 recent_jump = ''
-RC = AVR.get('recent5')
-if RC:
-    _MON = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    _d = lambda s: f"{_MON[int(s[5:7])]} {s[:4]}"
-    _per = f"{_d(RC['from'])} to {_d(RC['to'])}"
-    _rg = []
-    for key, nm in [('energy', 'All procedures'), ('first', 'First procedures')]:
+ERP = AVR.get('energy_recur_by_period')
+if ERP:
+    _rg, _rx, _rrows = [], [], ''
+    for row in ERP:
         _g = []
         for e, enm, c in [('RF', 'Radiofrequency', 'var(--c-rf)'), ('Cryo', 'Cryo', 'var(--c-cryo)')]:
-            d = RC[key][e]
-            _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f'{nm} · {enm}', f"{d['recur']} recurrences / {d['n']} procedures",
-                       f"{nm}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", d['recur_pct']))
-        _rg.append(_g)
-    _rchart = bars_chart('Bar chart of recurrence rate for radiofrequency and cryo in the last five years', 'Recurrence rate (%)', [0, 5, 10, 15, 20], None, _rg, ['All procedures', 'First procedures'],
+            d = row[e]
+            if d['n']:
+                _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f"{row['period']} · {enm}", f"{d['recur']} recurrences / {d['n']} procedures",
+                           f"{row['period']}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", d['recur_pct']))
+        if _g:
+            _rg.append(_g); _rx.append(row['period'])
+        for e, enm in [('RF', 'radiofrequency'), ('Cryo', 'cryo'), ('RF+Cryo', 'both')]:
+            d = row[e]
+            if d['n']:
+                _rrows += f'<tr><th scope="row">{row["period"]}<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
+    _rchart = bars_chart('Bar chart of recurrence rate for radiofrequency and cryo by period', 'Recurrence rate (%)', [0, 5, 10, 15, 20], None, _rg, _rx,
                          legend=legend_en([('Radiofrequency (RF)', '--c-rf'), ('Cryo', '--c-cryo')]),
                          hint='Hover over a bar (tap on a phone) to see the numbers of recurrences and procedures.')
-    _rrows = ''
-    for key, nm in [('energy', 'All procedures'), ('first', 'First procedures')]:
-        for e, enm in [('RF', 'radiofrequency'), ('Cryo', 'cryo'), ('RF+Cryo', 'both')]:
-            d = RC[key][e]
-            _rrows += f'<tr><th scope="row">{nm}<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
-    recent_jump = '<a href="#recent">Last 5 years</a>'
-    recent_html = f'''        <section class="doc-card glass" id="recent" data-reveal>
-          <h2>Recurrence in the last five years (radiofrequency vs. cryo)</h2>
-          <p>We compared recurrence rates for radiofrequency and cryo in AVNRT procedures (typical and atypical combined) performed from {_per}. "All procedures" includes repeat procedures; "First procedures" counts only each patient's first AVNRT procedure.</p>
+    recent_jump = '<a href="#period">By period</a>'
+    recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
+          <h2>Recurrence by period (radiofrequency vs. cryo)</h2>
+          <p>We divided AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (typical and atypical combined, including repeat procedures). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
 {_rchart}          <div class="doc-scroll">
             <table class="doc-table ca-table">
-              <thead><tr><th scope="col">Group / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>
+              <thead><tr><th scope="col">Period / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>
               <tbody>
 {_rrows}              </tbody>
             </table>
           </div>
-          <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. The period is short, and follow-up is shorter for more recent procedures, so recurrence rates may look lower. In small groups, a difference of one or two procedures changes the rate a lot.</p>
+          <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. Follow-up is shorter for more recent procedures, so recurrence rates may look lower. In small groups, a difference of one or two procedures changes the rate a lot.</p>
         </section>
 
 '''
