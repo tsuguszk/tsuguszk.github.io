@@ -81,7 +81,7 @@ if ERP:
     recent_jump = '<a href="#period">時期ごとの比較</a>'
     recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
           <h2>時期ごとの再発率（高周波と冷凍）</h2>
-          <p>AVNRTの治療を3つの時期に分けて、高周波と冷凍の再発率を比べました（通常型だけを対象にしています。2回目以降の治療も含みます）。冷凍は2016年から使っているため、2006–2012年には冷凍の治療はありません。</p>
+          <p>AVNRTの治療を3つの時期に分けて、高周波と冷凍の再発率を比べました（通常型・非通常型を合わせて、2回目以降の治療も含みます）。冷凍は2016年から使っているため、2006–2012年には冷凍の治療はありません。</p>
 {_rchart}          <div class="doc-scroll">
             <table class="doc-table ca-table">
               <thead><tr><th scope="col">時期・治療方法</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発件数</th><th scope="col" class="num">再発率（%）</th></tr></thead>

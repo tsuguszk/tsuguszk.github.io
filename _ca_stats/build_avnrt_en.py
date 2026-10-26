@@ -66,7 +66,7 @@ if ERP:
     recent_jump = '<a href="#period">By period</a>'
     recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
           <h2>Recurrence by period (radiofrequency vs. cryo)</h2>
-          <p>We divided AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (typical AVNRT only, including repeat procedures). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
+          <p>We divided AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (typical and atypical combined, including repeat procedures). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
 {_rchart}          <div class="doc-scroll">
             <table class="doc-table ca-table">
               <thead><tr><th scope="col">Period / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>
