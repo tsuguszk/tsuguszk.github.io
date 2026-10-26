@@ -29,8 +29,7 @@ for k, g in G.items():
     rate_pies += pie2(f'{LAB[k]}の再発率', f'{g["n"]}件のうち', g['recur_pct'], '--c-re', '再発', g['recur'], '再発なし', g['n'] - g['recur'], '')
 
 en_pies = ''.join(pie_multi(LAB[k], f'{g["n"]}件', [('高周波', g['energy']['RF']['n'], '--c-rf'), ('冷凍', g['energy']['Cryo']['n'], '--c-cryo'), ('両方', g['energy']['RF+Cryo']['n'], '--c-both')], g['n'], '件', f'{LAB[k]}の治療方法') for k, g in G.items())
-ebp = [(p['period'] + '年', [('高周波', p['RF'], '--c-rf'), ('冷凍', p['Cryo'], '--c-cryo'), ('両方', p['RF+Cryo'], '--c-both')]) for p in (AVR.get('energy_recur_by_period') and [{'period': r['period'], 'RF': r['RF']['n'], 'Cryo': r['Cryo']['n'], 'RF+Cryo': r['RF+Cryo']['n']} for r in AVR['energy_recur_by_period']] or AVR['energy_by_period'])]
-PERIOD_NOTE = '（通常型のみ）' if AVR.get('energy_recur_by_period') else ''
+ebp = [(p['period'] + '年', [('高周波', p['RF'], '--c-rf'), ('冷凍', p['Cryo'], '--c-cryo'), ('両方', p['RF+Cryo'], '--c-both')]) for p in AVR['energy_by_period']]
 leg_e = '<ul class="ca-legend" aria-label="凡例"><li><span class="ca-sw" style="--c:var(--c-rf)" aria-hidden="true"></span>高周波</li><li><span class="ca-sw" style="--c:var(--c-cryo)" aria-hidden="true"></span>冷凍</li><li><span class="ca-sw" style="--c:var(--c-both)" aria-hidden="true"></span>両方</li></ul>'
 
 first_groups = []
@@ -57,44 +56,6 @@ for k in ['通常型', '非通常型']:
 E = AVR['energy']
 fn = AVR['first_n']
 
-# ---- 時期ごとの高周波と冷凍の再発率（集計値に energy_recur_by_period があるときだけ出す。数字は Mac の analyze_v2.py が作る）
-recent_html = ''
-recent_jump = ''
-ERP = AVR.get('energy_recur_by_period')
-if ERP:
-    _rg, _rx, _rrows = [], [], ''
-    for row in ERP:
-        _g = []
-        for e, enm, c in [('RF', '高周波', 'var(--c-rf)'), ('Cryo', '冷凍', 'var(--c-cryo)')]:
-            d = row[e]
-            if d['n']:
-                _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f"{row['period']}年 · {enm}", f"再発 {d['recur']}件 / 治療 {d['n']}件",
-                           f"{row['period']}年、{enm}：再発率{d['recur_pct']}%（再発{d['recur']}件、治療{d['n']}件）", str(d['recur_pct'])))
-        if _g:
-            _rg.append(_g); _rx.append(row['period'] + '年')
-        for e, enm in [('RF', '高周波'), ('Cryo', '冷凍'), ('RF+Cryo', '両方')]:
-            d = row[e]
-            if d['n']:
-                _rrows += f'<tr><th scope="row">{row["period"]}年<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
-    _rchart = bars_chart('時期ごとの高周波と冷凍の再発率の棒グラフ', '再発率（%）', [0, 5, 10, 15, 20], None, _rg, _rx,
-                         legend=legend([('高周波（RF）', '--c-rf'), ('冷凍（Cryo）', '--c-cryo')]),
-                         hint='棒にマウスを合わせる（スマホではタップする）と、再発件数と治療件数も表示されます。')
-    recent_jump = '<a href="#period">時期ごとの比較</a>'
-    recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
-          <h2>通常型（typical）の時期ごとの再発率（高周波と冷凍）</h2>
-          <p>AVNRTの通常型（typical）の治療を3つの時期に分けて、高周波と冷凍の再発率を比べました（非通常型は含めず、2回目以降の治療は含みます）。冷凍は2016年から使っているため、2006–2012年には冷凍の治療はありません。</p>
-{_rchart}          <div class="doc-scroll">
-            <table class="doc-table ca-table">
-              <thead><tr><th scope="col">時期・治療方法</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発件数</th><th scope="col" class="num">再発率（%）</th></tr></thead>
-              <tbody>
-{_rrows}              </tbody>
-            </table>
-          </div>
-          <p class="ca-note-small">「両方」は件数が少ないため、グラフには入れていません。最近の治療ほど経過観察の期間が短いため、再発率は低めに出ることがあります。件数の少ない群は、1〜2件の違いで率が大きく動きます。</p>
-        </section>
-
-'''
-
 body = f'''<body class="nx-body">
   <div class="nx">
 
@@ -114,7 +75,7 @@ body = f'''<body class="nx-body">
         <h1><span class="nw">アブレーション治療</span><span class="nw">（AVNRT）</span><span class="h1-sub">2026年までの20年間の成績</span></h1>
         <p class="sec-lede">2006年から2026年までに当科で行った<b>AVNRT（房室結節リエントリー性頻拍）のアブレーション治療</b>の成績です。AVNRTは、房室結節（心房と心室をつなぐ電気の通り道）のまわりを電気がぐるぐる回って起こる頻拍です。<b>通常型（typical）</b>と<b>非通常型（atypical）</b>に分け、高周波と冷凍の治療方法ごとにもまとめました。</p>
         <nav class="jump" aria-label="このページの目次">
-          <a href="#summary">概要</a><a href="#type">通常型と非通常型</a><a href="#energy">高周波と冷凍</a><a href="#first">初回治療の再発率</a>{recent_jump}<a href="#tables">集計表</a><a href="#related">関連ページ</a>
+          <a href="#summary">概要</a><a href="#type">通常型と非通常型</a><a href="#energy">高周波と冷凍</a><a href="#first">初回治療の再発率</a><a href="#tables">集計表</a><a href="#related">関連ページ</a>
         </nav>
       </div>
 
@@ -141,7 +102,7 @@ body = f'''<body class="nx-body">
           <p>高周波（RF）は熱で、冷凍（Cryo）は冷やして治療する方法です。冷凍は、房室結節を傷つける心配が少ないとされ、2016年から使っています。「両方」は1回の治療で両方を使ったものです。</p>
           <div class="pies pies--2">
 {en_pies}          </div>
-          <h3>期間ごとの内訳{PERIOD_NOTE}</h3>
+          <h3>期間ごとの内訳</h3>
           {leg_e}
 {stacks(ebp)}        </section>
 
@@ -158,7 +119,7 @@ body = f'''<body class="nx-body">
           <p class="ca-note-small">「両方」は件数が少ないため、グラフには入れていません。件数の少ない群は、1〜2件の違いで率が大きく動きます。</p>
         </section>
 
-{recent_html}        <section class="doc-card glass" id="tables" data-reveal>
+        <section class="doc-card glass" id="tables" data-reveal>
           <h2>集計表（すべての治療）</h2>
           <div class="doc-scroll">
             <table class="doc-table ca-table">

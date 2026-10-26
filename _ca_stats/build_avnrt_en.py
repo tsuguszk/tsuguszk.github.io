@@ -20,8 +20,7 @@ for k, g in G.items():
 for k, g in G.items():
     rate_pies += pie2_en(f'{LAB[k]}: recurrence rate', f'of {g["n"]} procedures', g['recur_pct'], '--c-re', 'Recurrence', g['recur'], 'No recurrence', g['n'] - g['recur'])
 en_pies = ''.join(pie_multi_en(LAB[k], f'{g["n"]} procedures', [('Radiofrequency', g['energy']['RF']['n'], '--c-rf'), ('Cryo', g['energy']['Cryo']['n'], '--c-cryo'), ('Both', g['energy']['RF+Cryo']['n'], '--c-both')], g['n'], '', f'Energy in {LAB[k].lower()} AVNRT') for k, g in G.items())
-ebp = [(p['period'], [('Radiofrequency', p['RF'], '--c-rf'), ('Cryo', p['Cryo'], '--c-cryo'), ('Both', p['RF+Cryo'], '--c-both')]) for p in (AVR.get('energy_recur_by_period') and [{'period': r['period'], 'RF': r['RF']['n'], 'Cryo': r['Cryo']['n'], 'RF+Cryo': r['RF+Cryo']['n']} for r in AVR['energy_recur_by_period']] or AVR['energy_by_period'])]
-PERIOD_NOTE = ' (typical AVNRT only)' if AVR.get('energy_recur_by_period') else ''
+ebp = [(p['period'], [('Radiofrequency', p['RF'], '--c-rf'), ('Cryo', p['Cryo'], '--c-cryo'), ('Both', p['RF+Cryo'], '--c-both')]) for p in AVR['energy_by_period']]
 first_groups = []
 for k in ['通常型', '非通常型']:
     grp = []
@@ -42,44 +41,6 @@ for k in ['通常型', '非通常型']:
         all_rows += f'<tr><th scope="row">{LAB[k]}<br>{nm}</th><td>{d["n"]}</td><td>{d["success"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
 E = AVR['energy']; fn = AVR['first_n']
 
-# ---- 時期ごとの高周波と冷凍の再発率（集計値に energy_recur_by_period があるときだけ出す）
-recent_html = ''
-recent_jump = ''
-ERP = AVR.get('energy_recur_by_period')
-if ERP:
-    _rg, _rx, _rrows = [], [], ''
-    for row in ERP:
-        _g = []
-        for e, enm, c in [('RF', 'Radiofrequency', 'var(--c-rf)'), ('Cryo', 'Cryo', 'var(--c-cryo)')]:
-            d = row[e]
-            if d['n']:
-                _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f"{row['period']} · {enm}", f"{d['recur']} recurrences / {d['n']} procedures",
-                           f"{row['period']}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", str(d['recur_pct'])))
-        if _g:
-            _rg.append(_g); _rx.append(row['period'])
-        for e, enm in [('RF', 'radiofrequency'), ('Cryo', 'cryo'), ('RF+Cryo', 'both')]:
-            d = row[e]
-            if d['n']:
-                _rrows += f'<tr><th scope="row">{row["period"]}<br>{enm}</th><td>{d["n"]}</td><td>{d["success_pct"]}</td><td>{d["recur"]}</td><td>{d["recur_pct"]}</td></tr>\n'
-    _rchart = bars_chart('Bar chart of recurrence rate for radiofrequency and cryo by period', 'Recurrence rate (%)', [0, 5, 10, 15, 20], None, _rg, _rx,
-                         legend=legend_en([('Radiofrequency (RF)', '--c-rf'), ('Cryo', '--c-cryo')]),
-                         hint='Hover over a bar (tap on a phone) to see the numbers of recurrences and procedures.')
-    recent_jump = '<a href="#period">By period</a>'
-    recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
-          <h2>Recurrence by period in typical AVNRT (radiofrequency vs. cryo)</h2>
-          <p>We divided typical AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (atypical AVNRT is not included; repeat procedures are included). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
-{_rchart}          <div class="doc-scroll">
-            <table class="doc-table ca-table">
-              <thead><tr><th scope="col">Period / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>
-              <tbody>
-{_rrows}              </tbody>
-            </table>
-          </div>
-          <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. Follow-up is shorter for more recent procedures, so recurrence rates may look lower. In small groups, a difference of one or two procedures changes the rate a lot.</p>
-        </section>
-
-'''
-
 html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atrioventricular nodal reentrant tachycardia) in the Department of Pediatric Electrophysiology, Osaka City General Hospital: success and recurrence rates for typical and atypical AVNRT, and radiofrequency vs. cryo, including recurrence in first procedures.', 'avnrt_results.html') + f'''
 <body class="nx-body">
   <div class="nx">
@@ -91,7 +52,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
         <h1><span class="nw">Catheter Ablation</span> <span class="nw">(AVNRT)</span><span class="h1-sub">Results over 20 years, to 2026</span></h1>
         <p class="sec-lede">Results of <b>catheter ablation for AVNRT (atrioventricular nodal reentrant tachycardia)</b> in our department from 2006 to 2026. AVNRT is a tachycardia in which electricity circles around the AV node (the electrical pathway connecting the atria and ventricles). Results are shown separately for <b>typical</b> and <b>atypical</b> AVNRT, and by energy source (radiofrequency and cryo).</p>
         <nav class="jump" aria-label="On this page">
-          <a href="#summary">Summary</a><a href="#type">Typical and atypical</a><a href="#energy">RF and cryo</a><a href="#first">Recurrence in first procedures</a>{recent_jump}<a href="#tables">Tables</a><a href="#related">Related pages</a>
+          <a href="#summary">Summary</a><a href="#type">Typical and atypical</a><a href="#energy">RF and cryo</a><a href="#first">Recurrence in first procedures</a><a href="#tables">Tables</a><a href="#related">Related pages</a>
         </nav>
       </div>
 
@@ -118,7 +79,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
           <p>Radiofrequency (RF) treats with heat and cryoablation (cryo) by freezing. Cryo is considered less likely to damage the AV node, and we have used it since 2016. "Both" means both were used in one procedure.</p>
           <div class="pies pies--2">
 {en_pies}          </div>
-          <h3>By period{PERIOD_NOTE}</h3>
+          <h3>By period</h3>
           {ENERGY_LEG}
 {stacks_en(ebp)}        </section>
 
@@ -135,7 +96,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
           <p class="ca-note-small">"Both" is not shown in the chart because there were few procedures. In small groups, a difference of one or two procedures changes the rate a lot.</p>
         </section>
 
-{recent_html}        <section class="doc-card glass" id="tables" data-reveal>
+        <section class="doc-card glass" id="tables" data-reveal>
           <h2>Tables (all procedures)</h2>
           <div class="doc-scroll">
             <table class="doc-table ca-table">
