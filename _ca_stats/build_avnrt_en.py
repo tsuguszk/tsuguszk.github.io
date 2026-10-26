@@ -20,7 +20,8 @@ for k, g in G.items():
 for k, g in G.items():
     rate_pies += pie2_en(f'{LAB[k]}: recurrence rate', f'of {g["n"]} procedures', g['recur_pct'], '--c-re', 'Recurrence', g['recur'], 'No recurrence', g['n'] - g['recur'])
 en_pies = ''.join(pie_multi_en(LAB[k], f'{g["n"]} procedures', [('Radiofrequency', g['energy']['RF']['n'], '--c-rf'), ('Cryo', g['energy']['Cryo']['n'], '--c-cryo'), ('Both', g['energy']['RF+Cryo']['n'], '--c-both')], g['n'], '', f'Energy in {LAB[k].lower()} AVNRT') for k, g in G.items())
-ebp = [(p['period'], [('Radiofrequency', p['RF'], '--c-rf'), ('Cryo', p['Cryo'], '--c-cryo'), ('Both', p['RF+Cryo'], '--c-both')]) for p in AVR['energy_by_period']]
+ebp = [(p['period'], [('Radiofrequency', p['RF'], '--c-rf'), ('Cryo', p['Cryo'], '--c-cryo'), ('Both', p['RF+Cryo'], '--c-both')]) for p in (AVR.get('energy_recur_by_period') and [{'period': r['period'], 'RF': r['RF']['n'], 'Cryo': r['Cryo']['n'], 'RF+Cryo': r['RF+Cryo']['n']} for r in AVR['energy_recur_by_period']] or AVR['energy_by_period'])]
+PERIOD_NOTE = ' (typical AVNRT only)' if AVR.get('energy_recur_by_period') else ''
 first_groups = []
 for k in ['通常型', '非通常型']:
     grp = []
@@ -117,7 +118,7 @@ html = head_en('AVNRT results', 'Results of catheter ablation for AVNRT (atriove
           <p>Radiofrequency (RF) treats with heat and cryoablation (cryo) by freezing. Cryo is considered less likely to damage the AV node, and we have used it since 2016. "Both" means both were used in one procedure.</p>
           <div class="pies pies--2">
 {en_pies}          </div>
-          <h3>By period</h3>
+          <h3>By period{PERIOD_NOTE}</h3>
           {ENERGY_LEG}
 {stacks_en(ebp)}        </section>
 

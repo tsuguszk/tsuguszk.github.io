@@ -29,7 +29,8 @@ for k, g in G.items():
     rate_pies += pie2(f'{LAB[k]}の再発率', f'{g["n"]}件のうち', g['recur_pct'], '--c-re', '再発', g['recur'], '再発なし', g['n'] - g['recur'], '')
 
 en_pies = ''.join(pie_multi(LAB[k], f'{g["n"]}件', [('高周波', g['energy']['RF']['n'], '--c-rf'), ('冷凍', g['energy']['Cryo']['n'], '--c-cryo'), ('両方', g['energy']['RF+Cryo']['n'], '--c-both')], g['n'], '件', f'{LAB[k]}の治療方法') for k, g in G.items())
-ebp = [(p['period'] + '年', [('高周波', p['RF'], '--c-rf'), ('冷凍', p['Cryo'], '--c-cryo'), ('両方', p['RF+Cryo'], '--c-both')]) for p in AVR['energy_by_period']]
+ebp = [(p['period'] + '年', [('高周波', p['RF'], '--c-rf'), ('冷凍', p['Cryo'], '--c-cryo'), ('両方', p['RF+Cryo'], '--c-both')]) for p in (AVR.get('energy_recur_by_period') and [{'period': r['period'], 'RF': r['RF']['n'], 'Cryo': r['Cryo']['n'], 'RF+Cryo': r['RF+Cryo']['n']} for r in AVR['energy_recur_by_period']] or AVR['energy_by_period'])]
+PERIOD_NOTE = '（通常型のみ）' if AVR.get('energy_recur_by_period') else ''
 leg_e = '<ul class="ca-legend" aria-label="凡例"><li><span class="ca-sw" style="--c:var(--c-rf)" aria-hidden="true"></span>高周波</li><li><span class="ca-sw" style="--c:var(--c-cryo)" aria-hidden="true"></span>冷凍</li><li><span class="ca-sw" style="--c:var(--c-both)" aria-hidden="true"></span>両方</li></ul>'
 
 first_groups = []
@@ -140,7 +141,7 @@ body = f'''<body class="nx-body">
           <p>高周波（RF）は熱で、冷凍（Cryo）は冷やして治療する方法です。冷凍は、房室結節を傷つける心配が少ないとされ、2016年から使っています。「両方」は1回の治療で両方を使ったものです。</p>
           <div class="pies pies--2">
 {en_pies}          </div>
-          <h3>期間ごとの内訳</h3>
+          <h3>期間ごとの内訳{PERIOD_NOTE}</h3>
           {leg_e}
 {stacks(ebp)}        </section>
 
