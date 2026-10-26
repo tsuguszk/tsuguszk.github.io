@@ -53,7 +53,7 @@ if ERP:
             d = row[e]
             if d['n']:
                 _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f"{row['period']} · {enm}", f"{d['recur']} recurrences / {d['n']} procedures",
-                           f"{row['period']}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", d['recur_pct']))
+                           f"{row['period']}, {enm}: recurrence rate {d['recur_pct']}% ({d['recur']} of {d['n']} procedures)", str(d['recur_pct'])))
         if _g:
             _rg.append(_g); _rx.append(row['period'])
         for e, enm in [('RF', 'radiofrequency'), ('Cryo', 'cryo'), ('RF+Cryo', 'both')]:
@@ -65,8 +65,8 @@ if ERP:
                          hint='Hover over a bar (tap on a phone) to see the numbers of recurrences and procedures.')
     recent_jump = '<a href="#period">By period</a>'
     recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
-          <h2>Recurrence by period (radiofrequency vs. cryo)</h2>
-          <p>We divided AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (typical and atypical combined, including repeat procedures). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
+          <h2>Recurrence by period in typical AVNRT (radiofrequency vs. cryo)</h2>
+          <p>We divided typical AVNRT procedures into three periods and compared recurrence rates for radiofrequency and cryo (atypical AVNRT is not included; repeat procedures are included). We began using cryo in 2016, so there are no cryo procedures in 2006–2012.</p>
 {_rchart}          <div class="doc-scroll">
             <table class="doc-table ca-table">
               <thead><tr><th scope="col">Period / energy</th><th scope="col" class="num">Procedures</th><th scope="col" class="num">Success (%)</th><th scope="col" class="num">Recurrences</th><th scope="col" class="num">Recurrence (%)</th></tr></thead>

@@ -68,7 +68,7 @@ if ERP:
             d = row[e]
             if d['n']:
                 _g.append((d['recur_pct'], c, f"{d['recur_pct']}%", f"{row['period']}年 · {enm}", f"再発 {d['recur']}件 / 治療 {d['n']}件",
-                           f"{row['period']}年、{enm}：再発率{d['recur_pct']}%（再発{d['recur']}件、治療{d['n']}件）", d['recur_pct']))
+                           f"{row['period']}年、{enm}：再発率{d['recur_pct']}%（再発{d['recur']}件、治療{d['n']}件）", str(d['recur_pct'])))
         if _g:
             _rg.append(_g); _rx.append(row['period'] + '年')
         for e, enm in [('RF', '高周波'), ('Cryo', '冷凍'), ('RF+Cryo', '両方')]:
@@ -80,8 +80,8 @@ if ERP:
                          hint='棒にマウスを合わせる（スマホではタップする）と、再発件数と治療件数も表示されます。')
     recent_jump = '<a href="#period">時期ごとの比較</a>'
     recent_html = f'''        <section class="doc-card glass" id="period" data-reveal>
-          <h2>時期ごとの再発率（高周波と冷凍）</h2>
-          <p>AVNRTの治療を3つの時期に分けて、高周波と冷凍の再発率を比べました（通常型・非通常型を合わせて、2回目以降の治療も含みます）。冷凍は2016年から使っているため、2006–2012年には冷凍の治療はありません。</p>
+          <h2>通常型（typical）の時期ごとの再発率（高周波と冷凍）</h2>
+          <p>AVNRTの通常型（typical）の治療を3つの時期に分けて、高周波と冷凍の再発率を比べました（非通常型は含めず、2回目以降の治療は含みます）。冷凍は2016年から使っているため、2006–2012年には冷凍の治療はありません。</p>
 {_rchart}          <div class="doc-scroll">
             <table class="doc-table ca-table">
               <thead><tr><th scope="col">時期・治療方法</th><th scope="col" class="num">治療件数</th><th scope="col" class="num">成功率（%）</th><th scope="col" class="num">再発件数</th><th scope="col" class="num">再発率（%）</th></tr></thead>
