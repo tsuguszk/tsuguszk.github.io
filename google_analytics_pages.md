@@ -99,7 +99,7 @@
 | `page_rfca/rfca_room_5_2.html` | https://www.tsugutoshi.com/page_rfca/rfca_room_5_2.html | `G-R0BG9XQGE4` |
 | `page_rfca/rfca_room_5_OCGH_yong.html` | https://www.tsugutoshi.com/page_rfca/rfca_room_5_OCGH_yong.html | `G-R0BG9XQGE4` |
 | `page_rfca/tango_chou.html` | https://www.tsugutoshi.com/page_rfca/tango_chou.html | `G-R0BG9XQGE4` |
-| `pvc.html` | https://www.tsugutoshi.com/pvc.html | `G-GQDY5X09FF` |
+| `pvc/pvc.html` | https://www.tsugutoshi.com/pvc/pvc.html | `G-GQDY5X09FF` |
 | `qtc/QTc/qtc.html` | https://www.tsugutoshi.com/qtc/QTc/qtc.html | `G-GQDY5X09FF` |
 | `qtc/index_qtc.html` | https://www.tsugutoshi.com/qtc/index_qtc.html | `G-R0BG9XQGE4` |
 | `qtc/qtc.html` | https://www.tsugutoshi.com/qtc/qtc.html | `G-GQDY5X09FF` |

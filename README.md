@@ -6,7 +6,7 @@
 - ホスティング: GitHub Pages
 - アクセス解析: Google Analytics 4
   - サイト全体: `G-R0BG9XQGE4`
-  - 解析アプリ（`pvc.html` / `qtc/qtc.html`）: `G-GQDY5X09FF`
+  - 解析アプリ（`pvc/pvc.html` / `qtc/qtc.html`）: `G-GQDY5X09FF`
 
 ## 旧サイト
 
