@@ -848,7 +848,7 @@
     <div class="container">
         <div class="top-bar">
             <div style="display: flex; align-items: center; gap: 18px; flex-wrap: wrap;">
-                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.6 : 2026/10/23
+                <h1>📈 QTc解析 <span style="font-size: 0.5em; color: #888; font-weight: normal;">ver 2.7 : 2026/11/12
                         update</span></h1>
                 <div
                     style="background: rgba(220, 53, 69, 0.12); border: 1.5px solid #dc3545; border-radius: 8px; padding: 6px 14px; color: #ff6b6b; font-size: 0.82em; line-height: 1.5; white-space: nowrap;">
@@ -978,19 +978,6 @@
             } catch (e) { }
         }
 
-        function findClosestPreset(detectedPx) {
-            let bestKey = null;
-            let bestDiff = Infinity;
-            for (let key of PRESET_KEYS) {
-                const diff = Math.abs(calPresets[key] - detectedPx);
-                if (diff < bestDiff) {
-                    bestDiff = diff;
-                    bestKey = key;
-                }
-            }
-            return bestKey;
-        }
-
         function highlightPresetButton(presetKey) {
             document.querySelectorAll('.cal-preset-btn').forEach(b => b.classList.remove('active'));
             if (presetKey === '100') document.getElementById('presetBtn100').classList.add('active');
@@ -1004,8 +991,7 @@
             const pxPerSec = calPresets[mode];
             highlightPresetButton(mode);
 
-            // モード決定: holter(フクダ)なら'holter' (qtc_10 algo), それ以外は 'standard' (qtc_9 algo)
-            // 日本光電は黒波形なので 'standard'
+            // 抽出モード: ホルター(フクダ)は色付き波形なので 'holter'、それ以外（日本光電を含む）は黒波形で 'standard'
             const extractionMode = (mode === 'holter') ? 'holter' : 'standard';
 
             for (let idx of [1, 2]) {
@@ -1445,23 +1431,21 @@
             } else {
                 const calResult = detectCalibration(imgData, width, height);
                 const detectedLabel = document.getElementById('detectedCalValue');
+                // 抽出モードは px/sec ではなく波形の色で決める（黒＝standard、色付き＝holter）
+                extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
 
-                if (calResult.confident && calResult.pxPerSec > 0) {
-                    // グリッドから実測した px 値をそのまま採用（プリセットへ丸めない）
+                if (calResult.confident) {
+                    // 方眼から実測した値をそのまま使う（プリセットへは丸めない）
                     pxPerSec = calResult.pxPerSec;
                     calMethod = 'auto-grid';
-                    // 抽出モードは px/sec ではなく波形の色種別で決める（ver 2.3）
-                    extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
                     document.querySelectorAll('.cal-preset-btn').forEach(b => b.classList.remove('active'));
                     if (detectedLabel) detectedLabel.textContent = `自動計測: 25mm(1s) = ${pxPerSec}px（グリッド実測）`;
                 } else {
-                    // 検出に失敗したときのみ、最も近いプリセットへフォールバック
+                    // 方眼が読めなかったときは 100% プリセットを仮に当て、手動調整を促す
                     calMethod = 'grid-fallback';
-                    const matchedPreset = findClosestPreset(94); // デフォルト100%
-                    pxPerSec = calPresets[matchedPreset];
-                    highlightPresetButton(matchedPreset);
-                    extractionMode = (detectTraceKind(imgData, width, height) === 'black') ? 'standard' : 'holter';
-                    if (detectedLabel) detectedLabel.textContent = `検出失敗 → ${PRESET_NAMES[matchedPreset]}を適用（手動で調整して下さい）`;
+                    pxPerSec = calPresets['100'];
+                    highlightPresetButton('100');
+                    if (detectedLabel) detectedLabel.textContent = `検出失敗 → ${PRESET_NAMES['100']}を適用（手動で調整して下さい）`;
                 }
             }
 
@@ -1487,7 +1471,7 @@
             setupInteraction(canvas, container, index);
         }
 
-        // 新規: 波形抽出〜ピーク検出までを一括で行う関数
+        // 波形抽出 → 平滑化 → R波検出 → 拍の解析 → 描画 までを一括で行う
         function performSignalExtraction(state) {
             const { imgData, width, height, extractionMode } = state;
             const card = canvasRegistry[state.index].container;
@@ -1496,7 +1480,7 @@
             let signal;
 
             if (extractionMode === 'holter') {
-                // --- Holter Logic (from qtc_10) ---
+                // --- Holter: 色付き波形 ---
                 if (chBar) chBar.classList.remove('hidden'); // Show channel bar
 
                 // Auto-detect best channel if not manually set or fresh run
@@ -1516,8 +1500,7 @@
                 signal = extractSignalHolter(imgData, width, height, state.channel);
 
             } else {
-                // --- Standard Logic (from qtc_9) ---
-                // 赤方眼紙上の黒波形を検出するロジック
+                // --- Standard: 赤方眼紙上の黒波形 ---
                 if (chBar) chBar.classList.add('hidden'); // Hide channel bar
 
                 signal = extractSignalStandard(imgData, width, height);
@@ -1531,56 +1514,83 @@
 
             detectRPeaks(state); // Update rPeaks in state
 
-            // Reset manuals if algorithm changed significantly?
-            // User might want to keep markers if just tweaking cal, but here we change the waveform itself.
-            // Ideally keep markers but snap them to new waveform if possible.
-            // For safety/simplicity in this hybrid, we keep markers but they might drift vertically.
-
             analyzeBeats(state);
             renderCanvas(canvasRegistry[state.index].canvas, state);
             updateTable(card, state, state.index);
         }
 
-        // シンプルな波形抽出: 最暗ピクセル追跡方式
+        // ---------------------------------------------------------
+        // 標準モードの波形抽出（赤方眼紙上の黒トレース）
+        // ---------------------------------------------------------
+        // 各列で「その列の最暗画素＋30 以内」の暗画素の上端・下端を取り、
+        //   ・平坦部（暗画素の縦幅≒線の太さ）では線の中心
+        //   ・QRS のように縦に長い列では、近傍レベルから遠い側の先端（線の半分だけ内側）
+        // を信号とする。先端を取るのは R 波の振幅を保つため。
+        //
+        // 「遠い側」の基準は画像の縦中央ではなく、前後 40 列の中央値（＝その付近の基線）。
+        // 画像中央を基準にすると、波形が中央をまたぐ所で線の上端と下端を行き来して
+        // 段差ができ、同じ心電図でも切り抜きの上下位置で QT が変わってしまう。
         function extractSignalStandard(imgData, width, height) {
             const signal = new Float32Array(width).fill(NaN);
-            const yStart = 1;
-            const yEnd = height - 1;
+            const top = new Int32Array(width).fill(-1), bot = new Int32Array(width).fill(-1);
+            const isGridRed = (r, g, b) => r > 100 && r > g + 30 && r > b + 30;
 
-            for (let x = 0; x < width; x++) {
-                // Pass 1: 列内の最小輝度を求める
-                let darkestLum = 255;
-                for (let y = yStart; y < yEnd; y++) {
+            // 暗画素が横一列に並ぶ行（スクリーンショットの枠線・罫線）は波形ではないので除く。
+            // 波形が同じ行に留まるのは平坦な基線でも全列の4割程度まで。
+            const ruleRow = new Uint8Array(height);
+            for (let y = 0; y < height; y++) {
+                let c = 0;
+                for (let x = 0; x < width; x++) {
                     const i = (y * width + x) * 4;
                     const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
-                    if (r > 100 && r > g + 30 && r > b + 30) continue;
+                    if (!isGridRed(r, g, b) && 0.299 * r + 0.587 * g + 0.114 * b < 128) c++;
+                }
+                if (c > 0.7 * width) ruleRow[y] = 1;
+            }
+
+            for (let x = 0; x < width; x++) {
+                let darkestLum = 255;
+                for (let y = 1; y < height - 1; y++) {
+                    if (ruleRow[y]) continue;
+                    const i = (y * width + x) * 4;
+                    const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+                    if (isGridRed(r, g, b)) continue;
                     const lum = 0.299 * r + 0.587 * g + 0.114 * b;
                     if (lum < darkestLum) darkestLum = lum;
                 }
+                if (darkestLum >= 250) continue;               // この列にトレースなし
+                const lumThresh = darkestLum + 30;
+                for (let y = 1; y < height - 1; y++) {
+                    if (ruleRow[y]) continue;
+                    const i = (y * width + x) * 4;
+                    const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
+                    if (isGridRed(r, g, b)) continue;
+                    if (0.299 * r + 0.587 * g + 0.114 * b <= lumThresh) {
+                        if (top[x] < 0) top[x] = y;
+                        bot[x] = y;
+                    }
+                }
+            }
 
-                // Pass 2: darkestLum + 30 以内の暗ピクセルの中で、
-                // 最も極端なy位置（画像中央から最も遠い）を選択
-                // → にじんだR-peakでも上端に近いピクセルが選ばれる
-                if (darkestLum < 250) {
-                    const lumThresh = darkestLum + 30;
-                    const centerY = height / 2;
-                    let bestY = -1, bestDist = -1;
-                    for (let y = yStart; y < yEnd; y++) {
-                        const i = (y * width + x) * 4;
-                        const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
-                        if (r > 100 && r > g + 30 && r > b + 30) continue;
-                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-                        if (lum <= lumThresh) {
-                            const dist = Math.abs(y - centerY);
-                            if (dist > bestDist) {
-                                bestDist = dist;
-                                bestY = y;
-                            }
-                        }
+            // 線の太さ = 縦幅の中央値（大半の列は平坦部なので）
+            const spans = [];
+            for (let x = 0; x < width; x++) if (top[x] >= 0) spans.push(bot[x] - top[x] + 1);
+            if (spans.length) {
+                spans.sort((a, b) => a - b);
+                const thick = spans[Math.floor(spans.length / 2)];
+                const REF_HALF = 40;                           // 近傍レベルを取る窓（片側の列数）
+                const win = [];
+                for (let x = 0; x < width; x++) {
+                    if (top[x] < 0) continue;
+                    win.length = 0;
+                    for (let k = Math.max(0, x - REF_HALF); k <= Math.min(width - 1, x + REF_HALF); k++) {
+                        if (top[k] >= 0) win.push((top[k] + bot[k]) / 2);
                     }
-                    if (bestY >= 0) {
-                        signal[x] = height - bestY;
-                    }
+                    win.sort((a, b) => a - b);
+                    const ref = win[Math.floor(win.length / 2)];
+                    const half = (Math.min(bot[x] - top[x] + 1, thick) - 1) / 2;
+                    const y = (Math.abs(top[x] - ref) >= Math.abs(bot[x] - ref)) ? top[x] + half : bot[x] - half;
+                    signal[x] = height - y;
                 }
             }
 
@@ -1590,7 +1600,7 @@
             return signal;
         }
 
-        // qtc_10 Logic: カラーチャンネル優先抽出
+        // ホルターモードの波形抽出: 指定チャンネル（黒/緑/赤）の画素の重み付き重心
         function extractSignalHolter(imgData, width, height, channel) {
             const signal = new Float32Array(width).fill(NaN);
             // 画像端のアーティファクト除外
@@ -1893,18 +1903,13 @@
         // ---------------------------------------------------------
 
         // ---------------------------------------------------------
-        // 波形の色種別判定（standard / holter の切り替え用）  ver 2.3
+        // 波形の色（standard / holter の切り替え用）
         // ---------------------------------------------------------
-        // 従来は「pxPerSec に最も近いプリセットが holter か」で抽出モードを決めていた。
-        // しかし紙送り換算値(px/sec)と「ホルター記録かどうか」は本来無関係である。
-        // 実際、赤方眼紙の標準心電図でも 1mm≒5.7px（=143px/sec）で取り込むと
-        // ホルタープリセット(125px/sec)が最近傍になり holter 抽出へ誤って切り替わる。
-        // holter 抽出は赤方眼を除外しないため方眼を波形として拾い、R波検出が破綻して
-        // QT が1拍も算出されなくなっていた。
-        //
-        // ここでは「暗いピクセル＝波形本体」だけを見て無彩色か有彩色かを判定する。
-        // 薄い赤方眼は輝度が高いので lum 閾値で自然に除外され、
-        // detectBestChannel のように方眼へ引きずられない。
+        // 暗いピクセル＝波形本体だけを見て、無彩色（黒）か有彩色（緑・赤）かを返す。
+        // 薄い方眼は輝度が高いので自然に除外される。
+        // 抽出モードを px/sec（どのプリセットに近いか）で決めてはいけない: 紙送りの縮尺と
+        // ホルター記録かどうかは無関係で、赤方眼紙の標準心電図が holter 抽出に回ると
+        // 方眼を波形として拾ってしまう。
         function detectTraceKind(imgData, width, height) {
             const step = Math.max(1, Math.floor(width / 300)); // 約300列をサンプリング
             let dark = 0, green = 0, red = 0;
@@ -1928,23 +1933,25 @@
         }
 
         // ============================================================
-        // キャリブレーション自動計測（ver 2.3 全面改訂）
-        //   格子線の位置をサブピクセルで求め、x_k = x0 + k·p の最小二乗フィットで
-        //   1mm 間隔 p を推定する。
+        // キャリブレーション自動計測
+        //   方眼の縦線の位置をサブピクセルで求め、x_k = x0 + k·p の最小二乗で
+        //   線間隔 p を推定し、1mm あたりの px 数 → 25mm(=1秒) の px 数に換算する。
         //
-        // 旧実装（自己相関コム法）の問題:
-        //   ・自己相関のピーク位置が整数ラグなので、1mm<4px の画像では周期を
-        //     分解できない。「隣接ピーク間隔の中央値」が整数に張り付き、
-        //     真値 3.2px を 3.0px と誤って −6% の誤差が出た（しかも信頼と表示）。
-        //   ・5mm主線の周りに現れる副ピークが間隔統計を汚染する。
-        //   ・信頼判定 ac[peaks[0]]>0.15 は「最初に見つかったピーク」という
-        //     恣意的な量で、正しい推定値を誤って棄却していた。
-        //   ・赤格子が無いホルター印刷では、色付き波形そのものを格子と誤認し、
-        //     RR間隔由来の無意味な値を「信頼」として返していた。
-        //   ・JPEG圧縮された画像では赤格子マスクが崩れて全く検出できなかった。
+        //   1. gridColumnProfile : 格子色の強さを列ごとに合計（red / gray / ink）
+        //   2. subtractFloor     : 横線・色かぶりによる一様な持ち上がりを除く
+        //   3. gridLinePeaks     : 局所ピーク＝線。放物線内挿でサブピクセル化
+        //   4. searchGridPeriod  : 周期を走査して最小二乗（外れ線は除外）
+        //   5. resolveGridMm     : その間隔が 1mm か 5mm かを解釈
+        //   採否は「残差」と「格子点の充足率」で決める。合わなければ検出失敗として
+        //   プリセットに委ねる（誤った値を信頼表示するより安全）。
         // ============================================================
+        const GRID_RED_MIN = 8;    // これ以下の赤みは背景とみなす
+        const GRID_RED_SPAN = 32;  // 赤みがこの幅を超えたら重み1（淡くぼけた線も部分的に数える）
 
-        // 格子画素の列プロファイルを作る。kind: 'red'(赤方眼紙) / 'gray'(ホルター印刷)
+        // 格子らしさの列プロファイル。二値マスクではなく「格子色の強さ」を足し込むので、
+        // 拡大縮小やJPEGで線がぼけて淡くなった画像でも線の位置が残る。
+        //   red : 赤み = min(R-G, R-B)（黒トレース・白背景は 0）
+        //   gray: 無彩色の中間輝度（黒トレースと白背景の間）
         function gridColumnProfile(imgData, width, height, kind) {
             const col = new Float32Array(width);
             const yStep = Math.max(1, Math.floor(height / 500));
@@ -1955,57 +1962,109 @@
                 for (let y = 0; y < height; y += yStep) {
                     const i = (y * width + x) * 4;
                     const r = imgData[i], g = imgData[i + 1], b = imgData[i + 2];
-                    let ok;
+                    let w = 0;
                     if (kind === 'red') {
-                        // 赤/オレンジ/ピンク格子（黒トレース・白背景を除外）
-                        ok = (r - b) > 25 && (r - g) > 18 && r > 140;
-                    } else {
-                        // 灰色の格子（黒トレースは lum<120、白背景は lum>235 で除外）
-                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                        w = (Math.min(r - g, r - b) - GRID_RED_MIN) / GRID_RED_SPAN;
+                        if (w > 1) w = 1;
+                    } else if (kind === 'gray') {
                         const sat = Math.max(r, g, b) - Math.min(r, g, b);
-                        ok = sat < 25 && lum > 120 && lum < 235;
+                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                        if (sat < 25 && lum > 120 && lum < 235) w = 1;
+                    } else {
+                        // ink: 色を問わず「黒トレースでも白背景でもない」画素の濃さ
+                        const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+                        if (lum > 120) w = (255 - lum) / 100;
                     }
-                    if (ok) c++;
+                    if (w > 0) { c += w; hit++; }
                 }
-                col[x] = c; hit += c;
+                col[x] = c;
             }
             return { col, frac: hit / (width * rows) };
         }
 
-        // 列プロファイルの局所ピーク＝格子線。放物線内挿でサブピクセル位置を得る。
-        function gridLinePeaks(col, thr) {
-            const pos = [], amp = [];
-            for (let x = 1; x < col.length - 1; x++) {
-                if (col[x] >= col[x - 1] && col[x] > col[x + 1] && col[x] >= thr) {
-                    const y0 = col[x - 1], y1 = col[x], y2 = col[x + 1];
-                    const den = y0 - 2 * y1 + y2;
-                    let dx = Math.abs(den) > 1e-9 ? 0.5 * (y0 - y2) / den : 0;
-                    if (!(Math.abs(dx) <= 1)) dx = 0;
-                    pos.push(x + dx); amp.push(y1);
-                }
+        // 列プロファイルから床（横線・背景の色かぶりによる一様な持ち上がり）を引く。
+        // 床は ±4px の移動最小値。
+        function subtractFloor(col) {
+            const n = col.length, out = new Float32Array(n);
+            for (let x = 0; x < n; x++) {
+                let lo = col[x];
+                for (let k = Math.max(0, x - 4); k <= Math.min(n - 1, x + 4); k++) if (col[k] < lo) lo = col[k];
+                out[x] = col[x] - lo;
             }
-            return { pos, amp };
+            return out;
         }
 
-        // 周期 p を仮定して各線に格子番号 k を割り当て、最小二乗で p を精緻化する
+        // 格子線＝床を引いたプロファイルの局所ピーク。放物線内挿でサブピクセル位置を得る。
+        function gridLinePeaks(q, thr) {
+            const idx = [];
+            for (let x = 1; x < q.length - 1; x++) {
+                if (q[x] >= q[x - 1] && q[x] > q[x + 1] && q[x] >= thr) idx.push(x);
+            }
+            const pos = [];
+            for (let i = 0; i < idx.length; i++) {
+                const a = idx[i], b = idx[i + 1];
+                // 拡大された太い線は頂上が平らで極大が2つに割れる。3px以内で間の谷が浅ければ1本にまとめる
+                if (b !== undefined && b - a <= 3) {
+                    let dip = Infinity;
+                    for (let x = a + 1; x < b; x++) if (q[x] < dip) dip = q[x];
+                    const lo = Math.min(q[a], q[b]);
+                    if (lo - dip < 0.5 * lo) {
+                        let sw = 0, sxw = 0;
+                        for (let x = a - 1; x <= b + 1; x++) { sw += q[x]; sxw += x * q[x]; }
+                        pos.push(sxw / sw); i++; continue;
+                    }
+                }
+                const den = q[a - 1] - 2 * q[a] + q[a + 1];
+                let dx = Math.abs(den) > 1e-9 ? 0.5 * (q[a - 1] - q[a + 1]) / den : 0;
+                if (!(Math.abs(dx) <= 1)) dx = 0;
+                pos.push(a + dx);
+            }
+            return pos;
+        }
+
+        // 周期 p を仮定して各線に格子番号 k を割り当て、最小二乗で p を精緻化する。
+        // 格子に乗らない線（色付き波形のQRS、文字など）は 1 回だけ除外して当てはめ直す。
+        //   戻り: { p, x0, resid(px), n(採用本数), coverage(格子点の充足率) }
         function fitGridPeriod(pos, p) {
-            const n = pos.length;
-            const ks = new Float64Array(n);
-            const seen = new Set();
-            for (let i = 0; i < n; i++) { ks[i] = Math.round((pos[i] - pos[0]) / p); seen.add(ks[i]); }
-            if (seen.size < n * 0.9) return null;          // 同一番号への重複が多い＝周期が短すぎる
-            let sk = 0, sx = 0, skk = 0, skx = 0;
-            for (let i = 0; i < n; i++) { sk += ks[i]; sx += pos[i]; skk += ks[i] * ks[i]; skx += ks[i] * pos[i]; }
-            const den = n * skk - sk * sk;
-            if (Math.abs(den) < 1e-9) return null;
-            const slope = (n * skx - sk * sx) / den;
-            const inter = (sx - slope * sk) / n;
-            let ss = 0;
-            for (let i = 0; i < n; i++) { const e = pos[i] - (inter + slope * ks[i]); ss += e * e; }
-            return { p: slope, resid: Math.sqrt(ss / n), x0: inter };
+            const lsq = (idx, ks) => {
+                let sk = 0, sx = 0, skk = 0, skx = 0;
+                for (const i of idx) { sk += ks[i]; sx += pos[i]; skk += ks[i] * ks[i]; skx += ks[i] * pos[i]; }
+                const den = idx.length * skk - sk * sk;
+                if (Math.abs(den) < 1e-9) return null;
+                const slope = (idx.length * skx - sk * sx) / den;
+                return { slope, inter: (sx - slope * sk) / idx.length };
+            };
+            const all = pos.map((_, i) => i);
+            let ks = pos.map(x => Math.round((x - pos[0]) / p));
+            let f = lsq(all, ks);
+            if (!f || !(f.slope > 0)) return null;
+            // 当てはめた格子で番号を振り直し、格子点から 1/4 周期以上離れた線と、
+            // 同じ格子点に重なった線（近い方だけ残す）を外す
+            ks = pos.map(x => Math.round((x - f.inter) / f.slope));
+            const bestOfK = new Map();
+            for (const i of all) {
+                const e = Math.abs(pos[i] - (f.inter + f.slope * ks[i]));
+                if (e > 0.25 * f.slope) continue;
+                const cur = bestOfK.get(ks[i]);
+                if (!cur || e < cur.e) bestOfK.set(ks[i], { i, e });
+            }
+            const idx = [...bestOfK.values()].map(v => v.i);
+            if (idx.length < 0.8 * pos.length) return null;   // 外れが多すぎる＝この周期は合っていない
+            f = lsq(idx, ks);
+            if (!f || !(f.slope > 0)) return null;
+            let ss = 0, kMin = Infinity, kMax = -Infinity;
+            for (const i of idx) {
+                const e = pos[i] - (f.inter + f.slope * ks[i]); ss += e * e;
+                if (ks[i] < kMin) kMin = ks[i];
+                if (ks[i] > kMax) kMax = ks[i];
+            }
+            return { p: f.slope, x0: f.inter, resid: Math.sqrt(ss / idx.length), n: idx.length,
+                     coverage: idx.length / (kMax - kMin + 1) };
         }
 
-        // 周期候補を細かく走査し、割り当て残差が最小の解を選ぶ（エイリアシング回避）
+        // 周期候補を細かく走査し、最も多くの線を説明し残差が最小の解を選ぶ。
+        // 初期値（隣接線間隔の中央値）をそのまま信用すると、真値 3.2px に対し 3px が
+        // 自己無撞着な割り当てを作って誤った周期に収束する（エイリアシング）ため走査する。
         function searchGridPeriod(pos) {
             const d = [];
             for (let i = 1; i < pos.length; i++) { const v = pos[i] - pos[i - 1]; if (v > 0.8) d.push(v); }
@@ -2017,23 +2076,16 @@
                 const f = fitGridPeriod(pos, p);
                 if (!f) continue;
                 if (Math.abs(f.p - p) > 0.15 * p) continue;   // 自己無撞着な解のみ採用
-                if (!best || f.resid < best.resid) best = f;
+                if (!best || f.n > best.n || (f.n === best.n && f.resid < best.resid)) best = f;
             }
             return best;
         }
 
-        // 検出した格子間隔 p が 1mm か 5mm かを解釈する。
-        //   赤方眼紙は 1mm 格子が必ず印刷される。
-        //   ホルター印刷の灰色格子は 5mm ボックス（25mmごとに強線）で描かれるのが通例。
-        //   「5本に1本が強い」パターンは 1mm/5mm でも 5mm/25mm でも現れるため
-        //   判別には使えず、格子色と絶対スケールで判断する。
-        //   ver 2.6: 赤格子でも、1mm 目盛が「線」ではなく「点」で印刷される機種がある
-        //   （日本光電ホルター: 5mm 実線＋1mm 点）。点は列プロファイルで細く低いため
-        //   線検出の閾値を下回り、5mm 実線だけが拾われて「1mm=21px（532px/s）」と
-        //   5倍に誤認していた。そこで p/5 が 1mm として解像できる大きさ(≥2.2px)のとき、
-        //   p/5 刻みの位置に独立した局所ピーク（点の列）が並んでいるかを調べ、
-        //   並んでいれば p は 5mm とみなす。
-        //   実測: 日本光電(原寸) 87〜92% / 標準心電図を拡大して p=1mm にしたもの ≤13%。
+        // 線間隔 p が 1mm か 5mm かを解釈して 1mm の px 数を返す（解釈不能なら null）。
+        //   gray（フクダ等のホルター印刷）: 5mm ボックスで描かれるので p≥10px なら 5mm。
+        //   red : 通常の赤方眼は 1mm 線。ただし「5mm 実線＋1mm 点」の機種（日本光電
+        //         ホルター）では点が線として拾えず p が 5mm になるので、minorGrid で見分ける。
+        //   「5本に1本が強い」模様は 1mm/5mm でも 5mm/25mm でも現れるため判別に使えない。
         function resolveGridMm(p, kind, minorGrid) {
             const inRange = v => v >= 2.2 && v <= 30;        // 1mm=2.2〜30px（55〜750 px/sec）
             if (kind === 'gray') {
@@ -2046,22 +2098,22 @@
             return null;
         }
 
-        // 格子間隔 p の 1/5 位置（0.2p, 0.4p, 0.6p, 0.8p）に、独立した局所ピークが
-        // 並んでいる割合を返す。1mm 点が印刷された 5mm 格子なら高く、p 自体が 1mm 線の
-        // 格子なら（線の裾がなだらかに落ちるだけなので）低い。
-        function minorGridRatio(col, x0, p) {
-            const W = col.length;
+        // 線間隔 p の 1/5 刻み（0.2p〜0.8p）の位置に独立した局所ピークが並んでいる割合。
+        // 1mm 点が打たれた 5mm 格子なら高く（実測 0.82〜0.93）、p 自体が 1mm 線の格子なら
+        // 低い（実測 ≤0.13）。
+        function minorGridRatio(q, x0, p) {
+            const W = q.length;
             let lineSum = 0, ln = 0;
-            for (let k = 0; ; k++) {
+            for (let k = Math.ceil(-x0 / p); ; k++) {
                 const b = x0 + k * p;
-                if (b >= W) break;
-                if (b >= 0) { lineSum += col[Math.round(b)]; ln++; }
+                if (b > W - 1) break;
+                lineSum += q[Math.round(b)]; ln++;
             }
             if (!ln) return 0;
             const prom = 0.1 * (lineSum / ln);               // 突出の下限＝線の高さの1割
             const tol = Math.max(0.6, 0.04 * p);
             let hit = 0, tot = 0;
-            for (let k = -1; ; k++) {
+            for (let k = Math.ceil(-x0 / p) - 1; ; k++) {
                 const b = x0 + k * p;
                 if (b > W) break;
                 for (const fr of [0.2, 0.4, 0.6, 0.8]) {
@@ -2069,10 +2121,7 @@
                     if (c < 3 || c > W - 4) continue;
                     tot++;
                     for (let x = Math.ceil(c - tol); x <= Math.floor(c + tol); x++) {
-                        if (col[x] > col[x - 1] && col[x] >= col[x + 1] &&
-                            col[x] - Math.min(col[x - 2], col[x - 1], col[x + 1], col[x + 2]) >= prom) {
-                            hit++; break;
-                        }
+                        if (q[x] > q[x - 1] && q[x] >= q[x + 1] && q[x] >= prom) { hit++; break; }
                     }
                 }
             }
@@ -2083,29 +2132,38 @@
             for (const kind of ['red', 'gray']) {
                 const { col, frac } = gridColumnProfile(imgData, width, height, kind);
                 if (frac < 0.003) continue;
-                let mx = 0;
-                for (let x = 0; x < width; x++) if (col[x] > mx) mx = col[x];
-                if (mx <= 0) continue;
-                let pk = null;
+                const q = subtractFloor(col);
+                // 基準の高さ: 上位の外れ列（色付き波形のQRSなど）に引きずられないよう上位2%+2本を除く
+                const tops = Array.from(gridLinePeaks(q, 1e-6), x => q[Math.round(x)]).sort((a, b) => b - a);
+                if (tops.length < 10) continue;
+                const ref = tops[Math.min(tops.length - 1, Math.floor(tops.length * 0.02) + 2)];
                 for (const t of [0.25, 0.15, 0.10]) {
-                    const c = gridLinePeaks(col, mx * t);
-                    if (c.pos.length >= 10) { pk = c; break; }
+                    const pos = gridLinePeaks(q, ref * t);
+                    if (pos.length < 10) continue;
+                    const fit = searchGridPeriod(pos);
+                    if (!fit || fit.n < 10) continue;
+                    const rr = fit.resid / fit.p;            // 格子の当てはまり具合
+                    if (rr >= 0.12 || fit.coverage < 0.6) continue;
+                    // 灰格子は印刷がくっきりした5mm格子のはずなので厳しく見る。JPEGで色が抜けた
+                    // 赤方眼の0.5mm点を灰格子として拾うと半分の値になる（残差11%・充足62〜75%）。
+                    if (kind === 'gray' && (rr >= 0.06 || fit.coverage < 0.85)) continue;
+                    let minorGrid = false;
+                    if (kind === 'red' && fit.p / 5 >= 2.2) {
+                        // 1mm点は色ではなく濃さ(ink)で探す。JPEGは色の解像度を落とすので
+                        // 赤みでは点が消えるが、輝度には残る。
+                        const ink = subtractFloor(gridColumnProfile(imgData, width, height, 'ink').col);
+                        minorGrid = minorGridRatio(ink, fit.x0, fit.p) >= 0.5;
+                    }
+                    const mm = resolveGridMm(fit.p, kind, minorGrid);
+                    if (mm === null) continue;
+                    const pxPerSec = Math.round(mm * 250) / 10;   // 0.1px/s 刻み
+                    if (pxPerSec < 55 || pxPerSec > 750) continue;
+                    return {
+                        pxPerSec, method: 'auto-grid', confident: true,
+                        debug: `${kind === 'red' ? (minorGrid ? '赤方眼(5mm線+1mm点)' : '赤方眼') : '灰格子'} 間隔${fit.p.toFixed(2)}px(=${Math.round(fit.p / mm)}mm) 線${fit.n}本 ` +
+                            `残差${(rr * 100).toFixed(1)}% 充足${(fit.coverage * 100).toFixed(0)}% → 1mm=${mm.toFixed(3)}px → 25mm(1s)=${pxPerSec}px`
+                    };
                 }
-                if (!pk) continue;
-                const fit = searchGridPeriod(pk.pos);
-                if (!fit) continue;
-                const minorGrid = (kind === 'red' && fit.p / 5 >= 2.2)
-                    ? minorGridRatio(col, fit.x0, fit.p) >= 0.5 : false;
-                const mm = resolveGridMm(fit.p, kind, minorGrid);
-                if (mm === null) continue;
-                const pxPerSec = Math.round(mm * 25);
-                const rr = fit.resid / fit.p;                // 格子の当てはまり具合
-                if (pxPerSec < 55 || pxPerSec > 750 || pk.pos.length < 10 || rr >= 0.12) continue;
-                return {
-                    pxPerSec, method: 'auto-grid', confident: true,
-                    debug: `${kind === 'red' ? (minorGrid ? '赤方眼(5mm線+1mm点)' : '赤方眼') : '灰格子'} 間隔${fit.p.toFixed(2)}px(=${Math.round(fit.p / mm)}mm) 線${pk.pos.length}本 ` +
-                        `残差${(rr * 100).toFixed(1)}% → 1mm=${mm.toFixed(3)}px → 25mm(1s)=${pxPerSec}px`
-                };
             }
             return { pxPerSec: 0, method: 'none', confident: false, debug: '格子を検出できませんでした' };
         }
@@ -2123,11 +2181,8 @@
             if (method === 'auto-grid') {
                 calMethodEl.textContent = 'グリッド実測';
                 calMethodEl.classList.add('auto-scale');
-            } else if (method === 'auto-scale' || method === 'auto-detected') {
-                calMethodEl.textContent = '自動検出';
-                calMethodEl.classList.add('auto-scale');
             } else if (method === 'grid-fallback') {
-                calMethodEl.textContent = '簡易検出';
+                calMethodEl.textContent = '検出失敗（仮の値）';
                 calMethodEl.classList.add('grid-fallback');
             } else if (method === 'drag') {
                 calMethodEl.textContent = 'ドラッグ補正';
@@ -2151,126 +2206,34 @@
             otherState.pxPerSec = newPxPerSec;
             otherState.calMethod = method;
 
-            // Note: If sync implies mode sync, we should also sync extractionMode, but standard/holter might differ per image?
-            // For now, assuming calibration pixel density is consistent, but mode depends on user setting (selectPreset applies to all).
-            // If user dragged calibration, we assume mode stays same.
-
             updateCalDisplay(otherIndex, newPxPerSec, method);
 
             otherState.manualTEnds = {};
             otherState.manualQOnsets = {};
 
-            // Re-detect R-peaks if scale changed drastically?
-            // Usually R-detection is robust to scale, but Qt calc depends on it.
-            // For drag-cal, we re-analyze beats, but not re-extract signal usually.
+            // 縮尺だけの変更なので波形抽出・R波検出はやり直さず、拍の解析だけやり直す
             analyzeBeats(otherState);
             renderCanvas(otherCanvas, otherState);
             updateTable(otherEntry.container, otherState, otherIndex);
         }
 
+        // =========================================================
+        // 拍の解析（基線 → Q-onset → T-end → QT）
+        // =========================================================
+        //   analyzeBeats        全体の流れ
+        //   estimatePrLevel     基線＝QRS直前の等電位部（PRセグメント）の高さ
+        //   resolveBaselines    拍ごとの基線を確定（手動 > PR部 > 他拍の中央値）
+        //   coarseQOnset        Q-onset: 基線から離れ始める点
+        //   refineQOnset        Q-onset: トレース中心線による精密化
+        //   tWaveGates          T波を探す時間範囲
+        //   measureTEnd         接線法による T-end
+        //   measureManualTangent 接点を手動指定したときの T-end
         // ---------------------------------------------------------
-        // 基線検出ヘルパー (等電位レベル = TP/PRセグメント)
-        // ---------------------------------------------------------
-        // ヒストグラム最頻値方式:
-        //   前R波後〜Q直前の拡張拡張区間では、等電位部（TP/PRセグメント）が
-        //   最も長く一定レベルに留まるため、輝度(y)ヒストグラムの最頻ビンが等電位に一致する。
-        //   T波（上下に掃引）やST偏位に頑健で、旧「最小分散窓」が平坦なT波頂点/P波を
-        //   誤検出する問題を解消する。
-        function estimateIsoelectric(smooth, prevR, roughQ, pxPerSec) {
-            // 探索区間: 前R+100ms（前QRSを除外）〜 roughQ-3px（現QRS開始直前）
-            const start = Math.max(prevR + Math.floor(0.10 * pxPerSec), prevR + 6);
-            const end = Math.max(roughQ - 3, start + 1);
-            if (end - start < 4) {
-                // 区間が短すぎる場合: Q直前15pxの中央値
-                const s2 = Math.max(prevR + 3, roughQ - 15), e2 = roughQ;
-                if (e2 > s2) {
-                    const a = [];
-                    for (let k = s2; k < e2; k++) a.push(smooth[k]);
-                    a.sort((x, y) => x - y);
-                    return a[Math.floor(a.length / 2)];
-                }
-                return smooth[roughQ];
-            }
-            let lo = Infinity, hi = -Infinity;
-            for (let k = start; k < end; k++) { const v = smooth[k]; if (v < lo) lo = v; if (v > hi) hi = v; }
-            const bin = 2; // 2pxビン
-            const nb = Math.max(1, Math.floor((hi - lo) / bin) + 1);
-            const hist = new Int32Array(nb);
-            for (let k = start; k < end; k++) {
-                let b = Math.floor((smooth[k] - lo) / bin);
-                if (b < 0) b = 0; if (b >= nb) b = nb - 1;
-                hist[b]++;
-            }
-            let bestBin = 0, bestCnt = -1;
-            for (let b = 0; b < nb; b++) { if (hist[b] > bestCnt) { bestCnt = hist[b]; bestBin = b; } }
-            // 最頻ビン±1bin内のサンプル中央値を等電位レベルとする
-            const centerLo = lo + (bestBin - 0.5) * bin, centerHi = lo + (bestBin + 1.5) * bin;
-            const vals = [];
-            for (let k = start; k < end; k++) { const v = smooth[k]; if (v >= centerLo && v <= centerHi) vals.push(v); }
-            if (!vals.length) return lo + (bestBin + 0.5) * bin;
-            vals.sort((a, b) => a - b);
-            return vals[Math.floor(vals.length / 2)];
-        }
 
-        // ---------------------------------------------------------
-        // PRセグメント（QRS直前の等電位部）のレベル推定   ver 2.5
-        // ---------------------------------------------------------
-        // 基線は本来「QRS直前の等電位線」であり、Q波はここから下向きに離れ始める。
-        // estimateIsoelectric（前R+100ms〜Q直前のヒストグラム最頻値）は窓が広く、
-        // ST部・T波・P波を巻き込むため PR部より 1mm 以上高く出ることがある。
-        // 実測例: PR部が 123px なのに基線が 139px（+1.3mm）。この誤差は
-        //   ・基線が波形より上に描かれる（見た目の異常）
-        //   ・接線と基線の交点が手前に来て T-end が早まり QT が短く出る
-        //   ・Q-onset の振幅条件がP波の下行脚を拾い、マーカーがP波側へ飛ぶ
-        // の3つを同時に引き起こす。
-        //
-        // ここでは「R波から後方へ急峻部を抜け、その直後の平坦部40ms」を取る。
-        // QRS直前の平坦部＝PRセグメントなので、定義どおりの基線が得られる。
-        function estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec) {
-            const pxPerMm = pxPerSec / 25;
-            const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.12 * pxPerSec));
-            if (qLimit >= rLoc - 2) return null;
-            let maxSlope = 0;
-            for (let k = qLimit; k <= rLoc; k++) {
-                const s = Math.abs(smoothedSlope(smooth, k, width));
-                if (s > maxSlope) maxSlope = s;
-            }
-            const steep = Math.max(0.02 * pxPerMm, 0.10 * maxSlope);
-            const floorK = Math.max(prevR + 5, Math.floor(rLoc - 0.25 * pxPerSec));
-            // 1) QRSの急峻な立ち上がり/下がりを後方へ抜ける
-            let k = rLoc - 1;
-            while (k > floorK && Math.abs(smoothedSlope(smooth, k, width)) > steep) k--;
-            // 2) そこから40ms分の平坦サンプルを集め、中央値を取る。
-            //    中央値なので、rS型のように小さいr波が窓に混じっても引きずられない。
-            const span = Math.max(4, Math.round(0.040 * pxPerSec));
-            const vals = [];
-            for (let j = k; j > Math.max(floorK, k - span); j--) {
-                if (Math.abs(smoothedSlope(smooth, j, width)) <= steep) vals.push(smooth[j]);
-            }
-            if (vals.length < 3) return null;
-            vals.sort((a, b) => a - b);
-            return vals[Math.floor(vals.length / 2)];
-        }
-
-        // beat間一貫性制約用: target近傍で最も平坦な等電位窓を再探索
-        function estimateIsoelectricNear(smooth, prevR, roughQ, pxPerSec, target, tol) {
-            const start = Math.max(prevR + Math.floor(0.10 * pxPerSec), prevR + 6);
-            const end = Math.max(roughQ - 3, start + 1);
-            const winLen = Math.max(8, Math.min(30, Math.floor(0.06 * pxPerSec)));
-            if (end - start < winLen) return null;
-            let best = null, bestVar = Infinity;
-            for (let s = start; s + winLen <= end; s += 2) {
-                let sum = 0, sum2 = 0;
-                for (let k = s; k < s + winLen; k++) { const v = smooth[k]; sum += v; sum2 += v * v; }
-                const mean = sum / winLen;
-                const variance = sum2 / winLen - mean * mean;
-                const a = [];
-                for (let k = s; k < s + winLen; k++) a.push(smooth[k]);
-                a.sort((x, y) => x - y);
-                const med = a[Math.floor(winLen / 2)];
-                if (Math.abs(med - target) <= tol && variance < bestVar) { bestVar = variance; best = med; }
-            }
-            return best;
+        // 配列の中央値（元の配列は変更しない。偶数個のときは上側）
+        function medianOf(arr) {
+            const a = [...arr].sort((x, y) => x - y);
+            return a[Math.floor(a.length / 2)];
         }
 
         // 平滑中央差分（±2px）: 単一ピクセルノイズに頑健な勾配
@@ -2279,23 +2242,113 @@
             return (b - a) / 4;
         }
 
-        // =========================================================
-        // Q-onset 検出 (ver2.1)
-        // =========================================================
-        // Part 1: 基線離脱点検出
-        //   「R極値から後方へ遡り、最初に『基線上かつ平坦』がN px連続する区間を見つけ、
-        //     その区間のR側の端を onset とする」で以下3形態を1本のロジックで扱う。
-        //     (1) Q波あり → 基線からQ波へ移行する点
-        //     (2) Q波なし → 基線からR波へ移行する点
-        //     (3) QS pattern → 基線から下向きに下がり始める点
-        //   |smooth - baseline| で判定するため陽性/陰性QRSの分岐が不要。
-        //   連続N条件が要点: Q波の谷底も「基線近傍かつ勾配≈0」を満たしうるが谷では
-        //   数pxしか続かないので run が成立せず、走査は谷とr波を通過して真のPR部に到達する。
+        // QRS の探索窓（R波の手前 120ms）と、その中の最大勾配から決める「平坦」の閾値
+        function qrsWindow(smooth, width, rLoc, prevR, pxPerSec) {
+            const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.12 * pxPerSec));
+            let maxSlope = 0;
+            for (let k = qLimit; k <= rLoc; k++) {
+                const s = Math.abs(smoothedSlope(smooth, k, width));
+                if (s > maxSlope) maxSlope = s;
+            }
+            return { qLimit, maxSlope, slopeTol: Math.max(0.02 * pxPerSec / 25, 0.10 * maxSlope) };
+        }
+
+        // ---------------------------------------------------------
+        // 基線 = PRセグメント（QRS直前の等電位部）の高さ
+        // ---------------------------------------------------------
+        // Q波はここから離れ始め、接線法の T-end もこの高さとの交点で決める。
+        // R波から後方へ遡り、平坦なサンプルが N 個続く最初の区間を PR部とみなして、
+        // そこから 40ms 分の平坦サンプルの中央値を返す。見つからなければ null。
+        //   ・「N 個続く」を要求するのは、rS型（rLoc がS波の谷）で遡るとまず R波の頂点を
+        //     通るため。頂点は平坦でも 1〜2 サンプルしか続かないので素通りできる。
+        //   ・前R〜Qの広い区間の最頻値で決める方式は、ST部・T波・P波を巻き込んで
+        //     PR部より 1mm 以上高く出ることがあるため使わない（estimateIsoelectric 参照）。
+        function estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec) {
+            const { qLimit, slopeTol } = qrsWindow(smooth, width, rLoc, prevR, pxPerSec);
+            if (qLimit >= rLoc - 2) return null;
+            const floorK = Math.max(prevR + 5, Math.floor(rLoc - 0.25 * pxPerSec));
+            const isFlat = k => Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol;
+            const N = Math.max(3, Math.round(0.020 * pxPerSec));
+            let start = -1;
+            for (let k = rLoc - 1, run = 0; k > floorK; k--) {
+                if (isFlat(k)) { if (++run >= N) { start = k + run - 1; break; } }
+                else run = 0;
+            }
+            if (start < 0) return null;
+            const span = Math.max(4, Math.round(0.040 * pxPerSec));
+            const vals = [];
+            for (let j = start; j > Math.max(floorK, start - span); j--) {
+                if (isFlat(j)) vals.push(smooth[j]);
+            }
+            return vals.length >= 3 ? medianOf(vals) : null;
+        }
+
+        // 最後の手段の基線: 前R+100ms 〜 QRS手前の区間で、信号が最も長く留まる高さ
+        // （2px ビンのヒストグラム最頻値）。どの拍でも PR部が取れなかったときだけ使う。
+        function estimateIsoelectric(smooth, prevR, qEnd, pxPerSec) {
+            const start = Math.max(prevR + Math.floor(0.10 * pxPerSec), prevR + 6);
+            const end = Math.max(qEnd, start + 1);
+            if (end - start < 4) {
+                const vals = [];
+                for (let k = Math.max(prevR + 3, qEnd - 15); k < qEnd; k++) vals.push(smooth[k]);
+                return vals.length ? medianOf(vals) : smooth[qEnd];
+            }
+            let lo = Infinity, hi = -Infinity;
+            for (let k = start; k < end; k++) { const v = smooth[k]; if (v < lo) lo = v; if (v > hi) hi = v; }
+            const bin = 2;
+            const hist = new Int32Array(Math.floor((hi - lo) / bin) + 1);
+            for (let k = start; k < end; k++) hist[Math.floor((smooth[k] - lo) / bin)]++;
+            let bestBin = 0;
+            for (let b = 1; b < hist.length; b++) if (hist[b] > hist[bestBin]) bestBin = b;
+            const vals = [];
+            for (let k = start; k < end; k++) {
+                const v = smooth[k];
+                if (v >= lo + (bestBin - 0.5) * bin && v <= lo + (bestBin + 1.5) * bin) vals.push(v);
+            }
+            return vals.length ? medianOf(vals) : lo + (bestBin + 0.5) * bin;
+        }
+
+        // 拍ごとの基線を確定する: 手動指定 > その拍の PR部 > 他の拍の中央値。
+        // PR部が他の拍の中央値から大きく外れた拍（P波や r波を誤って拾った等）も中央値に寄せる。
+        // 許容幅は 1mm（0.1mV）か、拍間のばらつき(MAD)の3倍の大きい方。呼吸などによる
+        // 実際の基線の揺れ（実測で ±0.7mm 程度）は外れ扱いにしない。
+        function resolveBaselines(state, meta) {
+            const { smooth, pxPerSec } = state;
+            const prs = meta.map(m => m.prLevel).filter(v => v != null && isFinite(v));
+            let common = null, tol = Infinity;
+            if (prs.length) {
+                common = medianOf(prs);
+                const mad = medianOf(prs.map(v => Math.abs(v - common)));
+                tol = Math.max(4, pxPerSec / 25, 3 * mad);
+            }
+            for (const m of meta) {
+                if (state.manualBaselines[m.beatId] !== undefined) {
+                    m.baseline = state.manualBaselines[m.beatId];
+                } else if (m.prLevel != null && isFinite(m.prLevel) && Math.abs(m.prLevel - common) <= tol) {
+                    m.baseline = m.prLevel;
+                } else if (common != null) {
+                    m.baseline = common;
+                } else {
+                    const qEnd = Math.max(m.prevR + 7, m.rLoc - Math.max(3, Math.round(0.04 * pxPerSec)));
+                    m.baseline = estimateIsoelectric(smooth, m.prevR, qEnd, pxPerSec);
+                }
+            }
+        }
+
+        // ---------------------------------------------------------
+        // Q-onset
+        // ---------------------------------------------------------
+        // Part 1 (coarseQOnset): 基線離脱点
+        //   R極値から後方へ遡り、最初に「基線上かつ平坦」が N px 続く区間を見つけ、
+        //   その区間の R側の端を onset とする。これで次の3形態を1本のロジックで扱える。
+        //     (1) Q波あり → 基線からQ波へ移る点
+        //     (2) Q波なし → 基線からR波へ移る点
+        //     (3) QS型    → 基線から下がり始める点
+        //   「N px 続く」が要点: Q波の谷底や r波の頂点も一瞬は平坦だが続かないので素通りする。
         //
-        // Part 2: 中心線による精密化（extractCenterline / refineQOnset）
-        //   extractSignalStandard は「画像中心から最も遠い画素」を採るため、基線より
-        //   画像中心側へ向かう偏位（Q波・QS初期下行）がトレース太さ分だけ潰れる。
-        //   Q-onset窓に限りトレース重心（中心線）で再抽出して離脱点を確定する。
+        // Part 2 (refineQOnset): トレース中心線による精密化
+        //   浅いQ波は抽出信号では線の太さに埋もれやすいので、Q-onset 付近に限り
+        //   生画素からトレースの重心を取り直して離脱点を確定する。
         // ---------------------------------------------------------
 
         const CL_LUM_THRESHOLD = 160; // 中心線抽出の暗画素判定輝度
@@ -2335,68 +2388,43 @@
             return out;
         }
 
-        // Part 1: 基線離脱点の粗検出。戻り: 位置(px)
-        function coarseQOnset(smooth, width, rLoc, prevR, baseline, pxPerSec) {
+        // Part 1: 基線離脱点。戻り: 位置(px)
+        //   baseline: その拍の基線（手動指定のこともある） / prLevel: PR部の実測（null可）
+        function coarseQOnset(smooth, width, rLoc, prevR, baseline, prLevel, pxPerSec) {
             const pxPerMm = pxPerSec / 25;
-            const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.12 * pxPerSec)); // 120ms窓
+            const { qLimit, maxSlope, slopeTol } = qrsWindow(smooth, width, rLoc, prevR, pxPerSec);
             if (qLimit >= rLoc - 2) return rLoc;
 
             const A = Math.abs(smooth[rLoc] - baseline);                       // QRS振幅
-            // 「0.5mm相当、ただし4px未満にはしない」。1mm<8px の画像では PR部の
-            // 緩い下降（基線推定はTP部に引かれるため数px低く出る）が0.5mmを超え、
-            // runが途切れて停止位置がbeat毎に数pxずれるため絶対下限を設ける。
+            // 基線からの許容幅: 0.5mm か QRS振幅の6% の小さい方。ただし 4px 未満にはしない
+            // （1mm<8px の画像では PR部のゆるい傾きだけで 0.5mm を超えて run が途切れるため）。
             const ampTol = Math.max(4, Math.min(0.50 * pxPerMm, Math.max(0.15 * pxPerMm, 0.06 * A)));
-            let maxSlope = 0;
-            for (let k = qLimit; k <= rLoc; k++) {
-                const s = Math.abs(smoothedSlope(smooth, k, width));
-                if (s > maxSlope) maxSlope = s;
-            }
-            const slopeTol = Math.max(0.02 * pxPerMm, 0.10 * maxSlope);
             const N = Math.max(3, Math.round(0.010 * pxPerSec));               // 持続10ms
+            // 高さの基準は PR部の実測。基線が手動で大きく動かされているときは基線に従う。
+            const ref = (prLevel != null && Math.abs(prLevel - baseline) <= 1.5 * pxPerMm) ? prLevel : baseline;
 
-            // ver 2.3: 振幅条件の基準はQRS直前の等電位レベル（PR部）をローカル推定して使う。
-            //   引数 baseline は estimateIsoelectric（TP部・ST部を含むヒストグラム最頻値）
-            //   なので、ST部が持ち上がった波形では PR部より 0.5〜1.0mm 高く出ることがある。
-            //   その場合 PR部が振幅条件から外れて run が成立せず、走査が PR部を通り越して
-            //   P波の下行脚で停止し、Q-onset が 70〜100ms も手前へ飛ぶ事故が起きていた。
-            //   rLoc直前200msのうち「平坦なサンプル」の中央値を基準にすればPR部に一致する。
-            // ver 2.5: PR部レベルを基準にする。
-            // 旧実装は「直前200msの平坦サンプルの中央値」だったが、窓にP波と
-            // TP部が混ざるため PR部より高く出て、P波の下行脚が振幅条件に入り
-            // Q-onset がP波側へ飛ぶ事故が起きた（実測で 17px = 60ms のずれ）。
-            let localRef = baseline;
-            {
-                const pr = estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec);
-                if (pr != null && Math.abs(pr - baseline) <= 1.5 * pxPerMm) localRef = pr;
-            }
-
-            let run = 0, coarse = -1;
-            for (let k = rLoc - 1; k >= qLimit; k--) {
-                if (Math.abs(smooth[k] - localRef) <= ampTol && Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) {
-                    run++;
-                    if (run >= N) { coarse = k + run - 1; break; }
+            let coarse = -1;
+            for (let k = rLoc - 1, run = 0; k >= qLimit; k--) {
+                if (Math.abs(smooth[k] - ref) <= ampTol && Math.abs(smoothedSlope(smooth, k, width)) <= slopeTol) {
+                    if (++run >= N) { coarse = k + run - 1; break; }
                 } else {
                     run = 0;
                 }
             }
-            // フォールバック1: 平坦条件のみ（基線推定のずれ・PQ低下・P波融合時）
-            // ver 2.6: 基線から QRS振幅の25%以上離れた点は除外する。
-            //   rS型で rLoc がS波の谷のとき、後方走査はまずR波頂点の平坦部を通る。
-            //   勾配だけで判定するとそこで止まり、マーカーがR波の頂上に立っていた
-            //   （日本光電ホルター 1mm=4.25px の例。PR部が基線より4px低く平坦run不成立）。
+            // 予備1: 持続条件を外し、平坦かつ基線から遠すぎない最初の点。
+            //   「遠すぎない」(QRS振幅の25%以内) は、rS型で R波の頂点に止まらないために必要。
             if (coarse < 0) {
                 const farTol = Math.max(ampTol, 0.25 * A);
                 for (let k = rLoc - 1; k >= qLimit; k--) {
                     if (Math.abs(smoothedSlope(smooth, k, width)) <= 0.20 * maxSlope &&
-                        Math.abs(smooth[k] - localRef) <= farTol) { coarse = k; break; }
+                        Math.abs(smooth[k] - ref) <= farTol) { coarse = k; break; }
                 }
             }
-            // フォールバック2: 窓の下限
+            // 予備2: 探索窓の端
             if (coarse < 0) coarse = qLimit;
-            // サニティガード: R頂点近傍は不正
+            // R頂点そのものは onset になり得ない
             const guard = Math.max(3, Math.floor(0.01 * pxPerSec));
-            if (coarse > rLoc - guard) coarse = rLoc - guard;
-            return coarse;
+            return Math.min(coarse, rLoc - guard);
         }
 
         // Part 2: 中心線で離脱点を精密化
@@ -2448,361 +2476,281 @@
             return { onset: coarse, gateOK: true }; // 離脱点を見つけられず
         }
 
-        function analyzeBeats(state) {
-            const { smooth, rPeaks, pxPerSec, width, manualTEnds, manualQOnsets } = state;
-            if (!state.manualTPeaks) state.manualTPeaks = {};
-            if (!state.manualBaselines) state.manualBaselines = {};
-            const manualTPeaks = state.manualTPeaks;
-            const manualBaselines = state.manualBaselines;
+        // 全拍の Q-onset を決める（手動指定が最優先）。
+        // Part 2 を使うかどうかは拍ごとではなく画像単位の多数決で決める。拍ごとに切り替えると
+        // 同じ画像の中で方式が混ざり、拍間で 1〜2px の系統差が出て QT のばらつきが増える。
+        function resolveQOnsets(state, meta) {
+            const { smooth, width, pxPerSec } = state;
+            let gateOK = 0;
+            for (const m of meta) {
+                m.coarseQ = coarseQOnset(smooth, width, m.rLoc, m.prevR, m.baseline, m.prLevel, pxPerSec);
+                const res = refineQOnset(state, m.prevR, m.baseline, m.coarseQ);
+                m.refinedQ = res.onset;
+                m.refineGateOK = res.gateOK;
+                if (res.gateOK) gateOK++;
+            }
+            const useRefine = meta.length > 0 && gateOK * 2 > meta.length;
+            state.qOnsetMode = useRefine ? 'centerline' : 'coarse';
+            for (const m of meta) {
+                m.qOnset = (state.manualQOnsets[m.beatId] !== undefined) ? state.manualQOnsets[m.beatId]
+                    : (useRefine && m.refineGateOK) ? m.refinedQ : m.coarseQ;
+            }
+        }
 
-            // ============================================================
-            // Pass 1: 各beatの粗Q-onstと基線候補を算出
-            // ============================================================
+        // ---------------------------------------------------------
+        // T波を探す時間範囲（RR に合わせて伸縮する）
+        // ---------------------------------------------------------
+        // 高心拍（≈150bpm, RR≈400ms）では T波と次の P波が接近するので、各境界を
+        // 「絶対時間」と「RR の割合」の小さい方に制限する。低心拍では絶対時間が、
+        // 高心拍では RR 比が効く。
+        //   tStart     : QRS直後（100ms か RRの18%）
+        //   tLimit     : T波下行脚を探す上限（次R手前のP波を避け、RRの85%以内）
+        //   tPeakLimit : T頂点を探す上限（tLimit よりさらに手前。P波を頂点と誤らないため）
+        function tWaveGates(rLoc, nextR, pxPerSec) {
+            const rrLen = nextR - rLoc;
+            const tStart = Math.floor(rLoc + Math.min(Math.max(0.10 * pxPerSec, 16), 0.18 * rrLen));
+            const pGuard = Math.min(Math.max(0.12 * pxPerSec, 18), 0.28 * rrLen);
+            const tLimit = Math.min(nextR - pGuard, rLoc + Math.min(Math.max(0.80 * pxPerSec, 0.55 * rrLen), 0.85 * rrLen));
+            const tPeakLimit = Math.max(tStart + 1,
+                Math.min(tLimit, nextR - Math.min(Math.max(0.14 * pxPerSec, 24), 0.30 * rrLen)));
+            return { tStart, tLimit, tPeakLimit };
+        }
+
+        // T波の極性: 探索範囲の最大・最小のうち、基線から遠い方が T波
+        function tWaveIsNegative(smooth, from, to, baseline) {
+            let hi = -Infinity, lo = Infinity;
+            for (let k = from; k < to; k++) {
+                if (smooth[k] > hi) hi = smooth[k];
+                if (smooth[k] < lo) lo = smooth[k];
+            }
+            return Math.abs(lo - baseline) > Math.abs(hi - baseline);
+        }
+
+        // ---------------------------------------------------------
+        // 接線法による T-end
+        // ---------------------------------------------------------
+        // T頂点のあと基線へ戻る脚（陽性Tなら下行脚、陰性Tなら上行脚）の最急点で接線を引き、
+        // 基線との交点を T-end とする。
+        //   戻り: { tPeak, tEnd, x1(接点x), y1(接点y), minSlope(接線の傾き), isNegativeT }
+        //         計測できないときは { reject: 理由, detail: 判定に使った値 }
+        function measureTEnd(state, m) {
+            const { smooth, width, pxPerSec } = state;
+            const { rLoc, nextR, baseline, beatId } = m;
+            const { tStart, tLimit, tPeakLimit } = tWaveGates(rLoc, nextR, pxPerSec);
+            const detail = { rLoc, nextR, baseline, tStart, tLimit, tPeakLimit };
+            const reject = reason => ({ reject: reason, detail });
+            if (tLimit <= tStart) return reject('T波を探す範囲が取れない（次のR波が近すぎる）');
+
+            const isNegativeT = tWaveIsNegative(smooth, tStart, tPeakLimit, baseline);
+            const sign = isNegativeT ? -1 : 1;            // 陽性Tを基準に符号をそろえる
+            detail.isNegativeT = isNegativeT;
+
+            // T頂点（手動指定があればそれ）
+            let tPeak = state.manualTPeaks[beatId];
+            if (tPeak === undefined) {
+                tPeak = -1;
+                let best = -Infinity;
+                for (let k = tStart; k < tPeakLimit; k++) {
+                    if (sign * smooth[k] > best) { best = sign * smooth[k]; tPeak = k; }
+                }
+                if (tPeak < 0) return reject('T波が見つからない');
+                if (Math.abs(smooth[tPeak] - baseline) < 3) return reject('T波が小さすぎる（基線から3px未満）');
+            }
+            detail.tPeak = tPeak;
+
+            // 接線を探す範囲の終わり descEnd:
+            //   (a) 脚が基線まで戻った点。T波のあとの P波やペーシングスパイクの急峻な
+            //       勾配を最急点と誤らないため。
+            //   (b) 基線まで戻らない場合（高心拍で T と P が融合）は、脚の向きが反転して
+            //       hold px 続いた点（T-P間の谷）。基線に戻った場合には使わない: T頂点付近の
+            //       1px のゆらぎを反転と誤って、頂点直後で探索を打ち切ってしまうため。
+            // 最終拍は次のR波が無く、tLimit は画像右端からの逆算で手前に寄りすぎる。
+            // 次のP波は (a)(b) で避けられるので、接線探しは画像端まで許す。
+            const slopeEnd = (nextR >= width) ? width - 1 : Math.min(tLimit, width - 1);
+            let descEnd = slopeEnd, returnedToBase = false;
+            for (let k = tPeak + 1; k < slopeEnd; k++) {
+                if (sign * (smooth[k] - baseline) <= 0) { descEnd = k; returnedToBase = true; break; }
+            }
+            if (!returnedToBase) {
+                const minGap = Math.max(2, Math.round(0.02 * pxPerSec));
+                const turnTh = 0.25;      // 抽出信号の勾配の分解能(≈0.08)の3倍
+                const hold = Math.max(2, Math.round(0.008 * pxPerSec));
+                let started = false;
+                for (let k = tPeak + minGap; k < slopeEnd - 1; k++) {
+                    const s = sign * smoothedSlope(smooth, k, width);
+                    if (s < -turnTh) { started = true; continue; }
+                    if (!started || s <= turnTh) continue;
+                    let held = true;
+                    for (let j = k; j < Math.min(k + hold, slopeEnd - 1); j++) {
+                        if (sign * smoothedSlope(smooth, j, width) <= turnTh) { held = false; break; }
+                    }
+                    if (held) { descEnd = k; break; }
+                }
+            }
+            detail.slopeEnd = slopeEnd; detail.descEnd = descEnd; detail.returnedToBase = returnedToBase;
+
+            // 最急点
+            let slopeIdx = -1, steepest = 0;
+            for (let k = tPeak; k < descEnd - 1; k++) {
+                const s = sign * smoothedSlope(smooth, k, width);
+                if (s < steepest) { steepest = s; slopeIdx = k; }
+            }
+
+            // T-end を測る高さ。ふつうは基線。ただし脚が基線よりはっきり手前（1mm 以上かつ
+            // T波の高さの 25% 以上）で平らになる場合（基線の揺れ・U波・T-P融合）は、平らに
+            // なり始めた点（折れ目）の高さを使う。そのまま基線まで接線を延ばすと、T波が
+            // 終わったあとの区間まで QT に含めてしまう（実測で +28ms）。
+            // 基線の 1〜3px 手前で止まるだけの普通の拍には適用しない。
+            let endLevel = baseline;
+            if (!returnedToBase && slopeIdx >= 0) {
+                const flatTh = 0.2 * Math.abs(steepest);
+                const hold = Math.max(2, Math.round(0.012 * pxPerSec));
+                const minGap = Math.max(pxPerSec / 25, 0.25 * Math.abs(smooth[tPeak] - baseline));
+                for (let k = slopeIdx + 1; k + hold <= descEnd; k++) {
+                    let flat = true;
+                    for (let j = k; j < k + hold; j++) {
+                        if (Math.abs(smoothedSlope(smooth, j, width)) > flatTh) { flat = false; break; }
+                    }
+                    if (flat) {
+                        if (Math.abs(smooth[k] - baseline) > minGap) endLevel = smooth[k];
+                        break;
+                    }
+                }
+            }
+            detail.endLevel = endLevel;
+
+            let tEnd, contactX, contactY, slope;
+            if (slopeIdx >= 0) {
+                // 最急点の前後 約12ms を直線回帰して接線とする（1点の勾配より安定）。
+                // 回帰の傾きが脚の向きと逆になったときは最急点の勾配をそのまま使う。
+                const reg = Math.max(2, Math.round(0.012 * pxPerSec));
+                let n = 0, sx = 0, sy = 0, sxx = 0, sxy = 0;
+                for (let k = Math.max(0, slopeIdx - reg); k <= Math.min(width - 1, slopeIdx + reg); k++) {
+                    n++; sx += k; sy += smooth[k]; sxx += k * k; sxy += k * smooth[k];
+                }
+                slope = sign * steepest;
+                let intercept = smooth[slopeIdx] - slope * slopeIdx;
+                const denom = n * sxx - sx * sx;
+                if (Math.abs(denom) > 1e-6) {
+                    const rs = (n * sxy - sx * sy) / denom;
+                    if (sign * rs < 0) { slope = rs; intercept = (sy - rs * sx) / n; }
+                }
+                contactX = slopeIdx;
+                contactY = slope * slopeIdx + intercept;
+                tEnd = (endLevel - intercept) / slope;        // 接線と基線（または折れ目の高さ）の交点
+            } else {
+                // 最急点が取れない（脚がほぼ平ら）: T頂点のあと基線に最も近づく点を T-end とする
+                tEnd = -1;
+                for (let k = tPeak + 2; k < slopeEnd; k++) {
+                    if (Math.abs(smooth[k] - baseline) < 2) { tEnd = k; break; }
+                }
+                if (tEnd < 0) {
+                    let minDist = Infinity;
+                    for (let k = tPeak + 2; k < slopeEnd; k++) {
+                        const d = Math.abs(smooth[k] - baseline);
+                        if (d < minDist) { minDist = d; tEnd = k; }
+                    }
+                }
+                if (tEnd < 0) return reject('T波の終わりが決められない');
+                contactX = Math.max(tPeak, tEnd - 5);
+                contactY = smooth[contactX];
+                slope = smoothedSlope(smooth, contactX, width) || -0.1;
+            }
+            detail.contactX = contactX; detail.slope = slope; detail.tEnd = tEnd;
+
+            // 交点が接点より手前、または接点から 100ms 以上先なら不採用。
+            // 接線法は接点から基線まで外挿するので交点が探索範囲の少し外に出るのは正常だが、
+            // ほぼ平らな接線は交点がはるか先へ飛ぶ（画像端で切れた T波・平坦すぎる T波）。
+            const maxExtrap = Math.max(0.10 * pxPerSec, 20);
+            if (!isFinite(tEnd) || tEnd <= contactX || tEnd > Math.min(width - 1, contactX + maxExtrap)) {
+                return reject('接線と基線の交点が不正（T波が画像端で切れている／平坦すぎる）');
+            }
+            return { tPeak, tEnd, x1: contactX, y1: contactY, minSlope: slope, isNegativeT };
+        }
+
+        // 接点を手動で指定したとき: その点の勾配で接線を引き、基線との交点を T-end とする
+        function measureManualTangent(state, m) {
+            const { smooth, width, pxPerSec } = state;
+            const { tStart, tLimit, tPeakLimit } = tWaveGates(m.rLoc, m.nextR, pxPerSec);
+            const cx = Math.max(1, Math.min(width - 2, Math.floor(state.manualTEnds[m.beatId])));
+            const slope = (smooth[cx + 1] - smooth[cx - 1]) / 2;
+            const cy = smooth[cx];
+            return {
+                tPeak: state.manualTPeaks[m.beatId] || cx - 10,
+                tEnd: (slope !== 0) ? (m.baseline - cy) / slope + cx : cx + 20,
+                x1: cx, y1: cy, minSlope: slope,
+                isNegativeT: tLimit > tStart && tWaveIsNegative(smooth, tStart, tPeakLimit, m.baseline)
+            };
+        }
+
+        // ---------------------------------------------------------
+        // 全体の流れ
+        // ---------------------------------------------------------
+        // 結果は state.beats（採用した拍）と state.rejected（不採用の拍と理由）に入る。
+        function analyzeBeats(state) {
+            const { smooth, rPeaks, pxPerSec, width } = state;
+            for (const key of ['manualTEnds', 'manualQOnsets', 'manualTPeaks', 'manualBaselines']) {
+                if (!state[key]) state[key] = {};
+            }
+
+            // 1) 拍ごとの基本量と PR部の高さ（拍番号 = 何番目のR波か。先頭のR波は RR が無いので対象外）
             const meta = [];
             for (let i = 1; i < rPeaks.length; i++) {
                 const rLoc = rPeaks[i], prevR = rPeaks[i - 1];
                 const rrSec = (rLoc - prevR) / pxPerSec;
-                const hr = 60 / rrSec;
-                const beatId = i;
-
-                // 粗Q-onset推定（基線なし）。基線推定窓の端を決めるためだけに使う。
-                // 窓は精密検出と同じ120msに揃える。
-                let roughQ = rLoc;
-                const qLimit = Math.max(prevR + 10, Math.floor(rLoc - 0.12 * pxPerSec));
-                if (state.isInvertedQRS) {
-                    let maxVal = smooth[rLoc];
-                    for (let k = rLoc - 1; k >= qLimit; k--) {
-                        if (smooth[k] >= maxVal) { maxVal = smooth[k]; roughQ = k; }
-                        else if (smooth[k] < maxVal - 3) break;
-                    }
-                } else {
-                    roughQ = rLoc;
-                    for (let k = rLoc - 1; k >= qLimit; k--) {
-                        if (smooth[k] <= smooth[roughQ]) roughQ = k;
-                        else if (smooth[k] > smooth[roughQ] + 3) break;
-                    }
-                }
-                // サニティガード: R頂点に張り付いた場合は窓中央へ退避
-                const roughGuard = Math.max(3, Math.floor(0.01 * pxPerSec));
-                if (roughQ > rLoc - roughGuard) roughQ = Math.max(qLimit, rLoc - roughGuard);
-
-                // ver 2.5: 基線候補は PR部レベルを優先する。
-                // estimateIsoelectric は窓が広くST-T部に引かれて高く出るため、
-                // 取れなかったときのフォールバックとしてのみ使う。
-                const prCand = estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec);
-                const baseCand = (prCand != null) ? prCand
-                    : estimateIsoelectric(smooth, prevR, roughQ, pxPerSec);
-                meta.push({ i, beatId, rLoc, prevR, rrSec, hr, roughQ, baseCand });
-            }
-
-            // ============================================================
-            // 基線のbeat間一貫性制約（ドリフト抑制）
-            //   全beatの等電位候補の中央値を基準(globalBase)とし、
-            //   許容偏差tol（MADベース）を超える外れ値のみ基準近傍へ引き戻す。
-            //   → 真の緩やかな基線変動は許容しつつ、誤検出による上下ブレを除去。
-            // ============================================================
-            const cands = meta.map(m => m.baseCand).filter(v => v != null && isFinite(v));
-            let globalBase = null, tol = 6;
-            if (cands.length) {
-                const sc = [...cands].sort((a, b) => a - b);
-                globalBase = sc[Math.floor(sc.length / 2)];
-                const devs = cands.map(v => Math.abs(v - globalBase)).sort((a, b) => a - b);
-                const mad = devs[Math.floor(devs.length / 2)];
-                tol = Math.max(6, 3 * mad);
-            }
-
-            // ============================================================
-            // Pass 2a: 基線確定（手動 > 一貫性制約 > 候補）
-            // ============================================================
-            for (const m of meta) {
-                const { beatId, rLoc, prevR, roughQ } = m;
-                let baseline;
-                if (manualBaselines[beatId] !== undefined) {
-                    baseline = manualBaselines[beatId];
-                } else {
-                    baseline = m.baseCand;
-                    if (baseline == null || !isFinite(baseline)) {
-                        baseline = (globalBase != null) ? globalBase : smooth[roughQ];
-                    } else if (globalBase != null && Math.abs(baseline - globalBase) > tol) {
-                        // 外れ値: globalBase近傍で平坦窓を再探索、無ければクランプ
-                        const refined = estimateIsoelectricNear(smooth, prevR, roughQ, pxPerSec, globalBase, tol);
-                        baseline = (refined != null) ? refined : globalBase;
-                    }
-                }
-                m.baseline = baseline;
-            }
-
-            // ============================================================
-            // Pass 2b: Q-onset検出（Part1 基線離脱点 → Part2 中心線精密化）
-            //   Part2の採否はbeat毎ではなく画像単位（多数決）で決める。
-            //   beat毎に切り替えると同一画像内で方式が混在し、beat間で系統的に
-            //   1〜2pxずれてQTのばらつきが増えるため。
-            // ============================================================
-            for (const m of meta) {
-                m.coarseQ = coarseQOnset(smooth, width, m.rLoc, m.prevR, m.baseline, pxPerSec);
-            }
-            let gateOKCount = 0;
-            for (const m of meta) {
-                const res = refineQOnset(state, m.prevR, m.baseline, m.coarseQ);
-                m.refinedQ = res.onset;
-                m.refineGateOK = res.gateOK;
-                if (res.gateOK) gateOKCount++;
-            }
-            const useRefine = meta.length > 0 && gateOKCount * 2 > meta.length;
-            state.qOnsetMode = useRefine ? 'centerline' : 'coarse';
-            for (const m of meta) {
-                m.qOnset = (useRefine && m.refineGateOK) ? m.refinedQ : m.coarseQ;
-            }
-
-            // ============================================================
-            // Pass 2c: QT算出
-            // ============================================================
-            const beats = [];
-            for (const m of meta) {
-                const { i, beatId, rLoc, prevR, rrSec, hr } = m;
-                const baseline = m.baseline;
-
-                // Q-onset（手動指定が最優先）
-                const qTrough = (manualQOnsets && manualQOnsets[beatId] !== undefined)
-                    ? manualQOnsets[beatId] : m.qOnset;
-
-                // Manual tangent contact point override (manualTEndsは接触点のx座標を保存)
-                if (manualTEnds[beatId] !== undefined) {
-                    const contactX = Math.floor(manualTEnds[beatId]);
-                    const tStartM = Math.floor(rLoc + Math.max(0.12 * pxPerSec, 20));
-                    const nextRM = (i < rPeaks.length - 1) ? rPeaks[i + 1] : width;
-                    const tLimitM = Math.min(nextRM - Math.max(0.15 * pxPerSec, 20), rLoc + Math.max(0.8 * pxPerSec, (nextRM - rLoc) * 0.75));
-                    let isNegativeT = false;
-                    if (tLimitM > tStartM) {
-                        let tMaxM = -Infinity, tMinM = Infinity;
-                        for (let k = tStartM; k < tLimitM; k++) {
-                            if (smooth[k] > tMaxM) tMaxM = smooth[k];
-                            if (smooth[k] < tMinM) tMinM = smooth[k];
-                        }
-                        isNegativeT = Math.abs(tMinM - baseline) > Math.abs(tMaxM - baseline);
-                    }
-                    // 接触点での勾配を算出
-                    const cx = Math.max(1, Math.min(width - 2, contactX));
-                    const cSlope = (smooth[cx + 1] - smooth[cx - 1]) / 2;
-                    const cy = smooth[cx];
-                    const tEnd = (cSlope !== 0) ? (baseline - cy) / cSlope + cx : cx + 20;
-                    const tPeak = manualTPeaks[beatId] || cx - 10;
-                    const qtMs = (tEnd - qTrough) / pxPerSec * 1000;
-                    beats.push({
-                        id: beatId, rr: rrSec * 1000, hr, qt: qtMs,
-                        qtcB: qtMs / Math.sqrt(rrSec), qtcF: qtMs / Math.cbrt(rrSec),
-                        qOnset: qTrough, tPeak, tEnd, x1: cx, minSlope: cSlope, y1: cy, baseline, rLoc, prevR, isManual: true,
-                        isNegativeT
-                    });
-                    continue;
-                }
-
-                const nextR = (i < rPeaks.length - 1) ? rPeaks[i + 1] : width;
-                const rrLen = nextR - rLoc;
-                // --- T波探索の時間ゲート（RRに合わせて可変）---
-                // 高心拍(≈150bpm, RR≈400ms)ではT波・P波が接近するため、固定時間ゲート
-                // では探索窓が潰れる／T頂点を取りこぼす。各ゲートを「絶対時間」と
-                // 「RRの割合」の小さい方に制限し、低心拍では従来同等、高心拍では
-                // RR比で自動的に圧縮して破綻を防ぐ。
-                //   tStart : QRS直後のJ点相当（≥60ms相当 or RRの18%の小さい方）
-                //   pGuard : 次R手前のP波ガード（≥120ms or RRの28%の小さい方）
-                //   tLimit : T波下行脚の探索上限（RRの85%以内）
-                const tStart = Math.floor(rLoc + Math.min(Math.max(0.10 * pxPerSec, 16), 0.18 * rrLen));
-                const pGuard = Math.min(Math.max(0.12 * pxPerSec, 18), 0.28 * rrLen);
-                const tLimit = Math.min(nextR - pGuard, rLoc + Math.min(Math.max(0.80 * pxPerSec, 0.55 * rrLen), 0.85 * rrLen));
-                if (tLimit <= tStart) continue;
-
-                // --- T-peak/極性のスキャン範囲（P波除外・RR可変ガード） ---
-                // 速い心拍ではT波直後にP波が接近するため、次R波の手前をT-peak探索から
-                // 除外してP波を最大値として誤検出するのを防ぐ。ガード幅も絶対時間とRR比の
-                // 小さい方にして、LQT等でT波が遅い場合の切り落としを防ぎつつ高心拍に追従。
-                // （接線の下行脚探索はdescEnd=基線復帰点／T-P谷まで許容）
-                const tPeakLimit = Math.max(tStart + 1, Math.min(tLimit, nextR - Math.min(Math.max(0.14 * pxPerSec, 24), 0.30 * rrLen)));
-
-                // --- T波極性の自動判定 ---
-                let tMaxVal = -Infinity, tMinVal = Infinity;
-                for (let k = tStart; k < tPeakLimit; k++) {
-                    if (smooth[k] > tMaxVal) tMaxVal = smooth[k];
-                    if (smooth[k] < tMinVal) tMinVal = smooth[k];
-                }
-                const isNegativeT = Math.abs(tMinVal - baseline) > Math.abs(tMaxVal - baseline);
-
-                // T-peak (陽性: 最大値, 陰性: 最小値=谷)
-                let tPeak;
-                if (manualTPeaks[beatId] !== undefined) {
-                    tPeak = manualTPeaks[beatId];
-                } else {
-                    if (isNegativeT) {
-                        let tMin = Infinity; tPeak = -1;
-                        for (let k = tStart; k < tPeakLimit; k++) { if (smooth[k] < tMin) { tMin = smooth[k]; tPeak = k; } }
-                    } else {
-                        let tMax = -Infinity; tPeak = -1;
-                        for (let k = tStart; k < tPeakLimit; k++) { if (smooth[k] > tMax) { tMax = smooth[k]; tPeak = k; } }
-                    }
-                    if (tPeak === -1) continue;
-
-                    // T-peak振幅フィルタ: 基線からの偏差が小さすぎる場合はノイズと判定
-                    const tAmp = Math.abs(smooth[tPeak] - baseline);
-                    if (tAmp < 3) continue;
-                }
-
-                // 勾配探索 (陽性: 最急下り勾配, 陰性: 最急上り勾配)
-                // tLimitまで探索（200ms制限を撤廃）
-                const slopeEnd = Math.min(tLimit, width - 1);
-                // 勾配探索の上限を「T波下行脚が基線へ戻る点」に制限する。
-                // これによりT波の後に出現する心房ペーシングスパイク/P波の
-                // 急峻な立ち上がり・立ち下がりを最急勾配として誤検出するのを防ぐ。
-                let descEnd = slopeEnd;
-                let returnedToBase = false;
-                for (let k = tPeak + 1; k < slopeEnd; k++) {
-                    // 陽性T: 山から下行して基線以下に到達したら終了
-                    // 陰性T: 谷から上行して基線以上に到達したら終了
-                    if (isNegativeT ? (smooth[k] >= baseline) : (smooth[k] <= baseline)) {
-                        descEnd = k;
-                        returnedToBase = true;
-                        break;
-                    }
-                }
-                // 高心拍対策: T波がP波と融合し基線へ戻らない場合、下行脚探索が
-                // 続くP波の立ち上がりまで伸びて最急勾配を誤検出する。そこでT頂点直後の
-                // 「T-P谷(nadir=下行が反転して上行へ転じる最初の谷)」で探索上限を追加制限する。
-                //
-                // ver 2.3: このガードは「基線に戻らなかった場合」に限定する。
-                //   基線復帰点が見つかった時点で探索範囲は既にP波の手前で閉じており、
-                //   谷ガードを重ねる必要はない。むしろT波頂上付近の1px程度のゆらぎ
-                //   （抽出信号は1/3px刻みなので平滑中央差分の最小分解能は約0.083）を
-                //   「反転」と誤認して探索をT波の頂上直後で打ち切り、ほぼ平坦な接線を
-                //   引いてしまう。その結果 tEnd が大きく後方へ飛び、
-                //   「tEnd > slopeEnd」でbeatごと棄却される事故が起きていた。
-                // あわせて反転判定を量子化ノイズより十分上に上げ、持続性も要求する。
-                if (!returnedToBase) {
-                    const minGap = Math.max(2, Math.round(0.02 * pxPerSec)); // T頂点直後の微小ゆらぎを無視
-                    const turnTh = 0.25;                                     // 量子化分解能(≈0.083)の3倍
-                    const hold = Math.max(2, Math.round(0.008 * pxPerSec));  // 反転の持続px数
-                    let nadir = descEnd;
-                    let started = false;
-                    for (let k = tPeak + minGap; k < slopeEnd - 1; k++) {
-                        const s = smoothedSlope(smooth, k, width);
-                        const desc = isNegativeT ? (s > turnTh) : (s < -turnTh);
-                        const rev = isNegativeT ? (s < -turnTh) : (s > turnTh);
-                        if (desc) { started = true; continue; }
-                        if (started && rev) {
-                            // 反転が hold px 続くことを確認（単発のゆらぎを除外）
-                            let ok = true;
-                            for (let j = k; j < Math.min(k + hold, slopeEnd - 1); j++) {
-                                const sj = smoothedSlope(smooth, j, width);
-                                if (!(isNegativeT ? (sj < -turnTh) : (sj > turnTh))) { ok = false; break; }
-                            }
-                            if (ok) { nadir = k; break; }
-                        }
-                    }
-                    descEnd = Math.min(descEnd, nadir);
-                }
-                // 最急勾配点を平滑微分(±2px)で探索 → 単一ピクセルノイズに頑健
-                let bestSlope = 0, slopeIdx = -1;
-                if (isNegativeT) {
-                    for (let k = tPeak; k < descEnd - 1; k++) {
-                        const s = smoothedSlope(smooth, k, width);
-                        if (s > bestSlope) { bestSlope = s; slopeIdx = k; }
-                    }
-                } else {
-                    for (let k = tPeak; k < descEnd - 1; k++) {
-                        const s = smoothedSlope(smooth, k, width);
-                        if (s < bestSlope) { bestSlope = s; slopeIdx = k; }
-                    }
-                }
-
-                const slopeValid = isNegativeT ? (slopeIdx >= 0 && bestSlope > 0) : (slopeIdx >= 0 && bestSlope < 0);
-                let tEnd, contactX, contactY;
-                if (slopeValid) {
-                    // 最急点近傍±reg(約12ms)で線形回帰し、頑健な接線勾配・切片を求める
-                    // → 陰性T・速い心拍・にじみ波形でも接線が安定
-                    const reg = Math.max(2, Math.round(0.012 * pxPerSec));
-                    let n = 0, sx = 0, sy = 0, sxx = 0, sxy = 0;
-                    for (let k = slopeIdx - reg; k <= slopeIdx + reg; k++) {
-                        if (k < 0 || k >= width) continue;
-                        n++; sx += k; sy += smooth[k]; sxx += k * k; sxy += k * smooth[k];
-                    }
-                    const denom = n * sxx - sx * sx;
-                    let regSlope = bestSlope, intercept = smooth[slopeIdx] - bestSlope * slopeIdx;
-                    if (Math.abs(denom) > 1e-6) {
-                        const rs = (n * sxy - sx * sy) / denom;
-                        // 回帰勾配が正しい符号のときのみ採用（誤った平坦化を防ぐ）
-                        if ((isNegativeT && rs > 0) || (!isNegativeT && rs < 0)) {
-                            regSlope = rs;
-                            intercept = (sy - regSlope * sx) / n;
-                        }
-                    }
-                    contactX = slopeIdx;
-                    contactY = regSlope * slopeIdx + intercept;
-                    bestSlope = regSlope;
-                    tEnd = (baseline - intercept) / regSlope; // 接線と基線の交点
-                } else {
-                    // フォールバック: T-peak後に信号が基線の±2px以内に戻る点
-                    tEnd = -1;
-                    for (let k = tPeak + 2; k < slopeEnd; k++) {
-                        if (Math.abs(smooth[k] - baseline) < 2) { tEnd = k; break; }
-                    }
-                    if (tEnd < 0) {
-                        let minDist = Infinity;
-                        for (let k = tPeak + 2; k < slopeEnd; k++) {
-                            const d = Math.abs(smooth[k] - baseline);
-                            if (d < minDist) { minDist = d; tEnd = k; }
-                        }
-                    }
-                    if (tEnd < 0) continue;
-                    slopeIdx = Math.max(tPeak, tEnd - 5);
-                    bestSlope = smoothedSlope(smooth, slopeIdx, width) || -0.1;
-                    contactX = slopeIdx;
-                    contactY = smooth[slopeIdx];
-                }
-
-                // T-endの妥当性: 無効・接点より前・探索範囲超過なら不採用
-                // （画像端で切れたT波・平坦すぎるT波を捏造せず除外する）
-                // ver 2.5: 上限を slopeEnd（T波の探索窓）から「接点からの外挿距離」へ変更。
-                //   接線法は下行脚の接点から基線まで外挿するものなので、交点が探索窓の
-                //   数px外に出るのは正常。実際、最終拍は nextR=画像右端 でゲートが縮むため、
-                //   T波が画像内にあるのに 0.7〜12px 差で棄却されていた
-                //   （test_260903 b5、test_lqt b5）。
-                //   一方 ver2.3 で問題になった「ほぼ平坦な接線による暴走」は外挿距離が
-                //   287ms に達しており、100ms 上限で確実に弾ける。
-                const maxExtrap = Math.max(0.10 * pxPerSec, 20);
-                if (!isFinite(tEnd) || tEnd <= contactX ||
-                    tEnd > Math.min(width - 1, contactX + maxExtrap)) continue;
-
-                const qtMs = (tEnd - qTrough) / pxPerSec * 1000;
-
-                // QT生理学的範囲チェック (200-700ms)
-                if (qtMs < 200 || qtMs > 700) continue;
-
-                beats.push({
-                    id: beatId, rr: rrSec * 1000, hr, qt: qtMs,
-                    qtcB: qtMs / Math.sqrt(rrSec), qtcF: qtMs / Math.cbrt(rrSec),
-                    qOnset: qTrough, tPeak, tEnd, x1: contactX, minSlope: bestSlope, y1: contactY, baseline, rLoc, prevR,
-                    isManual: !!(manualTPeaks[beatId] !== undefined),
-                    isNegativeT
+                meta.push({
+                    beatId: i, rLoc, prevR, rrSec,
+                    nextR: (i < rPeaks.length - 1) ? rPeaks[i + 1] : width,
+                    prLevel: estimatePrLevel(smooth, width, rLoc, prevR, pxPerSec)
                 });
             }
 
-            // === 外れ値beatの除外（平均QT/QTcの汚染を防ぐ） ===
-            // ストリップ内のQT中央値から大きく外れるbeatを頑健に除外する。
-            //   - 画像端で切れたT波による過小/過大QT
-            //   - R波検出漏れによる二重RR間隔beat
-            // 手動修正済みbeatは常に保持する。
+            // 2) 基線  3) Q-onset
+            resolveBaselines(state, meta);
+            resolveQOnsets(state, meta);
+
+            // 4) T-end と QT
+            let beats = [];
+            const rejected = [];
+            for (const m of meta) {
+                const manualTangent = state.manualTEnds[m.beatId] !== undefined;
+                const t = manualTangent ? measureManualTangent(state, m) : measureTEnd(state, m);
+                if (t.reject) { rejected.push({ id: m.beatId, reason: t.reject, detail: t.detail }); continue; }
+                const qt = (t.tEnd - m.qOnset) / pxPerSec * 1000;
+                if (!manualTangent && (qt < 200 || qt > 700)) {
+                    rejected.push({ id: m.beatId, reason: 'QTが生理的範囲外（200〜700ms）',
+                        detail: { rLoc: m.rLoc, nextR: m.nextR, qOnset: m.qOnset, tPeak: t.tPeak, tEnd: t.tEnd, qt } });
+                    continue;
+                }
+                beats.push({
+                    id: m.beatId, rr: m.rrSec * 1000, hr: 60 / m.rrSec, qt,
+                    qtcB: qt / Math.sqrt(m.rrSec), qtcF: qt / Math.cbrt(m.rrSec),
+                    qOnset: m.qOnset, tPeak: t.tPeak, tEnd: t.tEnd, x1: t.x1, minSlope: t.minSlope, y1: t.y1,
+                    baseline: m.baseline, rLoc: m.rLoc, prevR: m.prevR,
+                    isManual: manualTangent || state.manualTPeaks[m.beatId] !== undefined,
+                    isNegativeT: t.isNegativeT
+                });
+            }
+
+            // 5) 他の拍から大きく外れる拍を除く（平均 QT/QTc を汚さないため）。
+            //    画像端で切れた T波や、R波の検出漏れで RR が倍になった拍が対象。
+            //    手動修正した拍は必ず残す。残りが2拍未満になるなら何も除かない。
             if (beats.length >= 3) {
-                const qts = beats.map(b => b.qt).sort((a, b) => a - b);
-                const medQT = qts[Math.floor(qts.length / 2)];
-                const rrs = beats.map(b => b.rr).sort((a, b) => a - b);
-                const medRR = rrs[Math.floor(rrs.length / 2)];
+                const medQT = medianOf(beats.map(b => b.qt)), medRR = medianOf(beats.map(b => b.rr));
                 const qtTol = Math.max(60, 0.22 * medQT);
-                const filtered = beats.filter(b =>
-                    b.isManual ||
-                    (Math.abs(b.qt - medQT) <= qtTol && b.rr <= medRR * 1.6 && b.rr >= medRR * 0.5)
-                );
-                if (filtered.length >= 2) { beats.length = 0; beats.push(...filtered); }
+                const keep = b => b.isManual ||
+                    (Math.abs(b.qt - medQT) <= qtTol && b.rr <= medRR * 1.6 && b.rr >= medRR * 0.5);
+                if (beats.filter(keep).length >= 2) {
+                    for (const b of beats) {
+                        if (!keep(b)) rejected.push({ id: b.id, reason: '他の拍から大きく外れる（QT または RR）',
+                            detail: { qt: b.qt, rr: b.rr, medQT, medRR } });
+                    }
+                    beats = beats.filter(keep);
+                }
             }
 
             state.beats = beats;
+            state.rejected = rejected;
         }
 
         function recalcSingleQT(state, beatIndex) {

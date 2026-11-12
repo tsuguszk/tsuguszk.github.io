@@ -60,10 +60,10 @@
           <h1>QTc measurement app</h1>
           <p class="qtc-lede">Just <b>paste an ECG image</b> and the app measures the QT interval by the tangent method and calculates QTc (Bazett and Fridericia). The results come out as text you can paste straight into an electronic medical record. The interface is in Japanese.</p>
           <!-- 更新日（リリースのたびに書き換える） -->
-          <p class="qtc-badge"><span>Latest version 2.6</span>2026/10/23 update</p>
+          <p class="qtc-badge"><span>Latest version 2.7</span>2026/11/12 update</p>
           <div class="qtc-cta">
             <a class="btn" href="qtc.html">Try it in the browser</a>
-            <a class="btn ghost" href="QTc_v2.6.zip">Download the zip</a>
+            <a class="btn ghost" href="QTc_v2.7.zip">Download the zip</a>
           </div>
         </div>
         <figure class="qtc-hero-shot">
@@ -120,7 +120,7 @@
             <p>Unzip the file and open qtc.html in a browser. You can also try it right on this site without downloading (on a phone you can see what the screen looks like).</p>
             <div class="qtc-dl-actions">
               <!-- zipリンク（リリースのたびに書き換える） -->
-              <a class="btn" href="QTc_v2.6.zip">zip file (ver. 2.6)</a>
+              <a class="btn" href="QTc_v2.7.zip">zip file (ver. 2.7)</a>
               <a class="btn ghost" href="qtc.html">Open in the browser</a>
             </div>
             <p class="date-note">Updated 2026.9.8</p>
@@ -136,7 +136,7 @@
             <h3>Algorithm specification</h3>
             <p>A specification of how the analysis works, written by AI. To be honest, I can't make sense of it myself. (In Japanese.)</p>
             <!-- 仕様書リンク（仕様書を更新したときだけ書き換える） -->
-            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">Specification ver. 2.6 (updated 2026.10.23)</a></div>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">Specification ver. 2.7 (updated 2026.11.12)</a></div>
           </article>
         </div>
       </section>
@@ -255,6 +255,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
           <h2 class="sec-title" id="history-title">Version history</h2>
         </div>
         <ol class="qtc-history glass" data-reveal>
+          <li><time>2026/11/12</time><b>ver.2.7</b><span>Fixed QT changing with how the image was cropped (its vertical position) for the same ECG. Reworked automatic calibration, which now reads to one decimal place and copes better with JPEG images and grids blurred by display scaling. Also fixed QT reading long in beats where the trace does not return to baseline after the T wave, and in the last beat.</span></li>
           <li><time>2026/10/23</time><b>ver.2.6</b><span>Fixed Nihon Kohden Holter ECGs failing to measure because calibration was off by a factor of five. Renamed the Holter button to Holter (Fukuda) and added a Holter (Nihon Kohden) button. Also fixed the Q marker sometimes being set at the top of the R wave.</span></li>
           <li><time>2026/9/8</time><b>ver.2.5</b><span>Fixed the baseline floating above the waveform. Also fixed the Q marker being set on the downslope of the P wave and the last beat sometimes not being measured.</span></li>
           <li><time>2026/9/3</time><b>ver.2.4</b><span>Rebuilt automatic calibration. It also handles the gray grids of Holter ECGs.</span></li>

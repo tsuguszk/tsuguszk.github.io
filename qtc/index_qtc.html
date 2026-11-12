@@ -51,10 +51,10 @@
           <h1>QTc計測アプリ</h1>
           <p class="qtc-lede">心電図の画像を<b>貼り付けるだけ</b>で、接線法でQT時間を計測し、QTc（Bazett・Fridericia）を計算します。結果は電子カルテにそのまま貼り付けられるテキストで出せます。</p>
           <!-- 更新日（リリースのたびに書き換える） -->
-          <p class="qtc-badge"><span>最新版 ver.2.6</span>2026/10/23 update</p>
+          <p class="qtc-badge"><span>最新版 ver.2.7</span>2026/11/12 update</p>
           <div class="qtc-cta">
             <a class="btn" href="qtc.html">ブラウザで試す</a>
-            <a class="btn ghost" href="QTc_v2.6.zip">zipをダウンロード</a>
+            <a class="btn ghost" href="QTc_v2.7.zip">zipをダウンロード</a>
           </div>
         </div>
         <figure class="qtc-hero-shot">
@@ -111,7 +111,7 @@
             <p>zipを解凍して、qtc.html をブラウザで開いて使います。ダウンロードせずに、このサイト上でそのまま試すこともできます（スマホで開くと画面の様子が見られます）。</p>
             <div class="qtc-dl-actions">
               <!-- zipリンク（リリースのたびに書き換える） -->
-              <a class="btn" href="QTc_v2.6.zip">zipファイル (ver.2.6)</a>
+              <a class="btn" href="QTc_v2.7.zip">zipファイル (ver.2.7)</a>
               <a class="btn ghost" href="qtc.html">ブラウザで開く</a>
             </div>
             <p class="date-note">2026/9/8更新</p>
@@ -127,7 +127,7 @@
             <h3>アルゴリズムの仕様書</h3>
             <p>どのような手順で解析しているかを、AIに書いてもらった仕様書です。正直なところ、私にもわけが分かりません。</p>
             <!-- 仕様書リンク（仕様書を更新したときだけ書き換える） -->
-            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">仕様書 ver.2.6 (2026/10/23 update)</a></div>
+            <div class="qtc-dl-actions"><a class="btn ghost" href="qtc_specification.pdf">仕様書 ver.2.7 (2026/11/12 update)</a></div>
           </article>
         </div>
       </section>
@@ -246,6 +246,7 @@ V5誘導 : HR 67, QT 336, QTcB 355, QTcF 349 (4beats)</pre>
           <h2 class="sec-title" id="history-title">更新履歴</h2>
         </div>
         <ol class="qtc-history glass" data-reveal>
+          <li><time>2026/11/12</time><b>ver.2.7</b><span>同じ心電図でも、画像の切り抜き方（上下の位置）によってQTが変わってしまう問題を修正しました。キャリブレーションの自動計測を見直し、小数第1位まで読むようにしました（JPEG画像や、表示倍率を変えてぼけた方眼にも強くなりました）。あわせて、T波のあと基線まで戻らない拍と、最後の拍でQTが長く出る現象を修正しました。</span></li>
           <li><time>2026/10/23</time><b>ver.2.6</b><span>日本光電のホルター心電図で、キャリブレーションが5倍にずれて計測できない問題を修正しました。「ホルター」ボタンを「ホルター(フクダ)」に改め、「ホルター(日本光電)」ボタンを新設しました。あわせて、QマーカがR波の頂上にセットされることがある現象を修正しました。</span></li>
           <li><time>2026/9/8</time><b>ver.2.5</b><span>基線が波形より上に浮いてしまう現象を修正しました。あわせて、QマーカがP波の下行脚にセットされる現象と、最後の拍が計測されないことがある現象を修正しました。</span></li>
           <li><time>2026/9/3</time><b>ver.2.4</b><span>キャリブレーションの自動計測を作り直しました。ホルター心電図の灰色の方眼にも対応しています。</span></li>
